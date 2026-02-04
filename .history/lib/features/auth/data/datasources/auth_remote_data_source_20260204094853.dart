@@ -28,15 +28,12 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   );
 
   @override
-  Future<UserModel> login({
-    required String email,
-    required String password,
-  }) async {
+  Future<UserModel> login({required String username, required String password}) async {
     try {
       final result = await _apiClient.post(
         '/auth/login',
         data: {
-          'email': email,
+          'username': username,
           'password': password,
         },
       );
