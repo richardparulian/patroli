@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod_clean_architecture/core/providers/localization_providers.dart';
+import 'package:pos/core/providers/localization_providers.dart';
 
 /// Service for handling language-specific assets in the application
 class LocalizedAssetService {
@@ -53,12 +53,7 @@ class LocalizedImage extends ConsumerWidget {
     final locale = ref.watch(persistentLocaleProvider);
 
     return Image.asset(
-      useCommonPath
-          ? LocalizedAssetService.getCommonImagePath(imageName)
-          : LocalizedAssetService.getImagePathForLanguage(
-              locale.languageCode,
-              imageName,
-            ),
+      useCommonPath ? LocalizedAssetService.getCommonImagePath(imageName) : LocalizedAssetService.getImagePathForLanguage(locale.languageCode, imageName),
       width: width,
       height: height,
       fit: fit,

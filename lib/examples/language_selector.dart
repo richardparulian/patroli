@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod_clean_architecture/core/localization/language_selector_widget.dart';
-import 'package:flutter_riverpod_clean_architecture/core/providers/localization_providers.dart';
-import 'package:flutter_riverpod_clean_architecture/l10n/app_localizations_delegate.dart';
-import 'package:flutter_riverpod_clean_architecture/l10n/l10n.dart';
+import 'package:pos/core/localization/language_selector_widget.dart';
+import 'package:pos/core/providers/localization_providers.dart';
+import 'package:pos/l10n/app_localizations_delegate.dart';
+import 'package:pos/l10n/l10n.dart';
 
 /// A screen that demonstrates how to use the language selector widget
 class LanguageSelectorExample extends ConsumerWidget {

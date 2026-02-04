@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod_clean_architecture/core/analytics/analytics_providers.dart';
-import 'package:flutter_riverpod_clean_architecture/core/notifications/debug_notification_service.dart';
-import 'package:flutter_riverpod_clean_architecture/core/notifications/notification_service.dart';
+import 'package:pos/core/analytics/analytics_providers.dart';
+import 'package:pos/core/notifications/debug_notification_service.dart';
+import 'package:pos/core/notifications/notification_service.dart';
 
 /// Provider for the notification service
 final notificationServiceProvider = Provider<NotificationService>((ref) {

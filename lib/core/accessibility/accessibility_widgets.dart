@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod_clean_architecture/core/accessibility/accessibility_providers.dart';
-import 'package:flutter_riverpod_clean_architecture/core/constants/app_constants.dart';
+import 'package:pos/core/accessibility/accessibility_providers.dart';
+import 'package:pos/core/constants/app_constants.dart';
 
 /// Extension methods for accessibility-related Widget functionality
 extension AccessibilityWidgetExtensions on Widget {

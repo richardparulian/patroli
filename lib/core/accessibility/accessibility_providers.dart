@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod_clean_architecture/core/accessibility/accessibility_service.dart';
+import 'package:pos/core/accessibility/accessibility_service.dart';
 
 /// Provider for the accessibility service
 final accessibilityServiceProvider = Provider<AccessibilityService>((ref) {
@@ -19,10 +19,7 @@ final accessibilityServiceProvider = Provider<AccessibilityService>((ref) {
 
 /// Provider for the current accessibility settings
 /// Provider for the current accessibility settings
-final accessibilitySettingsProvider =
-    NotifierProvider<AccessibilitySettingsNotifier, AccessibilitySettings>(
-      AccessibilitySettingsNotifier.new,
-    );
+final accessibilitySettingsProvider = NotifierProvider<AccessibilitySettingsNotifier, AccessibilitySettings>(AccessibilitySettingsNotifier.new);
 
 /// Notifier for accessibility settings
 class AccessibilitySettingsNotifier extends Notifier<AccessibilitySettings> {
@@ -33,9 +30,7 @@ class AccessibilitySettingsNotifier extends Notifier<AccessibilitySettings> {
     final service = ref.watch(accessibilityServiceProvider);
 
     // Register for changes
-    _unregisterCallback = service.registerForSettingsChanges(
-      _onSettingsChanged,
-    );
+    _unregisterCallback = service.registerForSettingsChanges(_onSettingsChanged);
 
     // Unregister on dispose
     ref.onDispose(() {

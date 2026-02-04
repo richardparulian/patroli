@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod_clean_architecture/core/feature_flags/feature_flag_service.dart';
+import 'package:pos/core/feature_flags/feature_flag_service.dart';
 
 /// A feature flag service implementation that uses remote configuration
 /// In a real app, this would use Firebase Remote Config or a similar service

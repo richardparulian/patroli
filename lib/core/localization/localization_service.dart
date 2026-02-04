@@ -1,10 +1,9 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod_clean_architecture/core/providers/localization_providers.dart';
-import 'package:flutter_riverpod_clean_architecture/l10n/app_localizations_delegate.dart';
-import 'package:flutter_riverpod_clean_architecture/l10n/l10n.dart';
 import 'package:intl/intl.dart';
+import 'package:pos/core/providers/localization_providers.dart';
+import 'package:pos/l10n/app_localizations_delegate.dart';
+import 'package:pos/l10n/l10n.dart';
 
 /// Service class for handling localization-related functionality
 class LocalizationService {

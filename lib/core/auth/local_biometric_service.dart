@@ -1,10 +1,9 @@
 import 'dart:async';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart' as local_auth;
 // import 'package:local_auth/error_codes.dart' as auth_error;
-import 'package:flutter_riverpod_clean_architecture/core/auth/biometric_service.dart';
+import 'package:pos/core/auth/biometric_service.dart';
 
 /// Implementation of BiometricService that uses the local_auth package
 class LocalBiometricService implements BiometricService {
@@ -28,8 +27,7 @@ class LocalBiometricService implements BiometricService {
   @override
   Future<bool> isAvailable() async {
     try {
-      return await _localAuth.canCheckBiometrics &&
-          await _localAuth.isDeviceSupported();
+      return await _localAuth.canCheckBiometrics && await _localAuth.isDeviceSupported();
     } on PlatformException catch (e) {
       debugPrint('Error checking biometric availability: ${e.message}');
       return false;

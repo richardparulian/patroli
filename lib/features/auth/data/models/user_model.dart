@@ -1,6 +1,6 @@
-import 'package:flutter_riverpod_clean_architecture/features/auth/domain/entities/user_entity.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:equatable/equatable.dart';
+import 'package:pos/features/auth/domain/entities/user_entity.dart';
 
 part 'user_model.g.dart';
 

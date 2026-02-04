@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod_clean_architecture/core/providers/storage_providers.dart';
-import 'package:flutter_riverpod_clean_architecture/l10n/l10n.dart';
+import 'package:pos/core/providers/storage_providers.dart';
+import 'package:pos/l10n/l10n.dart';
 
 /// Key for storing selected language code in SharedPreferences
 const _languageCodeKey = 'selected_language_code';
@@ -11,10 +11,7 @@ final savedLocaleProvider = Provider<Locale>((ref) {
   final prefs = ref.watch(sharedPreferencesProvider);
   final savedLanguageCode = prefs.getString(_languageCodeKey);
 
-  if (savedLanguageCode != null &&
-      AppLocalizations.supportedLocales.any(
-        (l) => l.languageCode == savedLanguageCode,
-      )) {
+  if (savedLanguageCode != null && AppLocalizations.supportedLocales.any((l) => l.languageCode == savedLanguageCode)) {
     return Locale(savedLanguageCode);
   }
 

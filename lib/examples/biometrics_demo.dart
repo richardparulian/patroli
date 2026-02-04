@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod_clean_architecture/core/auth/biometric_providers.dart';
-import 'package:flutter_riverpod_clean_architecture/core/auth/biometric_service.dart';
-import 'package:flutter_riverpod_clean_architecture/core/analytics/analytics_providers.dart';
+import 'package:pos/core/analytics/analytics_providers.dart';
+import 'package:pos/core/auth/biometric_providers.dart';
+import 'package:pos/core/auth/biometric_service.dart';
 
 /// A widget that demonstrates the biometric authentication capabilities
 class BiometricsDemo extends ConsumerWidget {
@@ -54,20 +54,16 @@ class BiometricsDemo extends ConsumerWidget {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Authentication Status: ${biometricState.isAuthenticated ? "Authenticated" : "Not Authenticated"}',
+                    Text('Authentication Status: ${biometricState.isAuthenticated ? "Authenticated" : "Not Authenticated"}',
                       style: TextStyle(
-                        color: biometricState.isAuthenticated
-                            ? Colors.green
-                            : Colors.red,
+                        color: biometricState.isAuthenticated ? Colors.green : Colors.red,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     if (biometricState.lastAuthTime != null)
                       Padding(
                         padding: const EdgeInsets.only(top: 4.0),
-                        child: Text(
-                          'Last authenticated: ${biometricState.lastAuthTime!.toLocal()}',
+                        child: Text('Last authenticated: ${biometricState.lastAuthTime!.toLocal()}',
                           style: const TextStyle(fontSize: 12),
                         ),
                       ),

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter_riverpod_clean_architecture/core/constants/app_constants.dart';
-import 'package:flutter_riverpod_clean_architecture/l10n/l10n.dart';
+import 'package:pos/core/constants/app_constants.dart';
+import 'package:pos/l10n/l10n.dart';
 
 /// Settings screen with various app configuration options
 class SettingsScreen extends ConsumerWidget {

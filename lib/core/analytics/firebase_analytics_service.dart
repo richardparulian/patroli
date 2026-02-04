@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter_riverpod_clean_architecture/core/analytics/analytics_event.dart';
-import 'package:flutter_riverpod_clean_architecture/core/analytics/analytics_service.dart';
+import 'package:pos/core/analytics/analytics_event.dart';
+import 'package:pos/core/analytics/analytics_service.dart';
 
 /// Implementation of AnalyticsService using Firebase Analytics
 /// Note: In a real app, you would include the firebase_analytics package
@@ -47,10 +47,7 @@ class FirebaseAnalyticsService implements AnalyticsService {
   }
 
   @override
-  void setUserProperties({
-    required String userId,
-    Map<String, dynamic>? properties,
-  }) {
+  void setUserProperties({required String userId, Map<String, dynamic>? properties}) {
     if (!_isEnabled) return;
 
     debugPrint('📊 Firebase set user ID: $userId');

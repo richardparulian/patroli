@@ -1,6 +1,6 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:flutter_riverpod_clean_architecture/core/error/failures.dart';
-import 'package:flutter_riverpod_clean_architecture/features/auth/domain/repositories/auth_repository.dart';
+import 'package:pos/core/error/failures.dart';
+import 'package:pos/features/auth/domain/repositories/auth_repository.dart';
 
 class LogoutUseCase {
   final AuthRepository _repository;

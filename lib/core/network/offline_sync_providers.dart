@@ -1,9 +1,9 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod_clean_architecture/core/constants/app_constants.dart';
-import 'package:flutter_riverpod_clean_architecture/core/network/offline_sync_service.dart';
 import 'package:hive/hive.dart';
+import 'package:pos/core/constants/app_constants.dart';
+import 'package:pos/core/network/offline_sync_service.dart';
 
 /// Provider for connectivity service
 final connectivityProvider = Provider<Connectivity>((ref) {

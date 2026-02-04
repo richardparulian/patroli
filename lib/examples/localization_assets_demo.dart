@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod_clean_architecture/core/localization/language_selector_widget.dart';
-import 'package:flutter_riverpod_clean_architecture/core/localization/localized_asset_service.dart';
-import 'package:flutter_riverpod_clean_architecture/core/providers/localization_providers.dart';
-import 'package:flutter_riverpod_clean_architecture/l10n/l10n.dart';
 import 'package:intl/intl.dart';
+import 'package:pos/core/localization/language_selector_widget.dart';
+import 'package:pos/core/localization/localized_asset_service.dart';
+import 'package:pos/core/providers/localization_providers.dart';
+import 'package:pos/l10n/l10n.dart';
 
 /// Demo screen to showcase localization features
 /// Includes language-specific assets demo

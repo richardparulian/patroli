@@ -1,38 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod_clean_architecture/core/accessibility/accessibility_providers.dart';
-import 'package:flutter_riverpod_clean_architecture/core/accessibility/accessibility_widgets.dart';
-import 'package:flutter_riverpod_clean_architecture/core/analytics/analytics_providers.dart';
-// Biometrics demo is imported directly
-import 'package:flutter_riverpod_clean_architecture/examples/biometrics_demo.dart';
-import 'package:flutter_riverpod_clean_architecture/core/feature_flags/feature_flag_providers.dart';
-import 'package:flutter_riverpod_clean_architecture/core/images/advanced_image.dart';
-import 'package:flutter_riverpod_clean_architecture/core/images/image_transformer.dart';
-import 'package:flutter_riverpod_clean_architecture/core/images/shimmer_placeholder.dart';
-import 'package:flutter_riverpod_clean_architecture/core/images/svg_renderer.dart';
-import 'package:flutter_riverpod_clean_architecture/core/logging/logger_provider.dart';
-import 'package:flutter_riverpod_clean_architecture/core/network/offline_sync_providers.dart';
-import 'package:flutter_riverpod_clean_architecture/core/network/offline_sync_service.dart';
-import 'package:flutter_riverpod_clean_architecture/core/notifications/notification_providers.dart';
-// Theme handling is managed through feature flags
-import 'package:flutter_riverpod_clean_architecture/core/updates/update_providers.dart';
-import 'package:flutter_riverpod_clean_architecture/core/updates/update_service.dart';
-import 'package:flutter_riverpod_clean_architecture/core/utils/app_review_providers.dart';
-
-import '../core/feature_flags/local_feature_flag_service.dart';
+import 'package:pos/core/accessibility/accessibility_providers.dart';
+import 'package:pos/core/accessibility/accessibility_widgets.dart';
+import 'package:pos/core/analytics/analytics_providers.dart';
+import 'package:pos/core/feature_flags/feature_flag_providers.dart';
+import 'package:pos/core/feature_flags/local_feature_flag_service.dart';
+import 'package:pos/core/images/advanced_image.dart';
+import 'package:pos/core/images/image_transformer.dart';
+import 'package:pos/core/images/shimmer_placeholder.dart';
+import 'package:pos/core/images/svg_renderer.dart';
+import 'package:pos/core/logging/logger_provider.dart';
+import 'package:pos/core/network/offline_sync_providers.dart';
+import 'package:pos/core/network/offline_sync_service.dart';
+import 'package:pos/core/notifications/notification_providers.dart';
+import 'package:pos/core/updates/update_providers.dart';
+import 'package:pos/core/updates/update_service.dart';
+import 'package:pos/core/utils/app_review_providers.dart';
+import 'package:pos/examples/biometrics_demo.dart';
 
 /// A screen that showcases the advanced features of the architecture template
 class AdvancedFeaturesShowcase extends ConsumerStatefulWidget {
   const AdvancedFeaturesShowcase({super.key});
 
   @override
-  ConsumerState<AdvancedFeaturesShowcase> createState() =>
-      _AdvancedFeaturesShowcaseState();
+  ConsumerState<AdvancedFeaturesShowcase> createState() => _AdvancedFeaturesShowcaseState();
 }
 
-class _AdvancedFeaturesShowcaseState
-    extends ConsumerState<AdvancedFeaturesShowcase>
-    with LoggerStateMixin {
+class _AdvancedFeaturesShowcaseState extends ConsumerState<AdvancedFeaturesShowcase> with LoggerStateMixin {
   // Image effect controls state
   final Map<ImageEffectType, double> _effectsIntensity = {
     ImageEffectType.none: 1.0,

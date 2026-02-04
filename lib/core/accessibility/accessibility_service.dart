@@ -62,11 +62,9 @@ class AccessibilitySettings {
   }) {
     return AccessibilitySettings(
       isScreenReaderActive: isScreenReaderActive ?? this.isScreenReaderActive,
-      isHighContrastEnabled:
-          isHighContrastEnabled ?? this.isHighContrastEnabled,
+      isHighContrastEnabled: isHighContrastEnabled ?? this.isHighContrastEnabled,
       isBoldTextEnabled: isBoldTextEnabled ?? this.isBoldTextEnabled,
-      isReduceMotionEnabled:
-          isReduceMotionEnabled ?? this.isReduceMotionEnabled,
+      isReduceMotionEnabled: isReduceMotionEnabled ?? this.isReduceMotionEnabled,
       fontScale: fontScale ?? this.fontScale,
     );
   }
@@ -144,9 +142,7 @@ class FlutterAccessibilityService implements AccessibilityService {
   }
 
   @override
-  Function registerForSettingsChanges(
-    Function(AccessibilitySettings) callback,
-  ) {
+  Function registerForSettingsChanges(Function(AccessibilitySettings) callback) {
     _listeners.add(callback);
 
     // Return function to unregister

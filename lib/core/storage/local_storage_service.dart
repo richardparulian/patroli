@@ -1,6 +1,5 @@
 import 'dart:convert';
-
-import 'package:flutter_riverpod_clean_architecture/core/error/exceptions.dart';
+import 'package:pos/core/error/exceptions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LocalStorageService {

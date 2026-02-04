@@ -19,12 +19,7 @@ class FeatureGenerator {
   /// Feature name in camelCase (e.g., userProfile)
   late final String camelCase;
 
-  FeatureGenerator({
-    required this.featureName,
-    this.withUi = true,
-    this.withTests = true,
-    this.withDocs = true,
-  }) {
+  FeatureGenerator({required this.featureName, this.withUi = true, this.withTests = true, this.withDocs = true}) {
     pascalCase = _toPascalCase(featureName);
     camelCase = _toCamelCase(featureName);
   }

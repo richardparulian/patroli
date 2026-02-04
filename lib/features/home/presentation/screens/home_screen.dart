@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod_clean_architecture/core/utils/app_utils.dart';
-import 'package:flutter_riverpod_clean_architecture/features/auth/presentation/providers/auth_provider.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter_riverpod_clean_architecture/core/constants/app_constants.dart';
+import 'package:pos/core/constants/app_constants.dart';
+import 'package:pos/core/utils/app_utils.dart';
+import 'package:pos/features/auth/presentation/providers/auth_provider.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});

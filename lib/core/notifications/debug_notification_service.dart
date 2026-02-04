@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_riverpod_clean_architecture/core/notifications/notification_service.dart';
+import 'package:pos/core/notifications/notification_service.dart';
 
 /// A simple debug implementation of notification service
 class DebugNotificationService implements NotificationService {

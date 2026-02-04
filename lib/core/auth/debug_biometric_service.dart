@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter_riverpod_clean_architecture/core/auth/biometric_service.dart';
+import 'package:pos/core/auth/biometric_service.dart';
 
 /// A debug implementation of BiometricService
 class DebugBiometricService implements BiometricService {
@@ -10,10 +10,7 @@ class DebugBiometricService implements BiometricService {
   DebugBiometricService({
     bool isAvailable = true,
     List<BiometricType>? availableBiometrics,
-  }) : _isAvailable = isAvailable,
-       _availableBiometrics =
-           availableBiometrics ??
-           (isAvailable ? [BiometricType.fingerprint] : []);
+  }) : _isAvailable = isAvailable, _availableBiometrics = availableBiometrics ?? (isAvailable ? [BiometricType.fingerprint] : []);
 
   @override
   Future<bool> isAvailable() async {

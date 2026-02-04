@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod_clean_architecture/core/analytics/analytics_event.dart';
-import 'package:flutter_riverpod_clean_architecture/core/analytics/analytics_service.dart';
-import 'package:flutter_riverpod_clean_architecture/core/analytics/firebase_analytics_service.dart';
-import 'package:flutter_riverpod_clean_architecture/core/feature_flags/feature_flag_providers.dart';
+import 'package:pos/core/analytics/analytics_event.dart';
+import 'package:pos/core/analytics/analytics_service.dart';
+import 'package:pos/core/analytics/firebase_analytics_service.dart';
+import 'package:pos/core/feature_flags/feature_flag_providers.dart';
 
 /// A debug analytics service for development
 class DebugAnalyticsService implements AnalyticsService {
@@ -22,10 +22,7 @@ class DebugAnalyticsService implements AnalyticsService {
   }
 
   @override
-  void setUserProperties({
-    required String userId,
-    Map<String, dynamic>? properties,
-  }) {
+  void setUserProperties({required String userId, Map<String, dynamic>? properties}) {
     if (!_isEnabled) return;
     debugPrint('📊 DEBUG ANALYTICS: Set user ID: $userId');
     if (properties != null) {
@@ -66,10 +63,7 @@ final analyticsServiceProvider = Provider<AnalyticsService>((ref) {
   final services = <AnalyticsService>[];
 
   // Always add Firebase Analytics in production
-  if (!kDebugMode ||
-      ref.watch(
-        featureFlagProvider('force_firebase_analytics', defaultValue: false),
-      )) {
+  if (!kDebugMode || ref.watch(featureFlagProvider('force_firebase_analytics', defaultValue: false))) {
     services.add(FirebaseAnalyticsService());
   }
 
@@ -105,19 +99,11 @@ class Analytics {
 
   /// Log a screen view event
   void logScreenView(String screenName, {Map<String, dynamic>? parameters}) {
-    _service.logEvent(
-      ScreenViewEvent(screenName, screenParameters: parameters),
-    );
+    _service.logEvent(ScreenViewEvent(screenName, screenParameters: parameters));
   }
 
   /// Log a user action event
-  void logUserAction({
-    required String action,
-    String? category,
-    String? label,
-    int? value,
-    Map<String, dynamic>? parameters,
-  }) {
+  void logUserAction({required String action, String? category, String? label, int? value, Map<String, dynamic>? parameters}) {
     _service.logEvent(
       UserActionEvent(
         action: action,
@@ -130,12 +116,7 @@ class Analytics {
   }
 
   /// Log an error event
-  void logError({
-    required String errorType,
-    required String message,
-    String? stackTrace,
-    bool isFatal = false,
-  }) {
+  void logError({required String errorType, required String message, String? stackTrace, bool isFatal = false}) {
     _service.logEvent(
       ErrorEvent(
         errorType: errorType,
@@ -147,12 +128,7 @@ class Analytics {
   }
 
   /// Log a performance event
-  void logPerformance({
-    required String name,
-    required num value,
-    String unit = 'ms',
-    Map<String, dynamic>? parameters,
-  }) {
+  void logPerformance({required String name, required num value, String unit = 'ms', Map<String, dynamic>? parameters}) {
     _service.logEvent(
       PerformanceEvent(
         metricName: name,
@@ -209,9 +185,7 @@ class _AnalyticsScreenViewState extends State<AnalyticsScreenView> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final analytics = ProviderScope.containerOf(
-        context,
-      ).read(analyticsProvider);
+      final analytics = ProviderScope.containerOf(context).read(analyticsProvider);
       analytics.logScreenView(widget.screenName, parameters: widget.parameters);
     });
   }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod_clean_architecture/core/constants/app_constants.dart';
-import 'package:flutter_riverpod_clean_architecture/core/updates/update_service.dart';
+import 'package:pos/core/constants/app_constants.dart';
+import 'package:pos/core/updates/update_service.dart';
 
 /// Provider for the update service
 final updateServiceProvider = Provider<UpdateService>((ref) {

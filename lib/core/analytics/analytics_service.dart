@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_riverpod_clean_architecture/core/analytics/analytics_event.dart';
+import 'package:pos/core/analytics/analytics_event.dart';
 
 /// Interface for analytics service implementations
 abstract class AnalyticsService {
@@ -11,10 +11,7 @@ abstract class AnalyticsService {
   void logEvent(AnalyticsEvent event);
 
   /// Set user properties for user-scoped analytics
-  void setUserProperties({
-    required String userId,
-    Map<String, dynamic>? properties,
-  });
+  void setUserProperties({required String userId, Map<String, dynamic>? properties});
 
   /// Clear all user properties and identifiers
   void resetUser();
@@ -50,10 +47,7 @@ class CompositeAnalyticsService implements AnalyticsService {
   }
 
   @override
-  void setUserProperties({
-    required String userId,
-    Map<String, dynamic>? properties,
-  }) {
+  void setUserProperties({required String userId, Map<String, dynamic>? properties}) {
     for (final service in _services) {
       service.setUserProperties(userId: userId, properties: properties);
     }
@@ -81,8 +75,7 @@ class CompositeAnalyticsService implements AnalyticsService {
   }
 
   @override
-  bool get isEnabled =>
-      _services.isNotEmpty ? _services.first.isEnabled : false;
+  bool get isEnabled => _services.isNotEmpty ? _services.first.isEnabled : false;
 }
 
 /// A service that logs analytics events to the debug console
@@ -102,10 +95,7 @@ class DebugAnalyticsService implements AnalyticsService {
   }
 
   @override
-  void setUserProperties({
-    required String userId,
-    Map<String, dynamic>? properties,
-  }) {
+  void setUserProperties({required String userId, Map<String, dynamic>? properties}) {
     if (!_enabled) return;
     debugPrint('👤 User identified: $userId');
     if (properties != null) {

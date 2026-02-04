@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod_clean_architecture/core/logging/console_logger.dart';
-import 'package:flutter_riverpod_clean_architecture/core/logging/logger.dart';
+import 'package:pos/core/logging/console_logger.dart';
+import 'package:pos/core/logging/logger.dart';
 
 /// Provider for the global logger instance
 final loggerProvider = Provider<Logger>((ref) {

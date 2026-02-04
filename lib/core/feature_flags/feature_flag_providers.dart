@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod_clean_architecture/core/analytics/analytics_providers.dart';
-import 'package:flutter_riverpod_clean_architecture/core/feature_flags/feature_flag_service.dart';
-import 'package:flutter_riverpod_clean_architecture/core/feature_flags/local_feature_flag_service.dart';
-import 'package:flutter_riverpod_clean_architecture/core/feature_flags/remote_feature_flag_service.dart';
+import 'package:pos/core/analytics/analytics_providers.dart';
+import 'package:pos/core/feature_flags/feature_flag_service.dart';
+import 'package:pos/core/feature_flags/local_feature_flag_service.dart';
+import 'package:pos/core/feature_flags/remote_feature_flag_service.dart';
 
 /// Key for default feature flags
 const Map<String, dynamic> kDefaultFeatureFlags = {
@@ -34,10 +34,7 @@ const Map<String, dynamic> kDefaultFeatureFlags = {
 /// Provider for the feature flag service
 final featureFlagServiceProvider = Provider<FeatureFlagService>((ref) {
   // Use remote feature flags in production, local in debug mode
-  final service =
-      kDebugMode
-          ? LocalFeatureFlagService() as FeatureFlagService
-          : RemoteFeatureFlagService();
+  final service = kDebugMode ? LocalFeatureFlagService() as FeatureFlagService : RemoteFeatureFlagService();
 
   // Set default values
   service.setDefaults(kDefaultFeatureFlags);
@@ -64,10 +61,7 @@ final featureFlagServiceProvider = Provider<FeatureFlagService>((ref) {
 });
 
 /// Creates a provider for a specific feature flag
-Provider<bool> createFeatureFlagProvider(
-  String flagKey, {
-  bool defaultValue = false,
-}) {
+Provider<bool> createFeatureFlagProvider(String flagKey, {bool defaultValue = false}) {
   return Provider<bool>((ref) {
     final service = ref.watch(featureFlagServiceProvider);
     return service.getBool(flagKey, defaultValue: defaultValue);
@@ -75,10 +69,7 @@ Provider<bool> createFeatureFlagProvider(
 }
 
 /// Helper to create a provider for a specific feature flag
-Provider<bool> featureFlagProvider(
-  String flagKey, {
-  bool defaultValue = false,
-}) {
+Provider<bool> featureFlagProvider(String flagKey, {bool defaultValue = false}) {
   return Provider<bool>((ref) {
     final service = ref.watch(featureFlagServiceProvider);
     return service.getBool(flagKey, defaultValue: defaultValue);
@@ -86,10 +77,7 @@ Provider<bool> featureFlagProvider(
 }
 
 /// Helper to create a provider for a specific string config value
-Provider<String> stringConfigProvider(
-  String key, {
-  required String defaultValue,
-}) {
+Provider<String> stringConfigProvider(String key, {required String defaultValue}) {
   return Provider<String>((ref) {
     final service = ref.watch(featureFlagServiceProvider);
     return service.getString(key, defaultValue: defaultValue);
@@ -105,10 +93,7 @@ Provider<int> intConfigProvider(String key, {required int defaultValue}) {
 }
 
 /// Helper to create a provider for a specific double config value
-Provider<double> doubleConfigProvider(
-  String key, {
-  required double defaultValue,
-}) {
+Provider<double> doubleConfigProvider(String key, {required double defaultValue}) {
   return Provider<double>((ref) {
     final service = ref.watch(featureFlagServiceProvider);
     return service.getDouble(key, defaultValue: defaultValue);

@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter_riverpod_clean_architecture/core/logging/logger.dart';
+import 'package:pos/core/logging/logger.dart';
 
 /// A logger implementation that logs to the debug console
 class ConsoleLogger implements Logger {
