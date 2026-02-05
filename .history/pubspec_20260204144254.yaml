@@ -105,7 +105,7 @@ flutter:
     # Common assets
     - assets/images/
     
-    # Language specific assets
+    # Language-specific assets
     - assets/images/en/
     - assets/images/es/
     - assets/images/fr/
@@ -116,7 +116,6 @@ flutter:
     # Fonts
     - assets/fonts/
 
-    # Environment variables
     - lib/config/environment/.env
 
   # An image asset can refer to one or more resolution-specific "variants", see
