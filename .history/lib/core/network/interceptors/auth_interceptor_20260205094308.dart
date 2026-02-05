@@ -82,59 +82,59 @@ class AuthInterceptor extends Interceptor {
   }
 
   /// Refresh access token using refresh token
-  // Future<String?> _refreshToken() async {
-  //   try {
-  //     final refreshToken = await _secureStorageService.read(
-  //       key: AppConstants.refreshTokenKey,
-  //     );
+  Future<String?> _refreshToken() async {
+    try {
+      final refreshToken = await _secureStorageService.read(
+        key: AppConstants.refreshTokenKey,
+      );
 
-  //     if (refreshToken == null || refreshToken.isEmpty) {
-  //       return null;
-  //     }
+      if (refreshToken == null || refreshToken.isEmpty) {
+        return null;
+      }
 
-  //     // Create refresh token request DTO
-  //     final request = RefreshTokenRequest.fromToken(refreshToken);
+      // Create refresh token request DTO
+      final request = RefreshTokenRequest.fromToken(refreshToken);
 
-  //     // Make request to refresh token
-  //     final response = await Dio().post(
-  //       '${_dio.options.baseUrl}${ApiEndpoints.refresh}',
-  //       data: request.toJson(),
-  //     );
+      // Make request to refresh token
+      final response = await Dio().post(
+        '${_dio.options.baseUrl}${ApiEndpoints.refresh}',
+        data: request.toJson(),
+      );
 
-  //     if (response.statusCode == 200 && response.data != null) {
-  //       // Parse response using DTO
-  //       final refreshResponse = RefreshTokenResponse.fromJson(response.data);
+      if (response.statusCode == 200 && response.data != null) {
+        // Parse response using DTO
+        final refreshResponse = RefreshTokenResponse.fromJson(response.data);
 
-  //       // Save new access token
-  //       await _secureStorageService.write(
-  //         key: AppConstants.tokenKey,
-  //         value: refreshResponse.accessToken,
-  //       );
+        // Save new access token
+        await _secureStorageService.write(
+          key: AppConstants.tokenKey,
+          value: refreshResponse.accessToken,
+        );
 
-  //       // Save new refresh token if provided
-  //       if (refreshResponse.refreshToken != null) {
-  //         await _secureStorageService.write(
-  //           key: AppConstants.refreshTokenKey,
-  //           value: refreshResponse.refreshToken!,
-  //         );
-  //       }
+        // Save new refresh token if provided
+        if (refreshResponse.refreshToken != null) {
+          await _secureStorageService.write(
+            key: AppConstants.refreshTokenKey,
+            value: refreshResponse.refreshToken!,
+          );
+        }
 
-  //       return refreshResponse.accessToken;
-  //     }
+        return refreshResponse.accessToken;
+      }
 
-  //     return null;
-  //   } catch (e) {
-  //     return null;
-  //   }
-  // }
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
 
   /// Logout user - remove all tokens and user data
-  // Future<void> _logoutUser() async {
-  //   try {
-  //     await _secureStorageService.delete(key: AppConstants.tokenKey);
-  //     await _secureStorageService.delete(key: AppConstants.refreshTokenKey);
-  //   } catch (e) {
-  //     // Ignore errors during logout
-  //   }
-  // }
+  Future<void> _logoutUser() async {
+    try {
+      await _secureStorageService.delete(key: AppConstants.tokenKey);
+      await _secureStorageService.delete(key: AppConstants.refreshTokenKey);
+    } catch (e) {
+      // Ignore errors during logout
+    }
+  }
 }

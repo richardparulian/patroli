@@ -129,12 +129,12 @@ class AuthInterceptor extends Interceptor {
   // }
 
   /// Logout user - remove all tokens and user data
-  // Future<void> _logoutUser() async {
-  //   try {
-  //     await _secureStorageService.delete(key: AppConstants.tokenKey);
-  //     await _secureStorageService.delete(key: AppConstants.refreshTokenKey);
-  //   } catch (e) {
-  //     // Ignore errors during logout
-  //   }
-  // }
+  Future<void> _logoutUser() async {
+    try {
+      await _secureStorageService.delete(key: AppConstants.tokenKey);
+      await _secureStorageService.delete(key: AppConstants.refreshTokenKey);
+    } catch (e) {
+      // Ignore errors during logout
+    }
+  }
 }

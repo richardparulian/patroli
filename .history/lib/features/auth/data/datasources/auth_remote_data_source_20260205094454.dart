@@ -66,6 +66,56 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       throw ServerException(message: e.toString());
     }
   }
+
+  @override
+  Future<UserModel> register({
+    required String name,
+    required String email,
+    required String password,
+  }) async {
+    try {
+      // Create register request DTO
+      final request = RegisterRequest(
+        name: name,
+        email: email,
+        password: password,
+      );
+
+      final result = await _apiClient.post(
+        ApiEndpoints.register,
+        data: request.toJson(),
+      );
+
+      return result.fold(
+        (failure) => throw ServerException(message: failure.message),
+        (response) async {
+          // Parse response using DTO
+          final authResponse = AuthResponse.fromJson(response);
+
+          // Save tokens to secure storage
+          await _secureStorageService.write(
+            key: AppConstants.tokenKey,
+            value: authResponse.accessToken,
+          );
+
+          await _secureStorageService.write(
+            key: AppConstants.refreshTokenKey,
+            value: authResponse.refreshToken,
+          );
+
+          return authResponse.user;
+        },
+      );
+    } on ServerException {
+      rethrow;
+    } on NetworkException {
+      rethrow;
+    } on UnauthorizedException {
+      rethrow;
+    } on Exception catch (e) {
+      throw ServerException(message: e.toString());
+    }
+  }
 }
 
 // Provider - using dioWithAuth to include auth interceptor

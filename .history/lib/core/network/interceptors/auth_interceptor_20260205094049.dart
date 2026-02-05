@@ -3,7 +3,6 @@ import 'package:pos/core/constants/app_constants.dart';
 import 'package:pos/core/network/api_endpoints.dart';
 import 'package:pos/core/storage/secure_storage_service.dart';
 import 'package:pos/core/error/exceptions.dart';
-import 'package:pos/features/auth/data/dtos/dtos.dart';
 
 /// Interceptor untuk menangani autentikasi pada API requests
 /// Menambahkan token ke headers dan melakukan refresh token jika expired
@@ -20,9 +19,7 @@ class AuthInterceptor extends Interceptor {
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
     try {
       // Get token from secure storage
-      final token = await _secureStorageService.read(
-        key: AppConstants.tokenKey,
-      );
+      final token = await _secureStorageService.read(key: AppConstants.tokenKey);
 
       // If token exists, add to headers
       if (token != null && token.isNotEmpty) {
@@ -39,43 +36,42 @@ class AuthInterceptor extends Interceptor {
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {
     // Check if error is 401 Unauthorized
-    // if (err.response?.statusCode == 401) {
-    //   try {
-    //     // Try to refresh token
-    //     final newToken = await _refreshToken();
+    if (err.response?.statusCode == 401) {
+      try {
+        // Try to refresh token
+        final newToken = await _refreshToken();
 
-    //     if (newToken != null) {
-    //       // Update token in secure storage
-    //       await _secureStorageService.write(
-    //         key: AppConstants.tokenKey,
-    //         value: newToken,
-    //       );
+        if (newToken != null) {
+          // Update token in secure storage
+          await _secureStorageService.write(
+            key: AppConstants.tokenKey,
+            value: newToken,
+          );
 
-    //       // Retry original request with new token
-    //       final opts = err.requestOptions;
-    //       opts.headers['Authorization'] = 'Bearer $newToken';
+          // Retry the original request with new token
+          final opts = err.requestOptions;
+          opts.headers['Authorization'] = 'Bearer $newToken';
 
-    //       // Create new request
-    //       final response = await _dio.fetch(opts);
+          // Create new request
+          final response = await _dio.fetch(opts);
 
-    //       // Return successful response
-    //       handler.resolve(response);
-
-    //       return;
-    //     }
-    //   } catch (refreshError) {
-    //     // Token refresh failed, logout user
-    //     await _logoutUser();
-    //     handler.next(
-    //       DioException(
-    //         requestOptions: err.requestOptions,
-    //         error: UnauthorizedException(message: 'Session expired'),
-    //         type: DioExceptionType.unknown,
-    //       ),
-    //     );
-    //     return;
-    //   }
-    // }
+          // Return successful response
+          handler.resolve(response);
+          return;
+        }
+      } catch (refreshError) {
+        // Token refresh failed, logout user
+        await _logoutUser();
+        handler.next(
+          DioException(
+            requestOptions: err.requestOptions,
+            error: UnauthorizedException(message: 'Session expired'),
+            type: DioExceptionType.unknown,
+          ),
+        );
+        return;
+      }
+    }
 
     // If not 401 or token refresh failed, continue with error
     handler.next(err);
@@ -92,34 +88,30 @@ class AuthInterceptor extends Interceptor {
   //       return null;
   //     }
 
-  //     // Create refresh token request DTO
-  //     final request = RefreshTokenRequest.fromToken(refreshToken);
-
   //     // Make request to refresh token
   //     final response = await Dio().post(
   //       '${_dio.options.baseUrl}${ApiEndpoints.refresh}',
-  //       data: request.toJson(),
+  //       data: {'refresh_token': refreshToken},
   //     );
 
   //     if (response.statusCode == 200 && response.data != null) {
-  //       // Parse response using DTO
-  //       final refreshResponse = RefreshTokenResponse.fromJson(response.data);
+  //       final newToken = response.data['access_token'];
+  //       final newRefreshToken = response.data['refresh_token'];
 
-  //       // Save new access token
+  //       // Save new tokens
   //       await _secureStorageService.write(
   //         key: AppConstants.tokenKey,
-  //         value: refreshResponse.accessToken,
+  //         value: newToken,
   //       );
 
-  //       // Save new refresh token if provided
-  //       if (refreshResponse.refreshToken != null) {
+  //       if (newRefreshToken != null) {
   //         await _secureStorageService.write(
   //           key: AppConstants.refreshTokenKey,
-  //           value: refreshResponse.refreshToken!,
+  //           value: newRefreshToken,
   //         );
   //       }
 
-  //       return refreshResponse.accessToken;
+  //       return newToken;
   //     }
 
   //     return null;
@@ -129,12 +121,12 @@ class AuthInterceptor extends Interceptor {
   // }
 
   /// Logout user - remove all tokens and user data
-  // Future<void> _logoutUser() async {
-  //   try {
-  //     await _secureStorageService.delete(key: AppConstants.tokenKey);
-  //     await _secureStorageService.delete(key: AppConstants.refreshTokenKey);
-  //   } catch (e) {
-  //     // Ignore errors during logout
-  //   }
-  // }
+  Future<void> _logoutUser() async {
+    try {
+      await _secureStorageService.delete(key: AppConstants.tokenKey);
+      await _secureStorageService.delete(key: AppConstants.refreshTokenKey);
+    } catch (e) {
+      // Ignore errors during logout
+    }
+  }
 }

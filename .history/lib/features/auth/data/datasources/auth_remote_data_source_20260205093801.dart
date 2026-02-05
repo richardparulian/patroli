@@ -5,7 +5,6 @@ import 'package:pos/core/network/api_client.dart';
 import 'package:pos/core/network/api_endpoints.dart';
 import 'package:pos/core/providers/network_providers.dart';
 import 'package:pos/core/storage/secure_storage_service.dart';
-import 'package:pos/features/auth/data/dtos/dtos.dart';
 import 'package:pos/features/auth/data/models/user_model.dart';
 import 'package:pos/features/auth/data/repositories/auth_repository_impl.dart';
 
@@ -26,34 +25,37 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<UserModel> login({required String username, required String password}) async {
     try {
-      // Create login request DTO
-      final request = LoginRequest(
-        username: username,
-        password: password,
-      );
-
       final result = await _apiClient.post(ApiEndpoints.login,
-        data: request.toJson(),
+        data: {
+          'username': username,
+          'password': password,
+        },
       );
 
       return result.fold(
         (failure) => throw ServerException(message: failure.message),
         (response) async {
-          // Parse response using DTO
-          final authResponse = AuthResponse.fromJson(response);
+          // Extract user data from response
+          final userData = response['user'];
+          final token = response['access_token'];
+          final refreshToken = response['refresh_token'];
 
           // Save tokens to secure storage
-          await _secureStorageService.write(
-            key: AppConstants.tokenKey,
-            value: authResponse.accessToken,
-          );
+          if (token != null) {
+            await _secureStorageService.write(
+              key: AppConstants.tokenKey,
+              value: token,
+            );
+          }
 
-          await _secureStorageService.write(
-            key: AppConstants.refreshTokenKey,
-            value: authResponse.refreshToken,
-          );
+          if (refreshToken != null) {
+            await _secureStorageService.write(
+              key: AppConstants.refreshTokenKey,
+              value: refreshToken,
+            );
+          }
 
-          return authResponse.user;
+          return UserModel.fromJson(userData);
         },
       );
     } on ServerException {
