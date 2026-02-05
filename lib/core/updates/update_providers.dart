@@ -12,9 +12,7 @@ final updateServiceProvider = Provider<UpdateService>((ref) {
 });
 
 /// Provider for checking if an update is available
-final updateCheckProvider = FutureProvider.autoDispose<UpdateCheckResult>((
-  ref,
-) async {
+final updateCheckProvider = FutureProvider.autoDispose<UpdateCheckResult>((ref) async {
   final updateService = ref.watch(updateServiceProvider);
   await updateService.init();
   return await updateService.checkForUpdates();
@@ -43,6 +41,7 @@ class UpdateController extends AsyncNotifier<UpdateCheckResult> {
     try {
       final updateService = ref.read(updateServiceProvider);
       final result = await updateService.checkForUpdates();
+
       state = AsyncValue.data(result);
     } catch (e, stack) {
       state = AsyncValue.error(e, stack);
@@ -52,12 +51,14 @@ class UpdateController extends AsyncNotifier<UpdateCheckResult> {
   /// Prompt the user to update the app
   Future<bool> promptForUpdate({bool force = false}) async {
     final updateService = ref.read(updateServiceProvider);
+
     return await updateService.promptUpdate(force: force);
   }
 
   /// Open the update URL
   Future<bool> openUpdateUrl() async {
     final updateService = ref.read(updateServiceProvider);
+
     return await updateService.openUpdateUrl();
   }
 
@@ -69,10 +70,7 @@ class UpdateController extends AsyncNotifier<UpdateCheckResult> {
 }
 
 /// Provider for the update controller
-final updateControllerProvider =
-    AsyncNotifierProvider<UpdateController, UpdateCheckResult>(
-      UpdateController.new,
-    );
+final updateControllerProvider = AsyncNotifierProvider<UpdateController, UpdateCheckResult>(UpdateController.new);
 
 /// Widget that shows an update dialog when an update is available
 class UpdateChecker extends ConsumerWidget {
@@ -95,14 +93,9 @@ class UpdateChecker extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.listen<AsyncValue<UpdateCheckResult>>(updateControllerProvider, (
-      _,
-      state,
-    ) {
+    ref.listen<AsyncValue<UpdateCheckResult>>(updateControllerProvider, (_, state) {
       state.whenData((result) {
-        if (autoPrompt &&
-            (result == UpdateCheckResult.updateAvailable ||
-                result == UpdateCheckResult.criticalUpdateRequired)) {
+        if (autoPrompt && (result == UpdateCheckResult.updateAvailable || result == UpdateCheckResult.criticalUpdateRequired)) {
           _showUpdateDialog(context, ref, result);
         }
       });
@@ -111,11 +104,7 @@ class UpdateChecker extends ConsumerWidget {
     return child;
   }
 
-  void _showUpdateDialog(
-    BuildContext context,
-    WidgetRef ref,
-    UpdateCheckResult result,
-  ) async {
+  void _showUpdateDialog(BuildContext context, WidgetRef ref, UpdateCheckResult result) async {
     final updateController = ref.read(updateControllerProvider.notifier);
     final updateInfo = await updateController.getUpdateInfo();
 
@@ -126,8 +115,7 @@ class UpdateChecker extends ConsumerWidget {
     showDialog(
       context: context,
       barrierDismissible: !isCritical,
-      builder: (context) =>
-          UpdateDialog(updateInfo: updateInfo, isCritical: isCritical),
+      builder: (context) => UpdateDialog(updateInfo: updateInfo, isCritical: isCritical),
     );
   }
 }
@@ -141,11 +129,7 @@ class UpdateDialog extends ConsumerWidget {
   final bool isCritical;
 
   /// Create an update dialog
-  const UpdateDialog({
-    super.key,
-    required this.updateInfo,
-    this.isCritical = false,
-  });
+  const UpdateDialog({super.key, required this.updateInfo, this.isCritical = false});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -159,18 +143,17 @@ class UpdateDialog extends ConsumerWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                isCritical
-                    ? 'A critical update (version ${updateInfo.latestVersion}) is required to continue using this app.'
-                    : 'A new version (${updateInfo.latestVersion}) is available.',
+          children: [
+            Text(isCritical ? 'A critical update (version ${updateInfo.latestVersion}) is required to continue using this app.' : 'A new version (${updateInfo.latestVersion}) is available.',
                 style: theme.textTheme.bodyLarge,
               ),
               if (updateInfo.releaseNotes != null) ...[
                 const SizedBox(height: 16),
-                Text('What\'s new:', style: theme.textTheme.titleSmall),
+                Text('What\'s new:', 
+                  style: theme.textTheme.titleSmall,
+                ),
                 const SizedBox(height: 4),
-                Text(updateInfo.releaseNotes!),
+                Text(updateInfo.releaseNotes ?? 'No release notes available'),
               ],
             ],
           ),
@@ -178,7 +161,7 @@ class UpdateDialog extends ConsumerWidget {
         actions: [
           if (!isCritical)
             TextButton(
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () => Navigator.pop(context),
               child: const Text('Later'),
             ),
           ElevatedButton(
