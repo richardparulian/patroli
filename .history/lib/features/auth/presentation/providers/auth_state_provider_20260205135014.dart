@@ -26,7 +26,7 @@ class AuthState {
   }
 }
 
-// :: Auth notifier
+// Auth notifier
 class AuthNotifier extends Notifier<AuthState> {
   @override
   AuthState build() {
@@ -47,10 +47,7 @@ class AuthNotifier extends Notifier<AuthState> {
     state = state.copyWith(isLoading: true, errorMessage: null);
 
     final loginUseCase = ref.read(loginUseCaseProvider);
-    final result = await loginUseCase.execute(
-      username: username, 
-      password: password,
-    );
+    final result = await loginUseCase.execute(username: username, password: password);
 
     result.fold(
       (failure) => state = state.copyWith(

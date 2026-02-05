@@ -38,22 +38,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
     // Call login method from auth provider
     // Use widget.ref.watch() to safely access provider state
-    // Access authStateNotifier to execute login
-    final providerRef = ref.read(authProvider.notifier);
-    await providerRef.login(
-      username: username,
-      password: password,
-    );
-
-    // Check if login was successful
-    // Access provider state safely using widget.ref.watch()
-    final authState = ref.read(authProvider);
+    final authState = widget.ref.watch(authProvider);
 
     if (authState.errorMessage != null) {
       // Show error message if login failed
-      // Check widget is mounted before using context
-      if (!mounted) return;
-
       // ignore: use_build_context_synchronously
       AppUtils.showSnackBar(
         context,
@@ -65,9 +53,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Watch auth state using widget.ref.watch()
-    // This is the correct way to access providers in ConsumerStatefulWidget
-    final authState = ref.read(authProvider);
+    // Watch auth state using widget.ref
+    final authState = widget.ref.watch(authProvider);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Login')),

@@ -26,31 +26,28 @@ class AuthState {
   }
 }
 
-// :: Auth notifier
+// Auth notifier
 class AuthNotifier extends Notifier<AuthState> {
   @override
   AuthState build() {
     return const AuthState();
   }
 
-  // :: Check auth status
+  // Check auth status
   Future<void> checkAuthStatus() async {
-    // :: Here you would typically check if there's a valid token stored
-    // :: and validate it with your API if necessary
+    // Here you would typically check if there's a valid token stored
+    // and validate it with your API if necessary
 
-    // :: For now, we'll just return false
+    // For now, we'll just return false
     state = state.copyWith(isAuthenticated: false, user: null);
   }
 
-  // :: Login
+  // Login
   Future<void> login({required String username, required String password}) async {
     state = state.copyWith(isLoading: true, errorMessage: null);
 
     final loginUseCase = ref.read(loginUseCaseProvider);
-    final result = await loginUseCase.execute(
-      username: username, 
-      password: password,
-    );
+    final result = await loginUseCase.execute(username: username, password: password);
 
     result.fold(
       (failure) => state = state.copyWith(

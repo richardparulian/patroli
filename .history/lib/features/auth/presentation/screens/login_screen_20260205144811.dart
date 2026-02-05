@@ -47,7 +47,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
     // Check if login was successful
     // Access provider state safely using widget.ref.watch()
-    final authState = ref.read(authProvider);
+    final authState = widget.ref.watch(authProvider);
 
     if (authState.errorMessage != null) {
       // Show error message if login failed
@@ -67,7 +67,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Widget build(BuildContext context) {
     // Watch auth state using widget.ref.watch()
     // This is the correct way to access providers in ConsumerStatefulWidget
-    final authState = ref.read(authProvider);
+    final authState = widget.ref.watch(authProvider);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Login')),
