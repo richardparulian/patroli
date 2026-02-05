@@ -32,19 +32,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
     FocusScope.of(context).unfocus();
 
-    // :: Get username and password
+    // Get username and password
     final username = _usernameController.text.trim();
     final password = _passwordController.text;
 
-    // :: Call login method from auth provider
-    await ref.read(authProvider.notifier).login(username: username, password: password);
+    // Call login method from auth provider
+    // Use widget.ref.watch() to safely access provider state
+    final authState = widget.ref.watch(authProvider);
 
-    // :: Check if login was successful
-    final authState = ref.read(authProvider);
     if (authState.errorMessage != null) {
       // Show error message if login failed
-      if (!mounted) return;
-
       // ignore: use_build_context_synchronously
       AppUtils.showSnackBar(
         context,
@@ -56,8 +53,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Watch auth state
-    final authState = ref.watch(authProvider);
+    // Watch auth state using widget.ref
+    final authState = widget.ref.watch(authProvider);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Login')),
@@ -75,7 +72,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   const SizedBox(height: 32),
                   const Text('Welcome Back!',
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(height: 8),
                   Text('Sign in to your account',
@@ -97,9 +97,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Please enter your NIK';
-                      }
-                      if (!AppUtils.isValidEmail(value)) {
-                        return 'Please enter a valid NIK';
                       }
                       return null;
                     },
