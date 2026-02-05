@@ -6,9 +6,12 @@ import 'package:pos/core/storage/secure_storage_service.dart';
 /// Menambahkan token ke headers dan melakukan refresh token jika expired
 class AuthInterceptor extends Interceptor {
   final SecureStorageService _secureStorageService;
-  // final Dio _dio;
+  final Dio _dio;
 
-  AuthInterceptor({required SecureStorageService secureStorageService}) : _secureStorageService = secureStorageService;
+  AuthInterceptor({
+    required SecureStorageService secureStorageService,
+    required Dio dio,
+  }) : _secureStorageService = secureStorageService, _dio = dio;
 
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
