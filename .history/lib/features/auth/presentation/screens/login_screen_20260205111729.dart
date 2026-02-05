@@ -36,10 +36,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     final username = _usernameController.text.trim();
     final password = _passwordController.text;
 
-    // :: Call login method from auth provider
+    // Call login method from auth provider
     await ref.read(authProvider.notifier).login(username: username, password: password);
 
-    // :: Check if login was successful
+    // Check if login was successful
     final authState = ref.read(authProvider);
     if (authState.errorMessage != null) {
       // Show error message if login failed
@@ -73,16 +73,20 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 children: [
                   const Icon(Icons.flutter_dash, size: 100, color: Colors.blue),
                   const SizedBox(height: 32),
-                  const Text('Welcome Back!',
+                  const Text(
+                    'Welcome Back!',
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 8),
-                  Text('Sign in to your account',
+                  Text(
+                    'Sign in to your account',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 16,
-                      color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
+                      color: Theme.of(
+                        context,
+                      ).textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
                     ),
                   ),
                   const SizedBox(height: 32),
@@ -90,16 +94,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     controller: _usernameController,
                     keyboardType: TextInputType.emailAddress,
                     decoration: const InputDecoration(
-                      labelText: 'NIK',
-                      hintText: 'Enter your NIK',
-                      prefixIcon: Icon(Icons.person_outline),
+                      labelText: 'Email',
+                      hintText: 'Enter your email',
+                      prefixIcon: Icon(Icons.email_outlined),
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter your NIK';
+                        return 'Please enter your email';
                       }
                       if (!AppUtils.isValidEmail(value)) {
-                        return 'Please enter a valid NIK';
+                        return 'Please enter a valid email';
                       }
                       return null;
                     },
@@ -113,7 +117,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       hintText: 'Enter your password',
                       prefixIcon: const Icon(Icons.lock_outline),
                       suffixIcon: IconButton(
-                        icon: Icon(_isPasswordVisible ? Icons.visibility_off : Icons.visibility),
+                        icon: Icon(
+                          _isPasswordVisible
+                              ? Icons.visibility_off
+                              : Icons.visibility,
+                        ),
                         onPressed: () {
                           setState(() {
                             _isPasswordVisible = !_isPasswordVisible;
@@ -145,22 +153,27 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       backgroundColor: Theme.of(context).colorScheme.primary,
                       foregroundColor: Theme.of(context).colorScheme.onPrimary,
                     ),
-                    child: authState.isLoading ? const SizedBox(
-                      height: 20,
-                      width: 20,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: Colors.white,
-                      ),
-                    ) : const Text('Log In'),
+                    child: authState.isLoading
+                        ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
+                          )
+                        : const Text('Log In'),
                   ),
                   const SizedBox(height: 16),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text("Don't have an account?",
+                      Text(
+                        "Don't have an account?",
                         style: TextStyle(
-                          color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
+                          color: Theme.of(
+                            context,
+                          ).textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
                         ),
                       ),
                       TextButton(

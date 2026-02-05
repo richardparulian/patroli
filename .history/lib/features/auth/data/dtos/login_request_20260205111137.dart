@@ -15,7 +15,10 @@ class LoginRequest {
   };
 
   /// Create copy with modified fields
-  LoginRequest copyWith({String? username, String? password}) {
+  LoginRequest copyWith({
+    String? username,
+    String? password,
+  }) {
     return LoginRequest(
       username: username ?? this.username,
       password: password ?? this.password,
@@ -29,7 +32,9 @@ class LoginRequest {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is LoginRequest && other.username == username && other.password == password;
+    return other is LoginRequest &&
+        other.username == username &&
+        other.password == password;
   }
 
   @override

@@ -19,7 +19,10 @@ class RetryInterceptor extends Interceptor {
   });
 
   @override
-  Future<void> onError(DioException err, ErrorInterceptorHandler handler) async {
+  Future<void> onError(
+    DioException err,
+    ErrorInterceptorHandler handler,
+  ) async {
     if (_shouldRetry(err)) {
       final attempt = err.requestOptions.headers['retry_attempt'] ?? 0;
 
@@ -70,6 +73,11 @@ class RetryInterceptor extends Interceptor {
   }
 
   bool _shouldRetry(DioException err) {
-    return err.type == DioExceptionType.connectionTimeout || err.type == DioExceptionType.sendTimeout || err.type == DioExceptionType.receiveTimeout || (err.type == DioExceptionType.unknown && err.error != null && err.error is SocketException);
+    return err.type == DioExceptionType.connectionTimeout ||
+        err.type == DioExceptionType.sendTimeout ||
+        err.type == DioExceptionType.receiveTimeout ||
+        (err.type == DioExceptionType.unknown &&
+            err.error != null &&
+            err.error is SocketException);
   }
 }

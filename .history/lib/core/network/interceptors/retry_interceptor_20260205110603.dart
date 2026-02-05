@@ -19,7 +19,10 @@ class RetryInterceptor extends Interceptor {
   });
 
   @override
-  Future<void> onError(DioException err, ErrorInterceptorHandler handler) async {
+  Future<void> onError(
+    DioException err,
+    ErrorInterceptorHandler handler,
+  ) async {
     if (_shouldRetry(err)) {
       final attempt = err.requestOptions.headers['retry_attempt'] ?? 0;
 
@@ -27,14 +30,14 @@ class RetryInterceptor extends Interceptor {
         final delay = retryDelays[attempt];
         debugPrint('🔄 Retry attempt ${attempt + 1}/$maxRetries for ${err.requestOptions.path} after ${delay.inSeconds}s');
 
-        // :: Update retry attempt count
+        // Update retry attempt count
         err.requestOptions.headers['retry_attempt'] = attempt + 1;
 
-        // :: Wait before retrying
+        // Wait before retrying
         await Future.delayed(delay);
 
         try {
-          // :: Clone the request and retry
+          // Clone the request and retry
           final options = Options(
             method: err.requestOptions.method,
             headers: err.requestOptions.headers,
@@ -60,7 +63,7 @@ class RetryInterceptor extends Interceptor {
 
           return handler.resolve(response);
         } catch (e) {
-          // :: If retry fails, passed error will be handled by next error
+          // If retry fails, passed error will be handled by next error
           return super.onError(err, handler);
         }
       }
@@ -70,6 +73,11 @@ class RetryInterceptor extends Interceptor {
   }
 
   bool _shouldRetry(DioException err) {
-    return err.type == DioExceptionType.connectionTimeout || err.type == DioExceptionType.sendTimeout || err.type == DioExceptionType.receiveTimeout || (err.type == DioExceptionType.unknown && err.error != null && err.error is SocketException);
+    return err.type == DioExceptionType.connectionTimeout ||
+        err.type == DioExceptionType.sendTimeout ||
+        err.type == DioExceptionType.receiveTimeout ||
+        (err.type == DioExceptionType.unknown &&
+            err.error != null &&
+            err.error is SocketException);
   }
 }

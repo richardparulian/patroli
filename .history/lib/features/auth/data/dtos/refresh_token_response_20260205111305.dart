@@ -1,4 +1,4 @@
-// :: Refresh token response DTO
+/// Refresh token response DTO
 class RefreshTokenResponse {
   final String accessToken;
   final String? refreshToken;
@@ -8,7 +8,7 @@ class RefreshTokenResponse {
     this.refreshToken,
   });
 
-  // :: Create from JSON API response
+  /// Create from JSON API response
   factory RefreshTokenResponse.fromJson(Map<String, dynamic> json) {
     return RefreshTokenResponse(
       accessToken: json['access_token'] as String,
@@ -16,13 +16,13 @@ class RefreshTokenResponse {
     );
   }
 
-  // :: Convert to JSON (rarely needed)
+  /// :: Convert to JSON (rarely needed)
   Map<String, dynamic> toJson() => {
     'access_token': accessToken,
     if (refreshToken != null) 'refresh_token': refreshToken,
   };
 
-  // :: Create copy with modified fields
+  /// :: Create copy with modified fields
   RefreshTokenResponse copyWith({String? accessToken, String? refreshToken}) {
     return RefreshTokenResponse(
       accessToken: accessToken ?? this.accessToken,

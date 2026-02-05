@@ -93,7 +93,6 @@ class AuthRepositoryImpl implements AuthRepository {
       }
 
       final user = UserModel.fromJson(userData as Map<String, dynamic>);
-      
       return Right(user.toEntity());
     } on CacheException catch (e) {
       return Left(CacheFailure(message: e.message));

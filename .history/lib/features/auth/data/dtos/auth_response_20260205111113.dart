@@ -1,4 +1,4 @@
-import 'package:pos/features/auth/data/models/user_model.dart';
+import '../models/user_model.dart';
 
 /// Authentication response DTO
 class AuthResponse {

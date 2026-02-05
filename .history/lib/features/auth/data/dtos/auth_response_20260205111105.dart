@@ -1,4 +1,4 @@
-import 'package:pos/features/auth/data/models/user_model.dart';
+import '../models/user_model.dart';
 
 /// Authentication response DTO
 class AuthResponse {
@@ -48,5 +48,6 @@ class AuthResponse {
   }
 
   @override
-  int get hashCode => user.hashCode ^ accessToken.hashCode ^ refreshToken.hashCode;
+  int get hashCode =>
+      user.hashCode ^ accessToken.hashCode ^ refreshToken.hashCode;
 }

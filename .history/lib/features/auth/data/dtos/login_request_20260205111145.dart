@@ -29,7 +29,9 @@ class LoginRequest {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is LoginRequest && other.username == username && other.password == password;
+    return other is LoginRequest &&
+        other.username == username &&
+        other.password == password;
   }
 
   @override

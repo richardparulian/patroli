@@ -42,7 +42,7 @@ final localizationRouterObserverProvider = Provider<NavigatorObserver>((ref) {
 /// Internal implementation that provides ref to LocalizationRouterObserver
 class _LocalizationRouterObserverWithRef extends NavigatorObserver {
   _LocalizationRouterObserverWithRef(this.ref);
-
+  
   final Ref ref;
 }
 
@@ -54,7 +54,10 @@ extension LocaleAwareNavigation on BuildContext {
   }
 
   /// Navigate to a named route, preserving the current locale
-  void goNamedWithLocale(String name, {Map<String, String> pathParameters = const {}}) {
+  void goNamedWithLocale(
+    String name, {
+    Map<String, String> pathParameters = const {},
+  }) {
     GoRouter.of(this).goNamed(name, pathParameters: pathParameters);
   }
 }
