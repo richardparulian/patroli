@@ -96,7 +96,7 @@ class UpdateChecker extends ConsumerWidget {
     ref.listen<AsyncValue<UpdateCheckResult>>(updateControllerProvider, (_, state) {
       state.whenData((result) {
         if (autoPrompt && (result == UpdateCheckResult.updateAvailable || result == UpdateCheckResult.criticalUpdateRequired)) {
-          _showUpdateDialog(context, ref, result);
+          // _showUpdateDialog(context, ref, result);
         }
       });
     });
@@ -104,35 +104,20 @@ class UpdateChecker extends ConsumerWidget {
     return child;
   }
 
-  void _showUpdateDialog(BuildContext context, WidgetRef ref, UpdateCheckResult result) async {
-    final updateController = ref.read(updateControllerProvider.notifier);
-    final updateInfo = await updateController.getUpdateInfo();
+  // void _showUpdateDialog(BuildContext context, WidgetRef ref, UpdateCheckResult result) async {
+  //   final updateController = ref.read(updateControllerProvider.notifier);
+  //   final updateInfo = await updateController.getUpdateInfo();
 
-    if (updateInfo == null || !context.mounted) return;
+  //   if (updateInfo == null || !context.mounted) return;
 
-    final isCritical = result == UpdateCheckResult.criticalUpdateRequired;
+  //   final isCritical = result == UpdateCheckResult.criticalUpdateRequired;
 
-    // showDialog(
-    //   context: context,
-    //   useRootNavigator: true,
-    //   barrierDismissible: !isCritical,
-    //   builder: (context) => UpdateDialog(updateInfo: updateInfo, isCritical: isCritical),
-    // );
-
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   if (!context.mounted) return;
-
-    //   showDialog(
-    //     context: context,
-    //     useRootNavigator: true,
-    //     barrierDismissible: !isCritical,
-    //     builder: (_) => UpdateDialog(
-    //       updateInfo: updateInfo,
-    //       isCritical: isCritical,
-    //     ),
-    //   );
-    // });
-  }
+  //   showDialog(
+  //     context: context,
+  //     barrierDismissible: !isCritical,
+  //     builder: (context) => UpdateDialog(updateInfo: updateInfo, isCritical: isCritical),
+  //   );
+  // }
 }
 
 /// Dialog that shows information about an available update

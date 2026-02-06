@@ -112,26 +112,11 @@ class UpdateChecker extends ConsumerWidget {
 
     final isCritical = result == UpdateCheckResult.criticalUpdateRequired;
 
-    // showDialog(
-    //   context: context,
-    //   useRootNavigator: true,
-    //   barrierDismissible: !isCritical,
-    //   builder: (context) => UpdateDialog(updateInfo: updateInfo, isCritical: isCritical),
-    // );
-
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   if (!context.mounted) return;
-
-    //   showDialog(
-    //     context: context,
-    //     useRootNavigator: true,
-    //     barrierDismissible: !isCritical,
-    //     builder: (_) => UpdateDialog(
-    //       updateInfo: updateInfo,
-    //       isCritical: isCritical,
-    //     ),
-    //   );
-    // });
+    showDialog(
+      context: context,
+      barrierDismissible: !isCritical,
+      builder: (context) => UpdateDialog(updateInfo: updateInfo, isCritical: isCritical),
+    );
   }
 }
 

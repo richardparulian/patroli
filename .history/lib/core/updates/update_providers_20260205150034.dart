@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pos/core/constants/app_constants.dart';
 import 'package:pos/core/updates/update_service.dart';
 
-/// Provider for update service
+/// Provider for the update service
 final updateServiceProvider = Provider<UpdateService>((ref) {
   return BasicUpdateService(
     androidPackageName: AppConstants.packageName,
@@ -48,7 +48,7 @@ class UpdateController extends AsyncNotifier<UpdateCheckResult> {
     }
   }
 
-  /// Prompt to user to update the app
+  /// Prompt the user to update the app
   Future<bool> promptForUpdate({bool force = false}) async {
     final updateService = ref.read(updateServiceProvider);
 
@@ -96,7 +96,7 @@ class UpdateChecker extends ConsumerWidget {
     ref.listen<AsyncValue<UpdateCheckResult>>(updateControllerProvider, (_, state) {
       state.whenData((result) {
         if (autoPrompt && (result == UpdateCheckResult.updateAvailable || result == UpdateCheckResult.criticalUpdateRequired)) {
-          _showUpdateDialog(context, ref, result);
+          // _showUpdateDialog(context, ref, result);
         }
       });
     });
@@ -112,26 +112,11 @@ class UpdateChecker extends ConsumerWidget {
 
     final isCritical = result == UpdateCheckResult.criticalUpdateRequired;
 
-    // showDialog(
-    //   context: context,
-    //   useRootNavigator: true,
-    //   barrierDismissible: !isCritical,
-    //   builder: (context) => UpdateDialog(updateInfo: updateInfo, isCritical: isCritical),
-    // );
-
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   if (!context.mounted) return;
-
-    //   showDialog(
-    //     context: context,
-    //     useRootNavigator: true,
-    //     barrierDismissible: !isCritical,
-    //     builder: (_) => UpdateDialog(
-    //       updateInfo: updateInfo,
-    //       isCritical: isCritical,
-    //     ),
-    //   );
-    // });
+    showDialog(
+      context: context,
+      barrierDismissible: !isCritical,
+      builder: (context) => UpdateDialog(updateInfo: updateInfo, isCritical: isCritical),
+    );
   }
 }
 
@@ -158,15 +143,17 @@ class UpdateDialog extends ConsumerWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(isCritical ? 'A critical update (version ${updateInfo.latestVersion}) is required to continue using this app.' : 'A new version (${updateInfo.latestVersion}) is available.',
+          children: [
+            Text(isCritical ? 'A critical update (version ${updateInfo.latestVersion}) is required to continue using this app.' : 'A new version (${updateInfo.latestVersion}) is available.',
                 style: theme.textTheme.bodyLarge,
               ),
               if (updateInfo.releaseNotes != null) ...[
                 const SizedBox(height: 16),
-                Text('What\'s new:', style: theme.textTheme.titleSmall),
+                Text('What\'s new:', 
+                  style: theme.textTheme.titleSmall,
+                ),
                 const SizedBox(height: 4),
-                Text(updateInfo.releaseNotes!),
+                Text(updateInfo.releaseNotes ?? 'No release notes available'),
               ],
             ],
           ),
@@ -179,8 +166,7 @@ class UpdateDialog extends ConsumerWidget {
             ),
           ElevatedButton(
             onPressed: () {
-              // Use Navigator.pop() directly instead of Navigator.of(context).pop()
-              Navigator.pop(context);
+              Navigator.of(context).pop();
               ref.read(updateControllerProvider.notifier).openUpdateUrl();
             },
             child: Text(isCritical ? 'Update Now' : 'Update'),

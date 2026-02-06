@@ -23,7 +23,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   void dispose() {
     _usernameController.dispose();
     _passwordController.dispose();
-
+    
     super.dispose();
   }
 
@@ -33,19 +33,27 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
     FocusScope.of(context).unfocus();
 
-    ref.read(authProvider.notifier).login(
-      username: _usernameController.text.trim(),
-      password: _passwordController.text,
+    // Get username and password
+    final username = _usernameController.text.trim();
+    final password = _passwordController.text;
+
+    // Call login method from auth provider
+    // Use widget.ref.watch() to safely access provider state
+    // Access authStateNotifier to execute login
+    final providerRef = ref.read(authProvider.notifier);
+    await providerRef.login(
+      username: username,
+      password: password,
     );
 
     // Check if login was successful
     // Access provider state safely using widget.ref.watch()
-    final authState = ref.watch(authProvider);
+    final authState = ref.read(authProvider);
 
-    if (authState.errorMessage != null && mounted) {
+    if (authState.errorMessage != null) {
       // Show error message if login failed
       // Check widget is mounted before using context
-      // if (!mounted) return;
+      if (!mounted) return;
 
       // ignore: use_build_context_synchronously
       AppUtils.showSnackBar(
@@ -60,7 +68,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Widget build(BuildContext context) {
     // Watch auth state using widget.ref.watch()
     // This is the correct way to access providers in ConsumerStatefulWidget
-    final authState = ref.watch(authProvider);
+    final authState = ref.read(authProvider);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Login')),
@@ -101,10 +109,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       prefixIcon: Icon(Icons.person_outline),
                     ),
                     validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
+                      if (value == null || value.isEmpty) {
                         return 'Please enter your NIK';
                       }
-
                       return null;
                     },
                   ),
@@ -126,7 +133,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       ),
                     ),
                     validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
+                      if (value == null || value.isEmpty) {
                         return 'Please enter your password';
                       }
                       return null;
@@ -145,9 +152,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   ElevatedButton(
                     onPressed: authState.isLoading ? null : _login,
                     style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 16,
-                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 16),
                       backgroundColor: Theme.of(context).colorScheme.primary,
                       foregroundColor: Theme.of(context).colorScheme.onPrimary,
                     ),

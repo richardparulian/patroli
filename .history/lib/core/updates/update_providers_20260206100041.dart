@@ -18,7 +18,7 @@ final updateCheckProvider = FutureProvider.autoDispose<UpdateCheckResult>((ref) 
   return await updateService.checkForUpdates();
 });
 
-/// Provider for the update information
+/// Provider for update information
 final updateInfoProvider = FutureProvider.autoDispose<UpdateInfo?>((ref) async {
   final updateService = ref.watch(updateServiceProvider);
   return await updateService.getUpdateInfo();
@@ -96,7 +96,7 @@ class UpdateChecker extends ConsumerWidget {
     ref.listen<AsyncValue<UpdateCheckResult>>(updateControllerProvider, (_, state) {
       state.whenData((result) {
         if (autoPrompt && (result == UpdateCheckResult.updateAvailable || result == UpdateCheckResult.criticalUpdateRequired)) {
-          _showUpdateDialog(context, ref, result);
+          // _showUpdateDialog(context, ref, result);
         }
       });
     });
@@ -112,26 +112,11 @@ class UpdateChecker extends ConsumerWidget {
 
     final isCritical = result == UpdateCheckResult.criticalUpdateRequired;
 
-    // showDialog(
-    //   context: context,
-    //   useRootNavigator: true,
-    //   barrierDismissible: !isCritical,
-    //   builder: (context) => UpdateDialog(updateInfo: updateInfo, isCritical: isCritical),
-    // );
-
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   if (!context.mounted) return;
-
-    //   showDialog(
-    //     context: context,
-    //     useRootNavigator: true,
-    //     barrierDismissible: !isCritical,
-    //     builder: (_) => UpdateDialog(
-    //       updateInfo: updateInfo,
-    //       isCritical: isCritical,
-    //     ),
-    //   );
-    // });
+    showDialog(
+      context: context,
+      barrierDismissible: !isCritical,
+      builder: (context) => UpdateDialog(updateInfo: updateInfo, isCritical: isCritical),
+    );
   }
 }
 

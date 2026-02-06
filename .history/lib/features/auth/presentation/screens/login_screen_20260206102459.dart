@@ -33,14 +33,22 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
     FocusScope.of(context).unfocus();
 
-    ref.read(authProvider.notifier).login(
-      username: _usernameController.text.trim(),
-      password: _passwordController.text,
+    // Get username and password
+    final username = _usernameController.text.trim();
+    final password = _passwordController.text;
+
+    // Call login method from auth provider
+    // Use widget.ref.watch() to safely access provider state
+    // Access authStateNotifier to execute login
+    final providerRef = ref.read(authProvider.notifier);
+    await providerRef.login(
+      username: username,
+      password: password,
     );
 
     // Check if login was successful
     // Access provider state safely using widget.ref.watch()
-    final authState = ref.watch(authProvider);
+    final authState = widget.ref.watch(authProvider);
 
     if (authState.errorMessage != null && mounted) {
       // Show error message if login failed
@@ -60,7 +68,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Widget build(BuildContext context) {
     // Watch auth state using widget.ref.watch()
     // This is the correct way to access providers in ConsumerStatefulWidget
-    final authState = ref.watch(authProvider);
+    final authState = ref.read(authProvider);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Login')),

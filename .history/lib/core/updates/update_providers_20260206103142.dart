@@ -119,19 +119,19 @@ class UpdateChecker extends ConsumerWidget {
     //   builder: (context) => UpdateDialog(updateInfo: updateInfo, isCritical: isCritical),
     // );
 
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   if (!context.mounted) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!context.mounted) return;
 
-    //   showDialog(
-    //     context: context,
-    //     useRootNavigator: true,
-    //     barrierDismissible: !isCritical,
-    //     builder: (_) => UpdateDialog(
-    //       updateInfo: updateInfo,
-    //       isCritical: isCritical,
-    //     ),
-    //   );
-    // });
+      showDialog(
+        context: context,
+        useRootNavigator: true,
+        barrierDismissible: !isCritical,
+        builder: (_) => UpdateDialog(
+          updateInfo: updateInfo,
+          isCritical: isCritical,
+        ),
+      );
+    });
   }
 }
 
