@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:pos/core/constants/app_constants.dart';
 import 'package:pos/l10n/l10n.dart';
 
 /// Settings screen with various app configuration options
@@ -17,7 +19,7 @@ class SettingsScreen extends ConsumerWidget {
             leading: const Icon(Icons.language),
             title: Text(context.tr('language')),
             subtitle: Text(context.tr('change_language')),
-            onTap: null,
+            onTap: () => context.go(AppConstants.languageSettingsRoute),
           ),
 
           const Divider(),
@@ -51,7 +53,7 @@ class SettingsScreen extends ConsumerWidget {
             leading: const Icon(Icons.language),
             title: Text(context.tr('localization_demo')),
             subtitle: Text(context.tr('localization_demo_description')),
-            onTap: null,
+            onTap: () => context.go(AppConstants.localizationAssetsDemoRoute),
           ),
         ],
       ),

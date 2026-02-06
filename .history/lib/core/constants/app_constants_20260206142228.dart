@@ -17,6 +17,7 @@ class AppConstants {
   static const String initialRoute = '/';
   static const String homeRoute = '/home';
   static const String loginRoute = '/login';
+  static const String settingsRoute = '/settings';
 
   // Hive box names
   static const String settingsBox = 'settings';

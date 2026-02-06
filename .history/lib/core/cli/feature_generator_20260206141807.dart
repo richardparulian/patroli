@@ -658,7 +658,6 @@ void main(List<String> args) {
   // dart run lib/core/cli/feature_generator.dart user_profile
   if (args.isEmpty) {
     stdout.writeln('Please provide a feature name in snake_case format.');
-    
     return;
   }
 

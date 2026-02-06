@@ -103,7 +103,9 @@ class UpdateChecker extends ConsumerWidget {
       state.whenData((result) {
         if (!autoPrompt) return;
 
-        if (result == UpdateCheckResult.updateAvailable || result == UpdateCheckResult.criticalUpdateRequired) {
+        if (result == UpdateCheckResult.updateAvailable ||
+            result == UpdateCheckResult.criticalUpdateRequired) {
+
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (!context.mounted) return;
 

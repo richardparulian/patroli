@@ -104,6 +104,7 @@ class UpdateChecker extends ConsumerWidget {
         if (!autoPrompt) return;
 
         if (result == UpdateCheckResult.updateAvailable || result == UpdateCheckResult.criticalUpdateRequired) {
+
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (!context.mounted) return;
 

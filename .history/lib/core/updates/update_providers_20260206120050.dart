@@ -92,26 +92,10 @@ class UpdateChecker extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // ref.listen<AsyncValue<UpdateCheckResult>>(updateControllerProvider, (_, state) {
-    //   state.whenData((result) {
-    //     if (autoPrompt && (result == UpdateCheckResult.updateAvailable || result == UpdateCheckResult.criticalUpdateRequired)) {
-    //       _showUpdateDialog(context, ref, result);
-    //     }
-    //   });
-    // });
     ref.listen<AsyncValue<UpdateCheckResult>>(updateControllerProvider, (_, state) {
       state.whenData((result) {
-        if (!autoPrompt) return;
-
-        if (result == UpdateCheckResult.updateAvailable || result == UpdateCheckResult.criticalUpdateRequired) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (!context.mounted) return;
-
-            final navigator = Navigator.maybeOf(context);
-            if (navigator == null) return;
-
-            _showUpdateDialog(context, ref, result);
-          });
+        if (autoPrompt && (result == UpdateCheckResult.updateAvailable || result == UpdateCheckResult.criticalUpdateRequired)) {
+          _showUpdateDialog(context, ref, result);
         }
       });
     });
@@ -129,9 +113,24 @@ class UpdateChecker extends ConsumerWidget {
 
     showDialog(
       context: context,
+      useRootNavigator: true,
       barrierDismissible: !isCritical,
       builder: (context) => UpdateDialog(updateInfo: updateInfo, isCritical: isCritical),
     );
+
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   if (!context.mounted) return;
+
+    //   showDialog(
+    //     context: context,
+    //     useRootNavigator: true,
+    //     barrierDismissible: !isCritical,
+    //     builder: (_) => UpdateDialog(
+    //       updateInfo: updateInfo,
+    //       isCritical: isCritical,
+    //     ),
+    //   );
+    // });
   }
 }
 

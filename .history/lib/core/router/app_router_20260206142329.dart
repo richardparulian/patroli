@@ -4,9 +4,12 @@ import 'package:go_router/go_router.dart';
 import 'package:pos/core/constants/app_constants.dart';
 import 'package:pos/core/providers/localization_providers.dart';
 import 'package:pos/core/router/locale_aware_router.dart';
+import 'package:pos/examples/localization_assets_demo.dart';
 import 'package:pos/features/auth/presentation/providers/auth_state_provider.dart';
 import 'package:pos/features/auth/presentation/screens/login_screen.dart';
 import 'package:pos/features/home/presentation/screens/home_screen.dart';
+import 'package:pos/features/settings/presentation/screens/language_settings_screen.dart';
+import 'package:pos/features/settings/presentation/screens/settings_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authProvider);
@@ -71,18 +74,13 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
     ],
     errorBuilder: (context, state) => Scaffold(
-      appBar: AppBar(
-        title: const Text('Page Not Found'),
-      ),
+      appBar: AppBar(title: const Text('Page Not Found')),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text('404',
-              style: TextStyle(
-                fontSize: 48, 
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             Text('Page ${state.uri.path} not found'),

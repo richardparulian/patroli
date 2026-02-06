@@ -88,31 +88,33 @@ class MyApp extends ConsumerWidget {
     // Watch the persistent locale
     final locale = ref.watch(persistentLocaleProvider);
 
-    return AccessibilityWrapper(
-      child: MaterialApp.router(
-        title: AppConstants.appName,
-        theme: AppTheme.lightTheme,
-        darkTheme: AppTheme.darkTheme,
-        themeMode: themeMode,
-        routerConfig: router,
-        debugShowCheckedModeBanner: false,
-        builder: (context, child) {
-          return UpdateChecker(
-            autoPrompt: true,
-            enforceCriticalUpdates: true,
-            child: child!,
-          );
-        },
+    return UpdateChecker(
+      autoPrompt: true,
+      enforceCriticalUpdates: true,
+      child: AccessibilityWrapper(
+        child: MaterialApp.router(
+          title: AppConstants.appName,
+          theme: AppTheme.lightTheme,
+          darkTheme: AppTheme.darkTheme,
+          themeMode: themeMode,
+          routerConfig: router,
+          debugShowCheckedModeBanner: false,
+          builder: (context, child) {
+            return UpdateChecker(
+              child: child!,
+            );
+          },
 
-        // Localization settings
-        locale: locale,
-        localizationsDelegates: [
-          const AppLocalizationsDelegate(),
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: AppLocalizations.supportedLocales,
+          // Localization settings
+          locale: locale,
+          localizationsDelegates: [
+            const AppLocalizationsDelegate(),
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+        ),
       ),
     );
   }

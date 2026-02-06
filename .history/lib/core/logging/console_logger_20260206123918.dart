@@ -32,7 +32,12 @@ class ConsoleLogger implements Logger {
        _timestampFormat = DateFormat('HH:mm:ss.SSS');
 
   @override
-  void v(String message, {Map<String, dynamic>? data, Object? error, StackTrace? stackTrace}) {
+  void v(
+    String message, {
+    Map<String, dynamic>? data,
+    Object? error,
+    StackTrace? stackTrace,
+  }) {
     log(
       LogLevel.verbose,
       message,
@@ -43,7 +48,12 @@ class ConsoleLogger implements Logger {
   }
 
   @override
-  void d(String message, {Map<String, dynamic>? data, Object? error, StackTrace? stackTrace}) {
+  void d(
+    String message, {
+    Map<String, dynamic>? data,
+    Object? error,
+    StackTrace? stackTrace,
+  }) {
     log(
       LogLevel.debug,
       message,
@@ -54,7 +64,12 @@ class ConsoleLogger implements Logger {
   }
 
   @override
-  void i(String message, {Map<String, dynamic>? data, Object? error, StackTrace? stackTrace}) {
+  void i(
+    String message, {
+    Map<String, dynamic>? data,
+    Object? error,
+    StackTrace? stackTrace,
+  }) {
     log(
       LogLevel.info,
       message,
@@ -65,7 +80,12 @@ class ConsoleLogger implements Logger {
   }
 
   @override
-  void w(String message, {Map<String, dynamic>? data, Object? error, StackTrace? stackTrace}) {
+  void w(
+    String message, {
+    Map<String, dynamic>? data,
+    Object? error,
+    StackTrace? stackTrace,
+  }) {
     log(
       LogLevel.warning,
       message,
@@ -76,7 +96,12 @@ class ConsoleLogger implements Logger {
   }
 
   @override
-  void e(String message, {Map<String, dynamic>? data, Object? error, StackTrace? stackTrace}) {
+  void e(
+    String message, {
+    Map<String, dynamic>? data,
+    Object? error,
+    StackTrace? stackTrace,
+  }) {
     log(
       LogLevel.error,
       message,
@@ -87,7 +112,12 @@ class ConsoleLogger implements Logger {
   }
 
   @override
-  void c(String message, {Map<String, dynamic>? data, Object? error, StackTrace? stackTrace}) {
+  void c(
+    String message, {
+    Map<String, dynamic>? data,
+    Object? error,
+    StackTrace? stackTrace,
+  }) {
     log(
       LogLevel.critical,
       message,

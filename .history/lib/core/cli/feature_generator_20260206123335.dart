@@ -643,7 +643,14 @@ enum SortOrder { asc, desc }
 
   /// Convert snake_case to PascalCase
   String _toPascalCase(String input) {
-    return input.split('_').map((word) => word.isEmpty ? '' : word[0].toUpperCase() + word.substring(1).toLowerCase()).join('');
+    return input
+        .split('_')
+        .map(
+          (word) => word.isEmpty
+              ? ''
+              : word[0].toUpperCase() + word.substring(1).toLowerCase(),
+        )
+        .join('');
   }
 
   /// Convert snake_case to camelCase
@@ -658,7 +665,6 @@ void main(List<String> args) {
   // dart run lib/core/cli/feature_generator.dart user_profile
   if (args.isEmpty) {
     stdout.writeln('Please provide a feature name in snake_case format.');
-    
     return;
   }
 
