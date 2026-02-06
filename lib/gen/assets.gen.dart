@@ -9,6 +9,13 @@
 // ignore_for_file: type=lint
 // ignore_for_file: deprecated_member_use,directives_ordering,implicit_dynamic_list_literal,unnecessary_import
 
+class $LibGen {
+  const $LibGen();
+
+  /// Directory path: lib/config
+  $LibConfigGen get config => const $LibConfigGen();
+}
+
 class $AssetsFontsGen {
   const $AssetsFontsGen();
 
@@ -45,6 +52,13 @@ class $AssetsImagesGen {
 
   /// List of all assets
   List<String> get values => [logoPng];
+}
+
+class $LibConfigGen {
+  const $LibConfigGen();
+
+  /// Directory path: lib/config/environment
+  $LibConfigEnvironmentGen get environment => const $LibConfigEnvironmentGen();
 }
 
 class $AssetsImagesBnGen {
@@ -107,9 +121,20 @@ class $AssetsImagesJaGen {
   List<String> get values => [welcomePng];
 }
 
+class $LibConfigEnvironmentGen {
+  const $LibConfigEnvironmentGen();
+
+  /// File path: lib/config/environment/.env
+  String get aEnv => 'lib/config/environment/.env';
+
+  /// List of all assets
+  List<String> get values => [aEnv];
+}
+
 class Assets {
   const Assets._();
 
   static const $AssetsFontsGen fonts = $AssetsFontsGen();
   static const $AssetsImagesGen images = $AssetsImagesGen();
+  static const $LibGen lib = $LibGen();
 }

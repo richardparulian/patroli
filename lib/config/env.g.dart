@@ -10,11 +10,11 @@ part of 'env.dart';
 // ignore_for_file: type=lint
 // generated_from: lib/config/environment/.env
 final class _Env {
-  static const String env = 'dev';
+  static const String env = 'staging';
 
-  static const String appName = 'Flutter POS';
+  static const String appName = 'Patroli Staging';
 
-  static const String apiBaseUrl = 'https://api.yourdomain.com';
+  static const String apiBaseUrl = 'https://api-patroli.pgindonesia.com';
 
   static const int apiTimeout = 30000;
 
