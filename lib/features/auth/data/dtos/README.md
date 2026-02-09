@@ -185,9 +185,8 @@ class UserEntity {
 ```dart
 // Presentation layer consumes use cases, not DTOs
 Future<void> login(String username, String password) async {
-  final result = await _loginUseCase.execute(
-    username: username,
-    password: password,
+  final result = await _loginUseCase(
+    LoginParams(username: username, password: password),
   );
 
   result.fold(
