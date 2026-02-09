@@ -21,6 +21,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _usernameFocusNode = FocusNode();
   final _passwordFocusNode = FocusNode();
 
+  final _usernameController = TextEditingController();
+  final _passwordController = TextEditingController();
+
   void _login() async {
     bool isFormValid = _formKey.currentState?.validate() ?? false;
 
@@ -48,9 +51,22 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    // Sync controller dengan initial state
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final formState = ref.read(loginFormProvider);
+      _usernameController.text = formState.username;
+      _passwordController.text = formState.password;
+    });
+  }
+
+  @override
   void dispose() {
     _usernameFocusNode.dispose();
     _passwordFocusNode.dispose();
+    _usernameController.dispose();
+    _passwordController.dispose();
 
     super.dispose();
   }
@@ -62,6 +78,19 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     
     // Watch form state from Riverpod
     final formState = ref.watch(loginFormProvider);
+    if (_usernameController.text != formState.username) {
+      _usernameController.value = TextEditingValue(
+        text: formState.username,
+        selection: TextSelection.collapsed(offset: formState.username.length),
+      );
+    }
+
+    if (_passwordController.text != formState.password) {
+      _passwordController.value = TextEditingValue(
+        text: formState.password,
+        selection: TextSelection.collapsed(offset: formState.password.length),
+      );
+    }
 
     return Scaffold(
       body: GestureDetector(
@@ -118,12 +147,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             cursor: true,
                             isDense: false,
                             focusNode: _usernameFocusNode,
-                            controller: TextEditingController.fromValue(
-                              TextEditingValue(
-                                text: formState.username,
-                                selection: TextSelection.collapsed(offset: formState.username.length),
-                              ),
-                            ),
+                            controller: _usernameController,
                             label: 'Nomor Induk Karyawan (NIK)',
                             hint: 'Masukkan Nomor Induk Karyawan (NIK)',
                             keyboardType: kReleaseMode ? TextInputType.number : TextInputType.text,

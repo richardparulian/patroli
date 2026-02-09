@@ -21,6 +21,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _usernameFocusNode = FocusNode();
   final _passwordFocusNode = FocusNode();
 
+  final _usernameController = TextEditingController();
+  final _passwordController = TextEditingController();
+
   void _login() async {
     bool isFormValid = _formKey.currentState?.validate() ?? false;
 
@@ -45,6 +48,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     if (_passwordFocusNode.hasFocus) {
       _passwordFocusNode.unfocus();
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // Sync controller dengan initial state
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final formState = ref.read(loginFormProvider);
+      _usernameController.text = formState.username;
+      _passwordController.text = formState.password;
+    });
   }
 
   @override
