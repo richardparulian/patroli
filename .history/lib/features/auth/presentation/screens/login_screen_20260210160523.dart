@@ -181,7 +181,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             },
                             validator: (val) => val == null || val.trim().isEmpty ? 'Kata Sandi wajib diisi!' : null,
                             suffixIcon: IconButton(
-                              icon: Icon(isPasswordVisible ? Icons.visibility_off : Icons.visibility),
+                              icon: Icon(
+                                isPasswordVisible
+                                    ? Icons.visibility_off
+                                    : Icons.visibility,
+                              ),
                               onPressed: () {
                                 ref.read(loginFormProvider.notifier).togglePasswordVisibility();
                               },
