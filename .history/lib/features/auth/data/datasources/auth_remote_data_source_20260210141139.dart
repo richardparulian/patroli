@@ -8,6 +8,7 @@ import 'package:pos/core/providers/storage_providers.dart';
 import 'package:pos/core/storage/secure_storage_service.dart';
 import 'package:pos/features/auth/data/dtos/dtos.dart';
 import 'package:pos/features/auth/data/models/user_model.dart';
+import 'package:pos/features/auth/data/repositories/auth_repository_impl.dart';
 
 abstract class AuthRemoteDataSource {
   // :: Login a user with username and password

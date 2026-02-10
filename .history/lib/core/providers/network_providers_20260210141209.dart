@@ -3,6 +3,7 @@ import 'package:pos/config/app_config.dart';
 import 'package:pos/core/network/interceptors/auth_interceptor.dart';
 import 'package:pos/core/network/interceptors/retry_interceptor.dart';
 import 'package:pos/core/providers/storage_providers.dart';
+import 'package:pos/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'network_providers.g.dart';
