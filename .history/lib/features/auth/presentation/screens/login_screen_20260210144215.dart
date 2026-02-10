@@ -27,76 +27,90 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   late FocusNode usernameFocusNode;
   late FocusNode passwordFocusNode;
 
+  // Previous values for comparison
+  String? _previousUsername;
+  String? _previousPassword;
+
   @override
   void initState() {
     super.initState();
-    
-    // Initialize controllers and focus nodes
     usernameController = TextEditingController();
     passwordController = TextEditingController();
     usernameFocusNode = FocusNode();
     passwordFocusNode = FocusNode();
+  }
 
-    // Sync initial state dari provider ke controllers
+  @override
+  void dispose() {
+    usernameController.dispose();
+    passwordController.dispose();
+    usernameFocusNode.dispose();
+    passwordFocusNode.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Sync controllers dengan initial state dan update ketika state berubah
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       
       final formState = ref.read(loginFormProvider);
 
-      usernameController.text = formState.username;
-      passwordController.text = formState.password;
+      // Initial sync
+      if (_previousUsername == null && _previousPassword == null) {
+        usernameController.text = formState.username;
+        passwordController.text = formState.password;
+        _previousUsername = formState.username;
+        _previousPassword = formState.password;
+      }
+
+      // Sync username jika berubah
+      if (_previousUsername != formState.username) {
+        usernameController.value = TextEditingValue(
+          text: formState.username,
+          selection: TextSelection.collapsed(offset: formState.username.length),
+        );
+        _previousUsername = formState.username;
+      }
+
+      // Sync password jika berubah
+      if (_previousPassword != formState.password) {
+        passwordController.value = TextEditingValue(
+          text: formState.password,
+          selection: TextSelection.collapsed(offset: formState.password.length),
+        );
+        _previousPassword = formState.password;
+      }
     });
 
-    // Listen untuk perubahan login form state
-    ref.listen(loginFormProvider, (previous, next) {
-      usernameController.value = TextEditingValue(
-        text: next.username,
-        selection: TextSelection.collapsed(offset: next.username.length),
+    // Login function
+    void login() async {
+      bool isFormValid = formKey.currentState?.validate() ?? false;
+
+      if (!isFormValid) return;
+
+      // Unfocus all fields
+      usernameFocusNode.unfocus();
+      passwordFocusNode.unfocus();
+
+      // Get form state from Riverpod
+      final formState = ref.read(loginFormProvider);
+
+      ref.read(authProvider.notifier).login(
+        username: formState.username.trim(),
+        password: formState.password,
       );
-      passwordController.value = TextEditingValue(
-        text: next.password,
-        selection: TextSelection.collapsed(offset: next.password.length),
-      );
-    });
-  }
+    }
 
-  @override
-  void dispose() {
-    // Dispose controllers and focus nodes
-    usernameController.dispose();
-    passwordController.dispose();
-    usernameFocusNode.dispose();
-    passwordFocusNode.dispose();
-
-    super.dispose();
-  }
-
-  // Login function - Class level method (micro-optimization)
-  Future<void> login() async {
-    bool isFormValid = formKey.currentState?.validate() ?? false;
-
-    if (!isFormValid) return;
-
-    // Unfocus all fields
-    usernameFocusNode.unfocus();
-    passwordFocusNode.unfocus();
-
-    // Get form state from Riverpod
-    final formState = ref.read(loginFormProvider);
-
-    ref.read(authProvider.notifier).login(
-      username: formState.username.trim(),
-      password: formState.password,
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
+    // Watch auth state using AsyncValue
     final authAsync = ref.watch(authProvider);
-
+    
+    // Extract values from AsyncValue
     final isLoading = authAsync.isLoading;
     final errorMessage = authAsync.errorMessage;
     
+    // Watch password visibility
     final isPasswordVisible = ref.watch(loginFormProvider.select((s) => s.isPasswordVisible));
 
     return Scaffold(
@@ -181,11 +195,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             },
                             validator: (val) => val == null || val.trim().isEmpty ? 'Kata Sandi wajib diisi!' : null,
                             suffixIcon: IconButton(
-                              icon: Icon(
-                                isPasswordVisible
-                                    ? Icons.visibility_off
-                                    : Icons.visibility,
-                              ),
+                              icon: Icon(isPasswordVisible ? Icons.visibility_off : Icons.visibility),
                               onPressed: () {
                                 ref.read(loginFormProvider.notifier).togglePasswordVisibility();
                               },

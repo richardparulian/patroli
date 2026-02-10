@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pos/core/utils/app_review_providers.dart';
+import 'package:pos/core/providers/storage_providers.dart';
 import 'package:pos/l10n/l10n.dart';
 
 /// Key for storing selected language code in SharedPreferences

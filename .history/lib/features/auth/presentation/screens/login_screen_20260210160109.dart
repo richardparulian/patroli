@@ -42,22 +42,31 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       if (!mounted) return;
       
       final formState = ref.read(loginFormProvider);
-
       usernameController.text = formState.username;
       passwordController.text = formState.password;
     });
 
     // Listen untuk perubahan login form state
-    ref.listen(loginFormProvider, (previous, next) {
-      usernameController.value = TextEditingValue(
-        text: next.username,
-        selection: TextSelection.collapsed(offset: next.username.length),
-      );
-      passwordController.value = TextEditingValue(
-        text: next.password,
-        selection: TextSelection.collapsed(offset: next.password.length),
-      );
-    });
+    ref.listen(
+      loginFormProvider,
+      (previous, next) {
+        // Sync username jika berubah
+        if (previous?.username != next.username) {
+          usernameController.value = TextEditingValue(
+            text: next.username,
+            selection: TextSelection.collapsed(offset: next.username.length),
+          );
+        }
+
+        // Sync password jika berubah
+        if (previous?.password != next.password) {
+          passwordController.value = TextEditingValue(
+            text: next.password,
+            selection: TextSelection.collapsed(offset: next.password.length),
+          );
+        }
+      },
+    );
   }
 
   @override
