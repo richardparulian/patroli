@@ -60,7 +60,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppConstants.loginRoute,
         name: 'login',
-        builder: (context, state) => LoginScreen(),
+        builder: (context, state) => const LoginScreen(),
       ),
 
       // Initial route - redirects based on auth state

@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pos/core/ui/animation/animated_notification.dart';
 import 'package:pos/core/ui/buttons/app_button.dart';
@@ -8,81 +9,61 @@ import 'package:pos/core/ui/inputs/app_text_field.dart';
 import 'package:pos/features/auth/providers/auth_state_provider.dart';
 import 'package:pos/features/auth/providers/login_form_provider.dart';
 
-class LoginScreen extends ConsumerStatefulWidget {
+class LoginScreen extends HookWidget {
   const LoginScreen({super.key});
 
   @override
-  ConsumerState<LoginScreen> createState() => _LoginScreenState();
-}
-
-class _LoginScreenState extends ConsumerState<LoginScreen> {
-  // Form key
-  final formKey = GlobalKey<FormState>();
-
-  // Text editing controllers
-  late TextEditingController usernameController;
-  late TextEditingController passwordController;
-
-  // Focus nodes
-  late FocusNode usernameFocusNode;
-  late FocusNode passwordFocusNode;
-
-  // Previous values for comparison
-  String? _previousUsername;
-  String? _previousPassword;
-
-  @override
-  void initState() {
-    super.initState();
-    usernameController = TextEditingController();
-    passwordController = TextEditingController();
-    usernameFocusNode = FocusNode();
-    passwordFocusNode = FocusNode();
-  }
-
-  @override
-  void dispose() {
-    usernameController.dispose();
-    passwordController.dispose();
-    usernameFocusNode.dispose();
-    passwordFocusNode.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    return Consumer(
+      builder: (context, ref, child) {
+    // Form key
+    final formKey = useMemoized(() => GlobalKey<FormState>());
+
+    // Text editing controllers
+    final usernameController = useTextEditingController();
+    final passwordController = useTextEditingController();
+
+    // Focus nodes
+    final usernameFocusNode = useFocusNode();
+    final passwordFocusNode = useFocusNode();
+
+    // Ref untuk menyimpan previous values
+    final previousUsername = useRef<String?>(null);
+    final previousPassword = useRef<String?>(null);
+
     // Sync controllers dengan initial state dan update ketika state berubah
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      
+    useEffect(() {
       final formState = ref.read(loginFormProvider);
 
       // Initial sync
-      if (_previousUsername == null && _previousPassword == null) {
+      if (previousUsername.value == null && previousPassword.value == null) {
         usernameController.text = formState.username;
         passwordController.text = formState.password;
-        _previousUsername = formState.username;
-        _previousPassword = formState.password;
+        previousUsername.value = formState.username;
+        previousPassword.value = formState.password;
+        return null;
       }
 
       // Sync username jika berubah
-      if (_previousUsername != formState.username) {
+      if (previousUsername.value != formState.username) {
         usernameController.value = TextEditingValue(
           text: formState.username,
           selection: TextSelection.collapsed(offset: formState.username.length),
         );
-        _previousUsername = formState.username;
+        previousUsername.value = formState.username;
       }
 
       // Sync password jika berubah
-      if (_previousPassword != formState.password) {
+      if (previousPassword.value != formState.password) {
         passwordController.value = TextEditingValue(
           text: formState.password,
           selection: TextSelection.collapsed(offset: formState.password.length),
         );
-        _previousPassword = formState.password;
+        previousPassword.value = formState.password;
       }
-    });
+
+      return null;
+    }, [ref.watch(loginFormProvider)]);
 
     // Login function
     void login() async {
@@ -238,7 +219,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             ),
           ],
         ),
-      ),
+      );
+      },
     );
   }
 }
