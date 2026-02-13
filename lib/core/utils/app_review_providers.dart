@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:pos/core/constants/app_constants.dart';
+import 'package:pos/core/providers/storage_providers.dart';
 import 'package:pos/core/utils/app_review_service.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 /// Provider for the InAppReview instance
 final inAppReviewProvider = Provider<InAppReview>((ref) {
@@ -33,11 +33,6 @@ final appReviewServiceProvider = Provider<AppReviewService>((ref) {
 final shouldRequestReviewProvider = FutureProvider.autoDispose<bool>((ref) async {
   final reviewService = ref.watch(appReviewServiceProvider);
   return await reviewService.shouldRequestReview();
-});
-
-/// Provider for SharedPreferences - should be defined in your main.dart
-final sharedPreferencesProvider = Provider<SharedPreferences>((ref) {
-  throw UnimplementedError('SharedPreferencesProvider not initialized');
 });
 
 /// Smart review prompt that uses feedback before store reviews

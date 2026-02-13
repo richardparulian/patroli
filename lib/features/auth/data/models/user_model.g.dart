@@ -12,7 +12,7 @@ UserModel _$UserModelFromJson(Map<String, dynamic> json) => UserModel(
   name: json['name'] as String,
   username: json['username'] as String,
   role: (json['role'] as num).toInt(),
-  shouldChangePassword: json['should_change_password'] as bool,
+  shouldChangePassword: json['should_change_password'] as bool?,
 );
 
 Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
