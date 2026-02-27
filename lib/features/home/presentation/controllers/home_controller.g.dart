@@ -13,7 +13,7 @@ part of 'home_controller.dart';
 const homeControllerProvider = HomeControllerProvider._();
 
 final class HomeControllerProvider
-    extends $AsyncNotifierProvider<HomeController, int> {
+    extends $AsyncNotifierProvider<HomeController, List<HomeEntity>> {
   const HomeControllerProvider._()
     : super(
         from: null,
@@ -33,20 +33,21 @@ final class HomeControllerProvider
   HomeController create() => HomeController();
 }
 
-String _$homeControllerHash() => r'f8f0f98206cac6303a58fa6f3154e98fc5903f99';
+String _$homeControllerHash() => r'118573084547c5d878d324671782df92250a3976';
 
-abstract class _$HomeController extends $AsyncNotifier<int> {
-  FutureOr<int> build();
+abstract class _$HomeController extends $AsyncNotifier<List<HomeEntity>> {
+  FutureOr<List<HomeEntity>> build();
   @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<AsyncValue<int>, int>;
+    final ref =
+        this.ref as $Ref<AsyncValue<List<HomeEntity>>, List<HomeEntity>>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<AsyncValue<int>, int>,
-              AsyncValue<int>,
+              AnyNotifier<AsyncValue<List<HomeEntity>>, List<HomeEntity>>,
+              AsyncValue<List<HomeEntity>>,
               Object?,
               Object?
             >;
