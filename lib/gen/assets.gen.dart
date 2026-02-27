@@ -31,9 +31,9 @@ class $AssetsFontsGen {
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
-  /// File path: assets/images/bg_success.webp
-  AssetGenImage get bgSuccess =>
-      const AssetGenImage('assets/images/bg_success.webp');
+  /// Directory path: assets/images/backgrounds
+  $AssetsImagesBackgroundsGen get backgrounds =>
+      const $AssetsImagesBackgroundsGen();
 
   /// Directory path: assets/images/bn
   $AssetsImagesBnGen get bn => const $AssetsImagesBnGen();
@@ -56,12 +56,11 @@ class $AssetsImagesGen {
   /// File path: assets/images/logo.png.placeholder
   String get logoPng => 'assets/images/logo.png.placeholder';
 
-  /// File path: assets/images/pgi_logo_horizontal.webp
-  AssetGenImage get pgiLogoHorizontal =>
-      const AssetGenImage('assets/images/pgi_logo_horizontal.webp');
+  /// Directory path: assets/images/logos
+  $AssetsImagesLogosGen get logos => const $AssetsImagesLogosGen();
 
   /// List of all assets
-  List<dynamic> get values => [bgSuccess, logoPng, pgiLogoHorizontal];
+  List<String> get values => [logoPng];
 }
 
 class $LibConfigGen {
@@ -69,6 +68,17 @@ class $LibConfigGen {
 
   /// Directory path: lib/config/environment
   $LibConfigEnvironmentGen get environment => const $LibConfigEnvironmentGen();
+}
+
+class $AssetsImagesBackgroundsGen {
+  const $AssetsImagesBackgroundsGen();
+
+  /// File path: assets/images/backgrounds/bg.webp
+  AssetGenImage get bg =>
+      const AssetGenImage('assets/images/backgrounds/bg.webp');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [bg];
 }
 
 class $AssetsImagesBnGen {
@@ -129,6 +139,29 @@ class $AssetsImagesJaGen {
 
   /// List of all assets
   List<String> get values => [welcomePng];
+}
+
+class $AssetsImagesLogosGen {
+  const $AssetsImagesLogosGen();
+
+  /// File path: assets/images/logos/pgi-horizontal-white.webp
+  AssetGenImage get pgiHorizontalWhite =>
+      const AssetGenImage('assets/images/logos/pgi-horizontal-white.webp');
+
+  /// File path: assets/images/logos/pgi-horizontal.webp
+  AssetGenImage get pgiHorizontal =>
+      const AssetGenImage('assets/images/logos/pgi-horizontal.webp');
+
+  /// File path: assets/images/logos/pgi-square.webp
+  AssetGenImage get pgiSquare =>
+      const AssetGenImage('assets/images/logos/pgi-square.webp');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [
+    pgiHorizontalWhite,
+    pgiHorizontal,
+    pgiSquare,
+  ];
 }
 
 class $LibConfigEnvironmentGen {

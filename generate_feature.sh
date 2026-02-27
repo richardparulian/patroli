@@ -21,6 +21,7 @@ usage() {
   echo -e "\nExamples:"
   echo -e "  $0 --name user_profile"
   echo -e "  $0 --name auth --no-ui"
+  echo -e "  $0 --name product --no-dto"
   exit 1
 }
 
@@ -28,6 +29,7 @@ usage() {
 FEATURE_NAME=""
 WITH_UI="yes"
 WITH_REPO="yes"
+WITH_DTO="yes"
 
 # Parse arguments
 while [[ $# -gt 0 ]]; do
@@ -38,6 +40,8 @@ while [[ $# -gt 0 ]]; do
       WITH_UI="no"; shift;;
     --no-repo)
       WITH_REPO="no"; shift;;
+    --no-dto)
+      WITH_DTO="no"; shift;;
     --help)
       usage;;
     *)
@@ -76,7 +80,6 @@ fi
 if [[ "$WITH_UI" == "yes" ]]; then
   mkdir -p "$BASE_DIR/presentation/controllers"
   mkdir -p "$BASE_DIR/presentation/screens"
-  mkdir -p "$BASE_DIR/presentation/widgets"
 fi
 
 # ==========================================
@@ -172,6 +175,63 @@ abstract class ${PASCAL_CASE}Model with _\$${PASCAL_CASE}Model {
   factory ${PASCAL_CASE}Model.fromJson(Map<String, dynamic> json) => 
       _\$${PASCAL_CASE}ModelFromJson(json);
 }
+EOF
+fi
+
+# DTOs
+if [[ "$WITH_DTO" == "yes" ]]; then
+  mkdir -p "$BASE_DIR/data/dtos"
+  
+  # Create DTO files
+  cat > "$BASE_DIR/data/dtos/${FEATURE_NAME}_request.dart" << EOF
+import 'package:json_annotation/json_annotation.dart';
+
+part '${FEATURE_NAME}_request.g.dart';
+
+@JsonSerializable(fieldRename: FieldRename.snake)
+class ${PASCAL_CASE}Request {
+  final String name;
+
+  ${PASCAL_CASE}Request({
+    required this.name,
+  });
+
+  factory ${PASCAL_CASE}Request.fromJson(Map<String, dynamic> json) => 
+      _\$${PASCAL_CASE}RequestFromJson(json);
+
+  Map<String, dynamic> toJson() => _\$${PASCAL_CASE}RequestToJson(this);
+}
+EOF
+
+  cat > "$BASE_DIR/data/dtos/${FEATURE_NAME}_response.dart" << EOF
+import 'package:json_annotation/json_annotation.dart';
+import '../models/${FEATURE_NAME}_model.dart';
+
+part '${FEATURE_NAME}_response.g.dart';
+
+@JsonSerializable(fieldRename: FieldRename.snake)
+class ${PASCAL_CASE}Response {
+  final ${PASCAL_CASE}Model ${FEATURE_NAME};
+
+  ${PASCAL_CASE}Response({
+    required this.${FEATURE_NAME},
+  });
+
+  factory ${PASCAL_CASE}Response.fromJson(Map<String, dynamic> json) => 
+      _\$${PASCAL_CASE}ResponseFromJson(json);
+
+  Map<String, dynamic> toJson() => _\$${PASCAL_CASE}ResponseToJson(this);
+}
+EOF
+
+  # Export all DTOs
+  cat > "$BASE_DIR/data/dtos/dtos.dart" << EOF
+/// ${PASCAL_CASE} Data Transfer Objects (DTOs)
+/// This file exports all DTOs for convenience
+
+library;
+export '${FEATURE_NAME}_request.dart';
+export '${FEATURE_NAME}_response.dart';
 EOF
 fi
 

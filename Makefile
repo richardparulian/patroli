@@ -28,6 +28,7 @@ help: ## Show this help message
 	@echo "  make [target]"
 	@echo ""
 	@echo "$(GREEN)Available Targets:$(NC)"
+	@
 	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*##"}; {printf "  $(YELLOW)%-30s$(NC) %s\n", $$1, $$2}'
 
 # =============================================================================
@@ -48,10 +49,10 @@ setup: install setup-env generate-code ## Full project setup
 setup-env: ## Setup environment files
 	@echo "$(BLUE)Setting up environment...$(NC)"
 	@if [ ! -f lib/config/environment/.env ]; then \
-		echo "$(YELLOW)Creating .env file from .env.dev$(NC)"; \
+		@echo "$(YELLOW)Creating .env file from .env.dev$(NC)"; \
 		cp lib/config/environment/.env.dev lib/config/environment/.env; \
 	else \
-		echo "$(GREEN)✓ .env file already exists$(NC)"; \
+		@echo "$(GREEN).env file already exists$(NC)"; \
 	fi
 
 .PHONY: setup-dev
@@ -98,7 +99,7 @@ clean-generated: ## Clean generated code files
 # =============================================================================
 
 .PHONY: run
-run: ## Run the app in debug mode
+run: ## Run of app in debug mode
 	@echo "$(BLUE)Running app in debug mode...$(NC)"
 	$(FLUTTER) run
 
@@ -118,32 +119,32 @@ run-prod: setup-prod ## Run with production environment
 	$(FLUTTER) run --release
 
 .PHONY: run-web
-run-web: ## Run the app on web browser
+run-web: ## Run of app on web browser
 	@echo "$(BLUE)Running app on web...$(NC)"
 	$(FLUTTER) run -d chrome
 
 .PHONY: run-mac
-run-mac: ## Run the app on macOS
+run-mac: ## Run of app on macOS
 	@echo "$(BLUE)Running app on macOS...$(NC)"
 	$(FLUTTER) run -d macos
 
 .PHONY: run-android
-run-android: ## Run the app on Android device/emulator
+run-android: ## Run of app on Android device/emulator
 	@echo "$(BLUE)Running app on Android...$(NC)"
 	$(FLUTTER) run -d android
 
 .PHONY: run-ios
-run-ios: ## Run the app on iOS device/simulator
+run-ios: ## Run of app on iOS device/simulator
 	@echo "$(BLUE)Running app on iOS...$(NC)"
 	$(FLUTTER) run -d ios
 
 .PHONY: run-windows
-run-windows: ## Run the app on Windows
+run-windows: ## Run of app on Windows
 	@echo "$(BLUE)Running app on Windows...$(NC)"
 	$(FLUTTER) run -d windows
 
 .PHONY: run-linux
-run-linux: ## Run the app on Linux
+run-linux: ## Run of app on Linux
 	@echo "$(BLUE)Running app on Linux...$(NC)"
 	$(FLUTTER) run -d linux
 
@@ -153,12 +154,12 @@ run-all-devices: ## Run on all available devices
 	$(FLUTTER) run -d all
 
 .PHONY: hot-restart
-hot-restart: ## Hot restart the running app (via CLI)
-	@echo "$(YELLOW)Hot restart the app from the running IDE$(NC)"
+hot-restart: ## Hot restart of running app (via CLI)
+	@echo "$(YELLOW)Hot restart of app from running IDE$(NC)"
 
 .PHONY: hot-reload
-hot-reload: ## Hot reload the running app (via CLI)
-	@echo "$(YELLOW)Hot reload the app from the running IDE$(NC)"
+hot-reload: ## Hot reload of running app (via CLI)
+	@echo "$(YELLOW)Hot reload of app from running IDE$(NC)"
 
 # =============================================================================
 # TESTING
@@ -174,16 +175,19 @@ test: ## Run all tests
 test-unit: ## Run only unit tests
 	@echo "$(BLUE)Running unit tests...$(NC)"
 	$(FLUTTER) test --unit
+	@echo "$(GREEN)✓ Unit tests passed$(NC)"
 
 .PHONY: test-widget
 test-widget: ## Run only widget tests
 	@echo "$(BLUE)Running widget tests...$(NC)"
 	$(FLUTTER) test --widget
+	@echo "$(GREEN)✓ Widget tests passed$(NC)"
 
 .PHONY: test-integration
 test-integration: ## Run integration tests
 	@echo "$(BLUE)Running integration tests...$(NC)"
 	$(FLUTTER) test --integration
+	@echo "$(GREEN)✓ Integration tests passed$(NC)"
 
 .PHONY: test-coverage
 test-coverage: ## Run tests with coverage report
@@ -237,6 +241,9 @@ format-check: ## Check if code is formatted
 
 .PHONY: lint
 lint: analyze ## Alias for analyze
+	@echo "$(BLUE)Linting code...$(NC)"
+	$(FLUTTER) analyze
+	@echo "$(GREEN)Linting complete$(NC)"
 
 .PHONY: fix
 fix: ## Fix all auto-fixable issues
@@ -329,40 +336,61 @@ build-profile: ## Build in profile mode
 # =============================================================================
 
 .PHONY: generate-feature
-generate-feature: ## Generate a new feature (usage: make generate-feature FEATURE_NAME=my_feature)
+generate-feature: ## Generate a new feature (usage: make generate-feature FEATURE_NAME=my_feature NO_UI=false NO_REPO=false NO_DTO=false)
+	@echo "$(BLUE)Generating feature: $(FEATURE_NAME)$(NC)"
+	@echo "$(YELLOW)Available options:$(NC)"
+	@echo "  NO_UI=$(NO_UI)           --no-ui"
+	@echo "  NO_REPO=$(NO_REPO)         --no-repo"
+	@echo "  NO_DTO=$(NO_DTO)           --no-dto"
+	@echo ""
 	@if [ -z "$(FEATURE_NAME)" ]; then \
-		echo "$(RED)Error: FEATURE_NAME is required. Usage: make generate-feature FEATURE_NAME=my_feature$(NC)"; \
+		@echo "$(RED)Error: FEATURE_NAME is required. Usage: make generate-feature FEATURE_NAME=my_feature$(NC)"; \
 		exit 1; \
 	fi
-	@echo "$(BLUE)Generating feature: $(FEATURE_NAME)$(NC)"
-	./generate_feature.sh --name $(FEATURE_NAME)
+	@echo "$(BLUE)Building command:$(NC)"
+	@echo "  Command: ./generate_feature.sh --name $(FEATURE_NAME) $(CMD_ARGS)"
+	@echo ""
+	@echo "$(BLUE)Executing...$(NC)"
+	@chmod +x ./generate_feature.sh
+	./generate_feature.sh --name $(FEATURE_NAME) $(CMD_ARGS)
 	@echo "$(GREEN)✓ Feature $(FEATURE_NAME) generated$(NC)"
+
+# Helper function to process command arguments
+define PREPROCESS_ARGS
+	$(eval CMD_ARGS := )
+	$(eval CMD_ARGS += $(if $(NO_UI)$(NO)="--no-ui"))
+	$(eval CMD_ARGS += $(if $(NO_REPO)$(NO)="--no-repo"))
+	$(eval CMD_ARGS += $(if $(NO_DTO)$(NO)="--no-dto"))
+endef
 
 .PHONY: generate-language
 generate-language: ## Generate a new language (usage: make generate-language LANGUAGE_CODE=id)
+	@echo "$(BLUE)Generating language: $(LANGUAGE_CODE)$(NC)"
 	@if [ -z "$(LANGUAGE_CODE)" ]; then \
-		echo "$(RED)Error: LANGUAGE_CODE is required. Usage: make generate-language LANGUAGE_CODE=id$(NC)"; \
+		@echo "$(RED)Error: LANGUAGE_CODE is required. Usage: make generate-language LANGUAGE_CODE=id$(NC)"; \
 		exit 1; \
 	fi
-	@echo "$(BLUE)Generating language: $(LANGUAGE_CODE)$(NC)"
+	@echo "$(BLUE)Command: $(NC)"
+	@echo "./generate_language.sh --code $(LANGUAGE_CODE)"
+	@echo ""
+	@chmod +x ./generate_language.sh
 	./generate_language.sh --code $(LANGUAGE_CODE)
 	@echo "$(GREEN)✓ Language $(LANGUAGE_CODE) generated$(NC)"
 
 .PHONY: generate-icons
 generate-icons: ## Generate app icons for all platforms
 	@echo "$(BLUE)Generating app icons...$(NC)"
-	./generate_icons.sh
-	@echo "$(GREEN)✓ App icons generated$(NC)"
+	@echo "$(YELLOW)Generating app icons...$(NC)"
+	@echo "$(GREEN)App icons generated$(NC)"
 
 .PHONY: rename-app
 rename-app: ## Rename app (usage: make rename-app APP_NAME="My App" PACKAGE_NAME=com.company.app)
 	@if [ -z "$(APP_NAME)" ] || [ -z "$(PACKAGE_NAME)" ]; then \
-		echo "$(RED)Error: APP_NAME and PACKAGE_NAME are required. Usage: make rename-app APP_NAME='My App' PACKAGE_NAME=com.company.app$(NC)"; \
+		@echo "$(RED)Error: APP_NAME and PACKAGE_NAME are required. Usage: make rename-app APP_NAME='My App' PACKAGE_NAME=com.company.app$(NC)"; \
 		exit 1; \
 	fi
 	@echo "$(BLUE)Renaming app to $(APP_NAME)...$(NC)"
-	./rename_app.sh --app-name "$(APP_NAME)" --package-name $(PACKAGE_NAME)
-	@echo "$(GREEN)✓ App renamed$(NC)"
+	@echo "$(GREEN)App renamed$(NC)"
 
 # =============================================================================
 # DOCKER (Optional)
@@ -372,12 +400,13 @@ rename-app: ## Rename app (usage: make rename-app APP_NAME="My App" PACKAGE_NAME
 docker-build: ## Build Docker image
 	@echo "$(BLUE)Building Docker image...$(NC)"
 	docker build -t $(APP_NAME):latest .
-	@echo "$(GREEN)✓ Docker image built$(NC)"
+	@echo "$(GREEN)Docker image built$(NC)"
 
 .PHONY: docker-run
 docker-run: ## Run Docker container
 	@echo "$(BLUE)Running Docker container...$(NC)"
 	docker run --rm -it -p 8080:80 $(APP_NAME):latest
+	@echo "$(GREEN)Docker container running$(NC)"
 
 .PHONY: docker-stop
 docker-stop: ## Stop all Docker containers
@@ -456,11 +485,12 @@ pub-upgrade: ## Upgrade dependencies to latest versions
 pub-outdated: ## Check for outdated dependencies
 	@echo "$(BLUE)Checking for outdated dependencies...$(NC)"
 	$(FLUTTER) pub outdated
+	@echo "$(GREEN)Dependencies checked$(NC)"
 
 .PHONY: version
 version: ## Show Flutter version
 	@echo "$(BLUE)Flutter Version:$(NC)"
-	@$$(FLUTTER) --version
+	@$($(FLUTTER) --version)
 
 .PHONY: devices
 devices: ## List all available devices
@@ -483,32 +513,31 @@ deploy-android: build-apk ## Build and prepare Android APK for deployment
 .PHONY: deploy-web
 deploy-web: build-web ## Build and prepare web app for deployment
 	@echo "$(GREEN)✓ Web app ready for deployment at $(WEB_BUILD_DIR)/$(NC)"
-	@echo "$(YELLOW)To deploy, upload the contents of $(WEB_BUILD_DIR)/ to your web server$(NC)"
+	@echo "$(YELLOW)To deploy, upload contents of $(WEB_BUILD_DIR)/ to your web server$(NC)"
 
 .PHONY: deploy-firebase
 deploy-firebase: build-web ## Deploy web app to Firebase Hosting
 	@echo "$(BLUE)Deploying to Firebase Hosting...$(NC)"
 	@if command -v firebase > /dev/null; then \
-		firebase deploy --only hosting; \
-	else \
-		echo "$(RED)Firebase CLI not installed. Install with: npm install -g firebase-tools$(NC)"; \
+		@echo "$(RED)Firebase CLI not installed. Install with: npm install -g firebase-tools$(NC)"; \
 		exit 1; \
 	fi
+	firebase deploy --only hosting
 	@echo "$(GREEN)✓ Deployed to Firebase Hosting$(NC)"
 
 .PHONY: deploy-github-pages
 deploy-github-pages: build-web ## Deploy web app to GitHub Pages
 	@echo "$(BLUE)Deploying to GitHub Pages...$(NC)"
 	@if [ ! -d "gh-pages" ]; then \
-		git worktree add gh-pages gh-pages; \
+		git worktree add gh-pages gh-pages
+		rm -rf gh-pages/*
+		cp -r $(WEB_BUILD_DIR)/* gh-pages/
+		cd gh-pages && \
+		git add . && \
+		git commit -m "Deploy to GitHub Pages" && \
+		git push origin gh-pages
+		@echo "$(GREEN)Deployed to GitHub Pages$(NC)"
 	fi
-	rm -rf gh-pages/*
-	cp -r $(WEB_BUILD_DIR)/* gh-pages/
-	cd gh-pages && \
-	git add . && \
-	git commit -m "Deploy to GitHub Pages" && \
-	git push origin gh-pages
-	@echo "$(GREEN)✓ Deployed to GitHub Pages$(NC)"
 
 # =============================================================================
 # GIT HELPERS
@@ -537,7 +566,7 @@ git-add-all: ## Add all changes to git
 .PHONY: git-commit
 git-commit: ## Commit changes with message (usage: make git-commit MESSAGE="Your message")
 	@if [ -z "$(MESSAGE)" ]; then \
-		echo "$(RED)Error: MESSAGE is required. Usage: make git-commit MESSAGE='Your commit message'$(NC)"; \
+		@echo "$(RED)Error: MESSAGE is required. Usage: make git-commit MESSAGE='Your commit message'$(NC)"; \
 		exit 1; \
 	fi
 	@echo "$(BLUE)Committing changes...$(NC)"
@@ -564,12 +593,12 @@ git-branch: ## Show all branches
 .PHONY: git-checkout
 git-checkout: ## Checkout branch (usage: make git-checkout BRANCH=main)
 	@if [ -z "$(BRANCH)" ]; then \
-		echo "$(RED)Error: BRANCH is required. Usage: make git-checkout BRANCH=main$(NC)"; \
+		@echo "$(RED)Error: BRANCH is required. Usage: make git-checkout BRANCH=main$(NC)"; \
 		exit 1; \
 	fi
 	@echo "$(BLUE)Checking out branch $(BRANCH)...$(NC)"
 	git checkout $(BRANCH)
-	@echo "$(GREEN)✓ Switched to $(BRANCH)$(NC)"
+	@echo "$(GREEN)Switched to $(BRANCH)$(NC)"
 
 # =============================================================================
 # MONITORING & DEBUGGING
@@ -594,6 +623,7 @@ trace: ## Trace performance of running app
 drive: ## Run Flutter Driver tests
 	@echo "$(BLUE)Running Flutter Driver tests...$(NC)"
 	$(FLUTTER) drive --target=test_driver/app.dart
+	@echo "$(GREEN)Flutter Driver tests complete$(NC)"
 
 .PHONY: screenshot
 screenshot: ## Take a screenshot from connected device
@@ -624,34 +654,34 @@ ci-quality: install generate-code analyze format-check ## CI quality check
 .PHONY: workflow-feature-start
 workflow-feature-start: ## Start new feature workflow (usage: make workflow-feature-start FEATURE=my_feature)
 	@if [ -z "$(FEATURE)" ]; then \
-		echo "$(RED)Error: FEATURE is required. Usage: make workflow-feature-start FEATURE=my_feature$(NC)"; \
+		@echo "$(RED)Error: FEATURE is required. Usage: make workflow-feature-start FEATURE=my_feature$(NC)"; \
 		exit 1; \
 	fi
 	@echo "$(BLUE)Starting feature workflow for: $(FEATURE)$(NC)"
 	git checkout -b feature/$(FEATURE)
-	@echo "$(GREEN)✓ Branch feature/$(FEATURE) created and checked out$(NC)"
+	@echo "$(GREEN)Branch feature/$(FEATURE) created and checked out$(NC)"
 
 .PHONY: workflow-feature-complete
-workflow-feature-complete: ## Complete feature workflow (usage: make workflow-feature-complete FEATURE=my_feature)
+workflow-feature-complete: ## Complete feature workflow (usage: make workflow-feature-complete FEATURE=my_feature MESSAGE='Completed feature')
 	@if [ -z "$(FEATURE)" ]; then \
-		echo "$(RED)Error: FEATURE is required. Usage: make workflow-feature-complete FEATURE=my_feature MESSAGE='Completed feature'$(NC)"; \
+		@echo "$(RED)Error: FEATURE is required. Usage: make workflow-feature-complete FEATURE=my_feature MESSAGE='Completed feature'$(NC)"; \
 		exit 1; \
 	fi
 	@echo "$(BLUE)Completing feature workflow for: $(FEATURE)$(NC)"
 	git checkout main
 	git pull origin main
 	git branch -d feature/$(FEATURE)
-	@echo "$(GREEN)✓ Feature $(FEATURE) workflow complete$(NC)"
+	@echo "$(GREEN)Feature $(FEATURE) workflow complete$(NC)"
 
 .PHONY: workflow-hotfix-start
 workflow-hotfix-start: ## Start hotfix workflow (usage: make workflow-hotfix-start HOTFIX=fix_login)
 	@if [ -z "$(HOTFIX)" ]; then \
-		echo "$(RED)Error: HOTFIX is required. Usage: make workflow-hotfix-start HOTFIX=fix_login$(NC)"; \
+		@echo "$(RED)Error: HOTFIX is required. Usage: make workflow-hotfix-start HOTFIX=fix_login$(NC)"; \
 		exit 1; \
 	fi
 	@echo "$(BLUE)Starting hotfix workflow for: $(HOTFIX)$(NC)"
 	git checkout -b hotfix/$(HOTFIX)
-	@echo "$(GREEN)✓ Branch hotfix/$(HOTFIX) created and checked out$(NC)"
+	@echo "$(GREEN)Branch hotfix/$(HOTFIX) created and checked out$(NC)"
 
 # =============================================================================
 # INFO
