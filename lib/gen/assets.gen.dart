@@ -73,12 +73,20 @@ class $LibConfigGen {
 class $AssetsImagesBackgroundsGen {
   const $AssetsImagesBackgroundsGen();
 
+  /// File path: assets/images/backgrounds/bg-dark.webp
+  AssetGenImage get bgDark =>
+      const AssetGenImage('assets/images/backgrounds/bg-dark.webp');
+
+  /// File path: assets/images/backgrounds/bg-light.webp
+  AssetGenImage get bgLight =>
+      const AssetGenImage('assets/images/backgrounds/bg-light.webp');
+
   /// File path: assets/images/backgrounds/bg.webp
   AssetGenImage get bg =>
       const AssetGenImage('assets/images/backgrounds/bg.webp');
 
   /// List of all assets
-  List<AssetGenImage> get values => [bg];
+  List<AssetGenImage> get values => [bgDark, bgLight, bg];
 }
 
 class $AssetsImagesBnGen {
