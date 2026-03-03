@@ -66,8 +66,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
     ref.listen<AuthState>(authProvider, (previous, next) {
       // 🔴 ERROR
-      if (previous?.errorMessage != next.errorMessage &&
-          next.errorMessage != null) {
+      if (previous?.errorMessage != next.errorMessage && next.errorMessage != null) {
         AppUtils.showSnackBar(
           context,
           message: next.errorMessage!,
@@ -76,8 +75,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       }
 
       // ✅ LOGIN SUKSES
-      if (previous?.isAuthenticated == false &&
-          next.isAuthenticated == true) {
+      if (previous?.isAuthenticated == false && next.isAuthenticated == true) {
         context.go(AppConstants.homeRoute);
       }
     });
