@@ -220,8 +220,8 @@ return $default(_that.id,_that.date,_that.checkIn,_that.checkOut,_that.checkInPh
 /// @nodoc
 
 
-class _CheckInEntity extends CheckInEntity {
-  const _CheckInEntity({required this.id, this.date, this.checkIn, this.checkOut, this.checkInPhoto, this.checkOutPhoto, this.lightsStatus, this.bannerStatus, this.rollingDoorStatus, this.conditionRight, this.conditionLeft, this.conditionBack, this.conditionArround, this.statusValue, this.statusDescription, this.notes}): super._();
+class _CheckInEntity implements CheckInEntity {
+  const _CheckInEntity({required this.id, this.date, this.checkIn, this.checkOut, this.checkInPhoto, this.checkOutPhoto, this.lightsStatus, this.bannerStatus, this.rollingDoorStatus, this.conditionRight, this.conditionLeft, this.conditionBack, this.conditionArround, this.statusValue, this.statusDescription, this.notes});
   
 
 @override final  int id;

@@ -13,10 +13,3 @@ ScanQrResponse _$ScanQrResponseFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$ScanQrResponseToJson(ScanQrResponse instance) =>
     <String, dynamic>{'data': instance.data};
-
-ScanQrData _$ScanQrDataFromJson(Map<String, dynamic> json) => ScanQrData(
-  data: ScanQrModel.fromJson(json['data'] as Map<String, dynamic>),
-);
-
-Map<String, dynamic> _$ScanQrDataToJson(ScanQrData instance) =>
-    <String, dynamic>{'data': instance.data};
