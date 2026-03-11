@@ -4,7 +4,8 @@ import 'package:pos/features/reports/domain/entities/reports_entity.dart';
 import 'reports_fetch_provider.dart'; // provider untuk fetch reports
 
 /// Provider untuk PagingController
-final reportPagingControllerProvider = Provider<PagingController<int, ReportsEntity>>((ref) {
+final reportPagingControllerProvider =
+    Provider<PagingController<int, ReportsEntity>>((ref) {
   final pagingController = PagingController<int, ReportsEntity>(
     getNextPageKey: (state) {
       return state.lastPageIsEmpty ? null : state.nextIntPageKey;
