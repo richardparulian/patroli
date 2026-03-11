@@ -8,7 +8,7 @@ part of 'pre_sign_update_model.dart';
 
 _PreSignUpdateModel _$PreSignUpdateModelFromJson(Map<String, dynamic> json) =>
     _PreSignUpdateModel(
-      statusCode: (json['status_code'] as num).toInt(),
+      statusCode: (json['status_code'] as num?)?.toInt(),
       data: json['data'],
     );
 

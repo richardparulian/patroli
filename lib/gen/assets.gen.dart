@@ -59,6 +59,10 @@ class $AssetsImagesGen {
   /// Directory path: assets/images/logos
   $AssetsImagesLogosGen get logos => const $AssetsImagesLogosGen();
 
+  /// Directory path: assets/images/placeholder
+  $AssetsImagesPlaceholderGen get placeholder =>
+      const $AssetsImagesPlaceholderGen();
+
   /// List of all assets
   List<String> get values => [logoPng];
 }
@@ -170,6 +174,21 @@ class $AssetsImagesLogosGen {
     pgiHorizontal,
     pgiSquare,
   ];
+}
+
+class $AssetsImagesPlaceholderGen {
+  const $AssetsImagesPlaceholderGen();
+
+  /// File path: assets/images/placeholder/error_image.webp
+  AssetGenImage get errorImage =>
+      const AssetGenImage('assets/images/placeholder/error_image.webp');
+
+  /// File path: assets/images/placeholder/placeholder.webp
+  AssetGenImage get placeholder =>
+      const AssetGenImage('assets/images/placeholder/placeholder.webp');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [errorImage, placeholder];
 }
 
 class $LibConfigEnvironmentGen {

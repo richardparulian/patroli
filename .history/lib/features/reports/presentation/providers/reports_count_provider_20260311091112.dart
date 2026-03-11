@@ -1,0 +1,25 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pos/core/extensions/result_state_extension.dart';
+import 'package:pos/features/reports/domain/usecases/reports_use_case.dart';
+import 'package:pos/features/reports/presentation/providers/reports_di_provider.dart';
+
+final countReportsProvider = NotifierProvider<CountReportsNotifier, ResultState<int>>(
+  CountReportsNotifier.new,
+);
+
+class CountReportsNotifier extends Notifier<ResultState<int>> {
+  @override
+  ResultState<int> build() => const Idle();
+
+  Future<void> fetchCount() async {
+    state = const Loading();
+
+    final reportsUseCase = ref.read(reportsUseCaseProvider);
+    final result = await reportsUseCase(ReportsParams(pagination: 0));
+
+    result.fold(
+      (failure) => state = Error(failure.message),
+      (reports) => state = Success(reports.length),
+    );
+  }
+}

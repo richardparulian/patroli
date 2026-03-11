@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$PreSignCreateEntity {
 
- String get url; String get fileUrl;
+ String? get url; String? get fileUrl;
 /// Create a copy of PreSignCreateEntity
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -45,7 +45,7 @@ abstract mixin class $PreSignCreateEntityCopyWith<$Res>  {
   factory $PreSignCreateEntityCopyWith(PreSignCreateEntity value, $Res Function(PreSignCreateEntity) _then) = _$PreSignCreateEntityCopyWithImpl;
 @useResult
 $Res call({
- String url, String fileUrl
+ String? url, String? fileUrl
 });
 
 
@@ -62,11 +62,11 @@ class _$PreSignCreateEntityCopyWithImpl<$Res>
 
 /// Create a copy of PreSignCreateEntity
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? url = null,Object? fileUrl = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? url = freezed,Object? fileUrl = freezed,}) {
   return _then(_self.copyWith(
-url: null == url ? _self.url : url // ignore: cast_nullable_to_non_nullable
-as String,fileUrl: null == fileUrl ? _self.fileUrl : fileUrl // ignore: cast_nullable_to_non_nullable
-as String,
+url: freezed == url ? _self.url : url // ignore: cast_nullable_to_non_nullable
+as String?,fileUrl: freezed == fileUrl ? _self.fileUrl : fileUrl // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
@@ -151,7 +151,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String url,  String fileUrl)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? url,  String? fileUrl)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PreSignCreateEntity() when $default != null:
 return $default(_that.url,_that.fileUrl);case _:
@@ -172,7 +172,7 @@ return $default(_that.url,_that.fileUrl);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String url,  String fileUrl)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? url,  String? fileUrl)  $default,) {final _that = this;
 switch (_that) {
 case _PreSignCreateEntity():
 return $default(_that.url,_that.fileUrl);case _:
@@ -192,7 +192,7 @@ return $default(_that.url,_that.fileUrl);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String url,  String fileUrl)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? url,  String? fileUrl)?  $default,) {final _that = this;
 switch (_that) {
 case _PreSignCreateEntity() when $default != null:
 return $default(_that.url,_that.fileUrl);case _:
@@ -207,11 +207,11 @@ return $default(_that.url,_that.fileUrl);case _:
 
 
 class _PreSignCreateEntity implements PreSignCreateEntity {
-  const _PreSignCreateEntity({required this.url, required this.fileUrl});
+  const _PreSignCreateEntity({this.url, this.fileUrl});
   
 
-@override final  String url;
-@override final  String fileUrl;
+@override final  String? url;
+@override final  String? fileUrl;
 
 /// Create a copy of PreSignCreateEntity
 /// with the given fields replaced by the non-null parameter values.
@@ -243,7 +243,7 @@ abstract mixin class _$PreSignCreateEntityCopyWith<$Res> implements $PreSignCrea
   factory _$PreSignCreateEntityCopyWith(_PreSignCreateEntity value, $Res Function(_PreSignCreateEntity) _then) = __$PreSignCreateEntityCopyWithImpl;
 @override @useResult
 $Res call({
- String url, String fileUrl
+ String? url, String? fileUrl
 });
 
 
@@ -260,11 +260,11 @@ class __$PreSignCreateEntityCopyWithImpl<$Res>
 
 /// Create a copy of PreSignCreateEntity
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? url = null,Object? fileUrl = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? url = freezed,Object? fileUrl = freezed,}) {
   return _then(_PreSignCreateEntity(
-url: null == url ? _self.url : url // ignore: cast_nullable_to_non_nullable
-as String,fileUrl: null == fileUrl ? _self.fileUrl : fileUrl // ignore: cast_nullable_to_non_nullable
-as String,
+url: freezed == url ? _self.url : url // ignore: cast_nullable_to_non_nullable
+as String?,fileUrl: freezed == fileUrl ? _self.fileUrl : fileUrl // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 

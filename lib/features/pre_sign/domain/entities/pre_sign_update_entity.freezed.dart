@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$PreSignUpdateEntity {
 
- int get statusCode; dynamic get data;
+ int? get statusCode; dynamic get data;
 /// Create a copy of PreSignUpdateEntity
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -45,7 +45,7 @@ abstract mixin class $PreSignUpdateEntityCopyWith<$Res>  {
   factory $PreSignUpdateEntityCopyWith(PreSignUpdateEntity value, $Res Function(PreSignUpdateEntity) _then) = _$PreSignUpdateEntityCopyWithImpl;
 @useResult
 $Res call({
- int statusCode, dynamic data
+ int? statusCode, dynamic data
 });
 
 
@@ -62,10 +62,10 @@ class _$PreSignUpdateEntityCopyWithImpl<$Res>
 
 /// Create a copy of PreSignUpdateEntity
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? statusCode = null,Object? data = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? statusCode = freezed,Object? data = freezed,}) {
   return _then(_self.copyWith(
-statusCode: null == statusCode ? _self.statusCode : statusCode // ignore: cast_nullable_to_non_nullable
-as int,data: freezed == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
+statusCode: freezed == statusCode ? _self.statusCode : statusCode // ignore: cast_nullable_to_non_nullable
+as int?,data: freezed == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
 as dynamic,
   ));
 }
@@ -151,7 +151,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int statusCode,  dynamic data)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? statusCode,  dynamic data)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PreSignUpdateEntity() when $default != null:
 return $default(_that.statusCode,_that.data);case _:
@@ -172,7 +172,7 @@ return $default(_that.statusCode,_that.data);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int statusCode,  dynamic data)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? statusCode,  dynamic data)  $default,) {final _that = this;
 switch (_that) {
 case _PreSignUpdateEntity():
 return $default(_that.statusCode,_that.data);case _:
@@ -192,7 +192,7 @@ return $default(_that.statusCode,_that.data);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int statusCode,  dynamic data)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? statusCode,  dynamic data)?  $default,) {final _that = this;
 switch (_that) {
 case _PreSignUpdateEntity() when $default != null:
 return $default(_that.statusCode,_that.data);case _:
@@ -207,10 +207,10 @@ return $default(_that.statusCode,_that.data);case _:
 
 
 class _PreSignUpdateEntity implements PreSignUpdateEntity {
-  const _PreSignUpdateEntity({required this.statusCode, required this.data});
+  const _PreSignUpdateEntity({this.statusCode, required this.data});
   
 
-@override final  int statusCode;
+@override final  int? statusCode;
 @override final  dynamic data;
 
 /// Create a copy of PreSignUpdateEntity
@@ -243,7 +243,7 @@ abstract mixin class _$PreSignUpdateEntityCopyWith<$Res> implements $PreSignUpda
   factory _$PreSignUpdateEntityCopyWith(_PreSignUpdateEntity value, $Res Function(_PreSignUpdateEntity) _then) = __$PreSignUpdateEntityCopyWithImpl;
 @override @useResult
 $Res call({
- int statusCode, dynamic data
+ int? statusCode, dynamic data
 });
 
 
@@ -260,10 +260,10 @@ class __$PreSignUpdateEntityCopyWithImpl<$Res>
 
 /// Create a copy of PreSignUpdateEntity
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? statusCode = null,Object? data = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? statusCode = freezed,Object? data = freezed,}) {
   return _then(_PreSignUpdateEntity(
-statusCode: null == statusCode ? _self.statusCode : statusCode // ignore: cast_nullable_to_non_nullable
-as int,data: freezed == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
+statusCode: freezed == statusCode ? _self.statusCode : statusCode // ignore: cast_nullable_to_non_nullable
+as int?,data: freezed == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
 as dynamic,
   ));
 }
