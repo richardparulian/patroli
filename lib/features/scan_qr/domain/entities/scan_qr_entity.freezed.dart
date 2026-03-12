@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ScanQrEntity {
 
- int? get id; String? get name; int? get kanitId; String? get kanitUsername; String? get kanitName; int? get kacabId; String? get kacabUsername; String? get kacabName; int? get areaManagerId; String? get areaManagerUsername; String? get areaManagerName; String? get qrcode; AttentionEntity? get attention;
+ int? get id; String? get name; int? get kanitId; String? get kanitUsername; String? get kanitName; int? get kacabId; String? get kacabUsername; String? get kacabName; int? get areaManagerId; String? get areaManagerUsername; String? get areaManagerName; String? get qrcode; AttentionEntity? get visitAttention;
 /// Create a copy of ScanQrEntity
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $ScanQrEntityCopyWith<ScanQrEntity> get copyWith => _$ScanQrEntityCopyWithImpl<S
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ScanQrEntity&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.kanitId, kanitId) || other.kanitId == kanitId)&&(identical(other.kanitUsername, kanitUsername) || other.kanitUsername == kanitUsername)&&(identical(other.kanitName, kanitName) || other.kanitName == kanitName)&&(identical(other.kacabId, kacabId) || other.kacabId == kacabId)&&(identical(other.kacabUsername, kacabUsername) || other.kacabUsername == kacabUsername)&&(identical(other.kacabName, kacabName) || other.kacabName == kacabName)&&(identical(other.areaManagerId, areaManagerId) || other.areaManagerId == areaManagerId)&&(identical(other.areaManagerUsername, areaManagerUsername) || other.areaManagerUsername == areaManagerUsername)&&(identical(other.areaManagerName, areaManagerName) || other.areaManagerName == areaManagerName)&&(identical(other.qrcode, qrcode) || other.qrcode == qrcode)&&(identical(other.attention, attention) || other.attention == attention));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ScanQrEntity&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.kanitId, kanitId) || other.kanitId == kanitId)&&(identical(other.kanitUsername, kanitUsername) || other.kanitUsername == kanitUsername)&&(identical(other.kanitName, kanitName) || other.kanitName == kanitName)&&(identical(other.kacabId, kacabId) || other.kacabId == kacabId)&&(identical(other.kacabUsername, kacabUsername) || other.kacabUsername == kacabUsername)&&(identical(other.kacabName, kacabName) || other.kacabName == kacabName)&&(identical(other.areaManagerId, areaManagerId) || other.areaManagerId == areaManagerId)&&(identical(other.areaManagerUsername, areaManagerUsername) || other.areaManagerUsername == areaManagerUsername)&&(identical(other.areaManagerName, areaManagerName) || other.areaManagerName == areaManagerName)&&(identical(other.qrcode, qrcode) || other.qrcode == qrcode)&&(identical(other.visitAttention, visitAttention) || other.visitAttention == visitAttention));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,name,kanitId,kanitUsername,kanitName,kacabId,kacabUsername,kacabName,areaManagerId,areaManagerUsername,areaManagerName,qrcode,attention);
+int get hashCode => Object.hash(runtimeType,id,name,kanitId,kanitUsername,kanitName,kacabId,kacabUsername,kacabName,areaManagerId,areaManagerUsername,areaManagerName,qrcode,visitAttention);
 
 @override
 String toString() {
-  return 'ScanQrEntity(id: $id, name: $name, kanitId: $kanitId, kanitUsername: $kanitUsername, kanitName: $kanitName, kacabId: $kacabId, kacabUsername: $kacabUsername, kacabName: $kacabName, areaManagerId: $areaManagerId, areaManagerUsername: $areaManagerUsername, areaManagerName: $areaManagerName, qrcode: $qrcode, attention: $attention)';
+  return 'ScanQrEntity(id: $id, name: $name, kanitId: $kanitId, kanitUsername: $kanitUsername, kanitName: $kanitName, kacabId: $kacabId, kacabUsername: $kacabUsername, kacabName: $kacabName, areaManagerId: $areaManagerId, areaManagerUsername: $areaManagerUsername, areaManagerName: $areaManagerName, qrcode: $qrcode, visitAttention: $visitAttention)';
 }
 
 
@@ -45,11 +45,11 @@ abstract mixin class $ScanQrEntityCopyWith<$Res>  {
   factory $ScanQrEntityCopyWith(ScanQrEntity value, $Res Function(ScanQrEntity) _then) = _$ScanQrEntityCopyWithImpl;
 @useResult
 $Res call({
- int? id, String? name, int? kanitId, String? kanitUsername, String? kanitName, int? kacabId, String? kacabUsername, String? kacabName, int? areaManagerId, String? areaManagerUsername, String? areaManagerName, String? qrcode, AttentionEntity? attention
+ int? id, String? name, int? kanitId, String? kanitUsername, String? kanitName, int? kacabId, String? kacabUsername, String? kacabName, int? areaManagerId, String? areaManagerUsername, String? areaManagerName, String? qrcode, AttentionEntity? visitAttention
 });
 
 
-$AttentionEntityCopyWith<$Res>? get attention;
+$AttentionEntityCopyWith<$Res>? get visitAttention;
 
 }
 /// @nodoc
@@ -62,7 +62,7 @@ class _$ScanQrEntityCopyWithImpl<$Res>
 
 /// Create a copy of ScanQrEntity
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? name = freezed,Object? kanitId = freezed,Object? kanitUsername = freezed,Object? kanitName = freezed,Object? kacabId = freezed,Object? kacabUsername = freezed,Object? kacabName = freezed,Object? areaManagerId = freezed,Object? areaManagerUsername = freezed,Object? areaManagerName = freezed,Object? qrcode = freezed,Object? attention = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? name = freezed,Object? kanitId = freezed,Object? kanitUsername = freezed,Object? kanitName = freezed,Object? kacabId = freezed,Object? kacabUsername = freezed,Object? kacabName = freezed,Object? areaManagerId = freezed,Object? areaManagerUsername = freezed,Object? areaManagerName = freezed,Object? qrcode = freezed,Object? visitAttention = freezed,}) {
   return _then(_self.copyWith(
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int?,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -76,7 +76,7 @@ as String?,areaManagerId: freezed == areaManagerId ? _self.areaManagerId : areaM
 as int?,areaManagerUsername: freezed == areaManagerUsername ? _self.areaManagerUsername : areaManagerUsername // ignore: cast_nullable_to_non_nullable
 as String?,areaManagerName: freezed == areaManagerName ? _self.areaManagerName : areaManagerName // ignore: cast_nullable_to_non_nullable
 as String?,qrcode: freezed == qrcode ? _self.qrcode : qrcode // ignore: cast_nullable_to_non_nullable
-as String?,attention: freezed == attention ? _self.attention : attention // ignore: cast_nullable_to_non_nullable
+as String?,visitAttention: freezed == visitAttention ? _self.visitAttention : visitAttention // ignore: cast_nullable_to_non_nullable
 as AttentionEntity?,
   ));
 }
@@ -84,13 +84,13 @@ as AttentionEntity?,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$AttentionEntityCopyWith<$Res>? get attention {
-    if (_self.attention == null) {
+$AttentionEntityCopyWith<$Res>? get visitAttention {
+    if (_self.visitAttention == null) {
     return null;
   }
 
-  return $AttentionEntityCopyWith<$Res>(_self.attention!, (value) {
-    return _then(_self.copyWith(attention: value));
+  return $AttentionEntityCopyWith<$Res>(_self.visitAttention!, (value) {
+    return _then(_self.copyWith(visitAttention: value));
   });
 }
 }
@@ -174,10 +174,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? id,  String? name,  int? kanitId,  String? kanitUsername,  String? kanitName,  int? kacabId,  String? kacabUsername,  String? kacabName,  int? areaManagerId,  String? areaManagerUsername,  String? areaManagerName,  String? qrcode,  AttentionEntity? attention)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? id,  String? name,  int? kanitId,  String? kanitUsername,  String? kanitName,  int? kacabId,  String? kacabUsername,  String? kacabName,  int? areaManagerId,  String? areaManagerUsername,  String? areaManagerName,  String? qrcode,  AttentionEntity? visitAttention)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ScanQrEntity() when $default != null:
-return $default(_that.id,_that.name,_that.kanitId,_that.kanitUsername,_that.kanitName,_that.kacabId,_that.kacabUsername,_that.kacabName,_that.areaManagerId,_that.areaManagerUsername,_that.areaManagerName,_that.qrcode,_that.attention);case _:
+return $default(_that.id,_that.name,_that.kanitId,_that.kanitUsername,_that.kanitName,_that.kacabId,_that.kacabUsername,_that.kacabName,_that.areaManagerId,_that.areaManagerUsername,_that.areaManagerName,_that.qrcode,_that.visitAttention);case _:
   return orElse();
 
 }
@@ -195,10 +195,10 @@ return $default(_that.id,_that.name,_that.kanitId,_that.kanitUsername,_that.kani
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? id,  String? name,  int? kanitId,  String? kanitUsername,  String? kanitName,  int? kacabId,  String? kacabUsername,  String? kacabName,  int? areaManagerId,  String? areaManagerUsername,  String? areaManagerName,  String? qrcode,  AttentionEntity? attention)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? id,  String? name,  int? kanitId,  String? kanitUsername,  String? kanitName,  int? kacabId,  String? kacabUsername,  String? kacabName,  int? areaManagerId,  String? areaManagerUsername,  String? areaManagerName,  String? qrcode,  AttentionEntity? visitAttention)  $default,) {final _that = this;
 switch (_that) {
 case _ScanQrEntity():
-return $default(_that.id,_that.name,_that.kanitId,_that.kanitUsername,_that.kanitName,_that.kacabId,_that.kacabUsername,_that.kacabName,_that.areaManagerId,_that.areaManagerUsername,_that.areaManagerName,_that.qrcode,_that.attention);case _:
+return $default(_that.id,_that.name,_that.kanitId,_that.kanitUsername,_that.kanitName,_that.kacabId,_that.kacabUsername,_that.kacabName,_that.areaManagerId,_that.areaManagerUsername,_that.areaManagerName,_that.qrcode,_that.visitAttention);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -215,10 +215,10 @@ return $default(_that.id,_that.name,_that.kanitId,_that.kanitUsername,_that.kani
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? id,  String? name,  int? kanitId,  String? kanitUsername,  String? kanitName,  int? kacabId,  String? kacabUsername,  String? kacabName,  int? areaManagerId,  String? areaManagerUsername,  String? areaManagerName,  String? qrcode,  AttentionEntity? attention)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? id,  String? name,  int? kanitId,  String? kanitUsername,  String? kanitName,  int? kacabId,  String? kacabUsername,  String? kacabName,  int? areaManagerId,  String? areaManagerUsername,  String? areaManagerName,  String? qrcode,  AttentionEntity? visitAttention)?  $default,) {final _that = this;
 switch (_that) {
 case _ScanQrEntity() when $default != null:
-return $default(_that.id,_that.name,_that.kanitId,_that.kanitUsername,_that.kanitName,_that.kacabId,_that.kacabUsername,_that.kacabName,_that.areaManagerId,_that.areaManagerUsername,_that.areaManagerName,_that.qrcode,_that.attention);case _:
+return $default(_that.id,_that.name,_that.kanitId,_that.kanitUsername,_that.kanitName,_that.kacabId,_that.kacabUsername,_that.kacabName,_that.areaManagerId,_that.areaManagerUsername,_that.areaManagerName,_that.qrcode,_that.visitAttention);case _:
   return null;
 
 }
@@ -230,7 +230,7 @@ return $default(_that.id,_that.name,_that.kanitId,_that.kanitUsername,_that.kani
 
 
 class _ScanQrEntity implements ScanQrEntity {
-  const _ScanQrEntity({this.id, this.name, this.kanitId, this.kanitUsername, this.kanitName, this.kacabId, this.kacabUsername, this.kacabName, this.areaManagerId, this.areaManagerUsername, this.areaManagerName, this.qrcode, this.attention});
+  const _ScanQrEntity({this.id, this.name, this.kanitId, this.kanitUsername, this.kanitName, this.kacabId, this.kacabUsername, this.kacabName, this.areaManagerId, this.areaManagerUsername, this.areaManagerName, this.qrcode, this.visitAttention});
   
 
 @override final  int? id;
@@ -245,7 +245,7 @@ class _ScanQrEntity implements ScanQrEntity {
 @override final  String? areaManagerUsername;
 @override final  String? areaManagerName;
 @override final  String? qrcode;
-@override final  AttentionEntity? attention;
+@override final  AttentionEntity? visitAttention;
 
 /// Create a copy of ScanQrEntity
 /// with the given fields replaced by the non-null parameter values.
@@ -257,16 +257,16 @@ _$ScanQrEntityCopyWith<_ScanQrEntity> get copyWith => __$ScanQrEntityCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ScanQrEntity&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.kanitId, kanitId) || other.kanitId == kanitId)&&(identical(other.kanitUsername, kanitUsername) || other.kanitUsername == kanitUsername)&&(identical(other.kanitName, kanitName) || other.kanitName == kanitName)&&(identical(other.kacabId, kacabId) || other.kacabId == kacabId)&&(identical(other.kacabUsername, kacabUsername) || other.kacabUsername == kacabUsername)&&(identical(other.kacabName, kacabName) || other.kacabName == kacabName)&&(identical(other.areaManagerId, areaManagerId) || other.areaManagerId == areaManagerId)&&(identical(other.areaManagerUsername, areaManagerUsername) || other.areaManagerUsername == areaManagerUsername)&&(identical(other.areaManagerName, areaManagerName) || other.areaManagerName == areaManagerName)&&(identical(other.qrcode, qrcode) || other.qrcode == qrcode)&&(identical(other.attention, attention) || other.attention == attention));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ScanQrEntity&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.kanitId, kanitId) || other.kanitId == kanitId)&&(identical(other.kanitUsername, kanitUsername) || other.kanitUsername == kanitUsername)&&(identical(other.kanitName, kanitName) || other.kanitName == kanitName)&&(identical(other.kacabId, kacabId) || other.kacabId == kacabId)&&(identical(other.kacabUsername, kacabUsername) || other.kacabUsername == kacabUsername)&&(identical(other.kacabName, kacabName) || other.kacabName == kacabName)&&(identical(other.areaManagerId, areaManagerId) || other.areaManagerId == areaManagerId)&&(identical(other.areaManagerUsername, areaManagerUsername) || other.areaManagerUsername == areaManagerUsername)&&(identical(other.areaManagerName, areaManagerName) || other.areaManagerName == areaManagerName)&&(identical(other.qrcode, qrcode) || other.qrcode == qrcode)&&(identical(other.visitAttention, visitAttention) || other.visitAttention == visitAttention));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,name,kanitId,kanitUsername,kanitName,kacabId,kacabUsername,kacabName,areaManagerId,areaManagerUsername,areaManagerName,qrcode,attention);
+int get hashCode => Object.hash(runtimeType,id,name,kanitId,kanitUsername,kanitName,kacabId,kacabUsername,kacabName,areaManagerId,areaManagerUsername,areaManagerName,qrcode,visitAttention);
 
 @override
 String toString() {
-  return 'ScanQrEntity(id: $id, name: $name, kanitId: $kanitId, kanitUsername: $kanitUsername, kanitName: $kanitName, kacabId: $kacabId, kacabUsername: $kacabUsername, kacabName: $kacabName, areaManagerId: $areaManagerId, areaManagerUsername: $areaManagerUsername, areaManagerName: $areaManagerName, qrcode: $qrcode, attention: $attention)';
+  return 'ScanQrEntity(id: $id, name: $name, kanitId: $kanitId, kanitUsername: $kanitUsername, kanitName: $kanitName, kacabId: $kacabId, kacabUsername: $kacabUsername, kacabName: $kacabName, areaManagerId: $areaManagerId, areaManagerUsername: $areaManagerUsername, areaManagerName: $areaManagerName, qrcode: $qrcode, visitAttention: $visitAttention)';
 }
 
 
@@ -277,11 +277,11 @@ abstract mixin class _$ScanQrEntityCopyWith<$Res> implements $ScanQrEntityCopyWi
   factory _$ScanQrEntityCopyWith(_ScanQrEntity value, $Res Function(_ScanQrEntity) _then) = __$ScanQrEntityCopyWithImpl;
 @override @useResult
 $Res call({
- int? id, String? name, int? kanitId, String? kanitUsername, String? kanitName, int? kacabId, String? kacabUsername, String? kacabName, int? areaManagerId, String? areaManagerUsername, String? areaManagerName, String? qrcode, AttentionEntity? attention
+ int? id, String? name, int? kanitId, String? kanitUsername, String? kanitName, int? kacabId, String? kacabUsername, String? kacabName, int? areaManagerId, String? areaManagerUsername, String? areaManagerName, String? qrcode, AttentionEntity? visitAttention
 });
 
 
-@override $AttentionEntityCopyWith<$Res>? get attention;
+@override $AttentionEntityCopyWith<$Res>? get visitAttention;
 
 }
 /// @nodoc
@@ -294,7 +294,7 @@ class __$ScanQrEntityCopyWithImpl<$Res>
 
 /// Create a copy of ScanQrEntity
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? name = freezed,Object? kanitId = freezed,Object? kanitUsername = freezed,Object? kanitName = freezed,Object? kacabId = freezed,Object? kacabUsername = freezed,Object? kacabName = freezed,Object? areaManagerId = freezed,Object? areaManagerUsername = freezed,Object? areaManagerName = freezed,Object? qrcode = freezed,Object? attention = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? name = freezed,Object? kanitId = freezed,Object? kanitUsername = freezed,Object? kanitName = freezed,Object? kacabId = freezed,Object? kacabUsername = freezed,Object? kacabName = freezed,Object? areaManagerId = freezed,Object? areaManagerUsername = freezed,Object? areaManagerName = freezed,Object? qrcode = freezed,Object? visitAttention = freezed,}) {
   return _then(_ScanQrEntity(
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int?,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -308,7 +308,7 @@ as String?,areaManagerId: freezed == areaManagerId ? _self.areaManagerId : areaM
 as int?,areaManagerUsername: freezed == areaManagerUsername ? _self.areaManagerUsername : areaManagerUsername // ignore: cast_nullable_to_non_nullable
 as String?,areaManagerName: freezed == areaManagerName ? _self.areaManagerName : areaManagerName // ignore: cast_nullable_to_non_nullable
 as String?,qrcode: freezed == qrcode ? _self.qrcode : qrcode // ignore: cast_nullable_to_non_nullable
-as String?,attention: freezed == attention ? _self.attention : attention // ignore: cast_nullable_to_non_nullable
+as String?,visitAttention: freezed == visitAttention ? _self.visitAttention : visitAttention // ignore: cast_nullable_to_non_nullable
 as AttentionEntity?,
   ));
 }
@@ -317,13 +317,13 @@ as AttentionEntity?,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$AttentionEntityCopyWith<$Res>? get attention {
-    if (_self.attention == null) {
+$AttentionEntityCopyWith<$Res>? get visitAttention {
+    if (_self.visitAttention == null) {
     return null;
   }
 
-  return $AttentionEntityCopyWith<$Res>(_self.attention!, (value) {
-    return _then(_self.copyWith(attention: value));
+  return $AttentionEntityCopyWith<$Res>(_self.visitAttention!, (value) {
+    return _then(_self.copyWith(visitAttention: value));
   });
 }
 }

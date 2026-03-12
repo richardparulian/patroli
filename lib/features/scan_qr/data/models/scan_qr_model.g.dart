@@ -19,9 +19,11 @@ _ScanQrModel _$ScanQrModelFromJson(Map<String, dynamic> json) => _ScanQrModel(
   areaManagerUsername: json['area_manager_username'] as String?,
   areaManagerName: json['area_manager_name'] as String?,
   qrcode: json['qrcode'] as String?,
-  attention: json['attention'] == null
+  visitAttention: json['visit_attention'] == null
       ? null
-      : AttentionModel.fromJson(json['attention'] as Map<String, dynamic>),
+      : AttentionModel.fromJson(
+          json['visit_attention'] as Map<String, dynamic>,
+        ),
 );
 
 Map<String, dynamic> _$ScanQrModelToJson(_ScanQrModel instance) =>
@@ -38,5 +40,5 @@ Map<String, dynamic> _$ScanQrModelToJson(_ScanQrModel instance) =>
       'area_manager_username': instance.areaManagerUsername,
       'area_manager_name': instance.areaManagerName,
       'qrcode': instance.qrcode,
-      'attention': instance.attention,
+      'visit_attention': instance.visitAttention,
     };
