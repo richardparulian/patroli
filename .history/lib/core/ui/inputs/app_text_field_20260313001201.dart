@@ -165,8 +165,6 @@ class AppTextField extends StatelessWidget {
   }
 
   TextCapitalization _getCapitalization() {
-    if (textCapitalization != null) return textCapitalization!;
-    
     if (keyboardType == TextInputType.emailAddress) return TextCapitalization.none;
     if (keyboardType == TextInputType.number) return TextCapitalization.none;
     if (keyboardType == TextInputType.phone) return TextCapitalization.none;

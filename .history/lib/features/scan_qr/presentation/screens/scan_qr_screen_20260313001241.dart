@@ -10,6 +10,7 @@ import 'package:pos/core/enums/alert_type.dart';
 import 'package:pos/core/extensions/helper_state_extension.dart';
 import 'package:pos/core/services/permission_service.dart';
 import 'package:pos/core/ui/bottom_sheets/app_bottom_sheet.dart';
+import 'package:pos/core/ui/buttons/app_button.dart';
 import 'package:pos/core/ui/buttons/app_icon_button.dart';
 import 'package:pos/core/ui/cards/app_card_alert.dart';
 import 'package:pos/core/ui/dialogs/app_dialog.dart';
@@ -134,7 +135,41 @@ class _ScanQrScreenState extends ConsumerState<ScanQrScreen> with WidgetsBinding
 
     await AppBottomSheet.showWithKeyboard(
       context: context,
-      builder: (context) => _buildBranchCodeModal(isLoading: isLoading),
+      builder: (context) => Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          AppBottomSheet.buildHeader(
+            context: context,
+            title: 'Masukkan Kode Cabang',
+          ),
+          const SizedBox(height: 10),
+          AppTextField(
+            controller: _branchCodeController,
+            label: 'Kode Cabang',
+            hint: 'Masukkan kode cabang contoh: KYB001-1',
+            keyboardType: TextInputType.text,
+            prefixIcon: const Icon(Iconsax.code),
+            textCapitalization: TextCapitalization.characters,
+          ),
+          const SizedBox(height: 16),
+          AppIconButton(
+            label: 'Lanjut',
+            icon: const Icon(Iconsax.next),
+            minimumSize: const Size(double.infinity, 45),
+            onPressed: isLoading ? null : () async {
+              final branchCode = _branchCodeController.text.trim();
+
+              if (branchCode.isEmpty) return;
+              if (!mounted) return;
+              
+              context.pop();
+
+              await _onScanned(branchCode);
+            },
+          ),
+        ],
+      ),
     );
   }
 
@@ -353,45 +388,6 @@ class _ScanQrScreenState extends ConsumerState<ScanQrScreen> with WidgetsBinding
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildBranchCodeModal({required bool isLoading}) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        AppBottomSheet.buildHeader(
-          context: context,
-          title: 'Masukkan Kode Cabang',
-        ),
-        const SizedBox(height: 10),
-        AppTextField(
-          cursor: true,
-          label: 'Kode Cabang',
-          hint: 'Masukkan kode cabang contoh: KYB001-1',
-          controller: _branchCodeController,
-          keyboardType: TextInputType.text,
-          prefixIcon: const Icon(Iconsax.code),
-          textCapitalization: TextCapitalization.characters,
-        ),
-        const SizedBox(height: 16),
-        AppIconButton(
-          label: 'Lanjut',
-          icon: const Icon(Iconsax.next),
-          minimumSize: const Size(double.infinity, 45),
-          onPressed: isLoading ? null : () async {
-            final branchCode = _branchCodeController.text.trim();
-
-            if (branchCode.isEmpty) return;
-            if (!mounted) return;
-            
-            context.pop();
-
-            await _onScanned(branchCode);
-          },
-        ),
-      ],
     );
   }
 }

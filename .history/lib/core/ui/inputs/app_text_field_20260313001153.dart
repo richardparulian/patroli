@@ -85,7 +85,7 @@ class AppTextField extends StatelessWidget {
           maxLength: isMultiline ? 200 : null,
           buildCounter: isMultiline ? (_, {required int currentLength, required int? maxLength, required bool isFocused}) => null : null,
           keyboardType: keyboardType ?? (isMultiline ? TextInputType.multiline : TextInputType.text),
-          textCapitalization: textCapitalization ?? _getCapitalization(),
+          textCapitalization: _getCapitalization(),
           style: textTheme.bodyLarge?.copyWith(
             color: isDisabled? colorScheme.onSurface.withValues(alpha: 0.4) : colorScheme.onSurface,
           ),
@@ -165,8 +165,6 @@ class AppTextField extends StatelessWidget {
   }
 
   TextCapitalization _getCapitalization() {
-    if (textCapitalization != null) return textCapitalization!;
-    
     if (keyboardType == TextInputType.emailAddress) return TextCapitalization.none;
     if (keyboardType == TextInputType.number) return TextCapitalization.none;
     if (keyboardType == TextInputType.phone) return TextCapitalization.none;
