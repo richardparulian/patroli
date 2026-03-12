@@ -164,6 +164,10 @@ class $AssetsImagesLogosGen {
   AssetGenImage get pgiHorizontal =>
       const AssetGenImage('assets/images/logos/pgi-horizontal.webp');
 
+  /// File path: assets/images/logos/pgi-patroli.webp
+  AssetGenImage get pgiPatroli =>
+      const AssetGenImage('assets/images/logos/pgi-patroli.webp');
+
   /// File path: assets/images/logos/pgi-square.webp
   AssetGenImage get pgiSquare =>
       const AssetGenImage('assets/images/logos/pgi-square.webp');
@@ -172,6 +176,7 @@ class $AssetsImagesLogosGen {
   List<AssetGenImage> get values => [
     pgiHorizontalWhite,
     pgiHorizontal,
+    pgiPatroli,
     pgiSquare,
   ];
 }
