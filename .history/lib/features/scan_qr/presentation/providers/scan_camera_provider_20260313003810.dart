@@ -53,8 +53,14 @@ class ScanCameraNotifier extends Notifier<ScanQrState> {
     state = state.copyWith(isTorchOn: !state.isTorchOn);
   }
 
-  void setCameraPermissionGranted(bool isCameraPermissionGranted) {
-    state = state.copyWith(isCameraPermissionGranted: isCameraPermissionGranted);
+  Future<void> checkCameraPermission() async { 
+    final hasPermission = await PermissionService.checkAndRequestCameraPermission();
+
+    if (hasPermission) {
+      state = state.copyWith(isCameraPermissionGranted: true);
+    } else {
+      state = state.copyWith(isCameraPermissionGranted: false);
+    }
   }
 }
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:pos/core/ui/dialogs/app_dialog.dart';
 
 class PermissionService {
   // :: Check if a specific permission is granted

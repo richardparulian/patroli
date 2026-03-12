@@ -144,7 +144,8 @@ class _ScanQrScreenState extends ConsumerState<ScanQrScreen> with WidgetsBinding
   @override
   Widget build(BuildContext context) {
     final cameraState = ref.watch(scanCameraProvider);
-
+    final hasPermission = ref.watch(scanCameraProvider.select((s) => s.isCameraPermissionGranted));
+    
     final isLoading = ref.watch(scanQrProvider.select((s) => s.isLoading)); 
 
     ref.listen(scanQrProvider, (prev, next) {
@@ -179,7 +180,7 @@ class _ScanQrScreenState extends ConsumerState<ScanQrScreen> with WidgetsBinding
     return Scaffold(
       body: Stack(
         children: [
-          if (!cameraState.isCameraPermissionGranted) ...[
+          if (cameraState.isCameraPermissionGranted) ...[
             Positioned(
               child: Center(
                 child: _buildPermissionDeniedWidget(),

@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import 'package:ai_barcode_scanner/ai_barcode_scanner.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:pos/core/constants/app_constants.dart';
 import 'package:pos/core/enums/alert_type.dart';
 import 'package:pos/core/extensions/helper_state_extension.dart';
@@ -44,7 +43,7 @@ class _ScanQrScreenState extends ConsumerState<ScanQrScreen> with WidgetsBinding
     ref.read(scanCameraProvider.notifier).setController(_controller);
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await _checkCameraPermission();
+      await _checkCameraPermission(isCheckPermission: false);
     });
   }
 
@@ -65,21 +64,8 @@ class _ScanQrScreenState extends ConsumerState<ScanQrScreen> with WidgetsBinding
     
     if (state == AppLifecycleState.resumed) {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
-        await _checkCameraPermission();
+        
       });
-    }
-  }
-
-  Future<void> _checkCameraPermission() async {
-    final hasPermission = await PermissionService.checkAndRequestCameraPermission();
-
-    debugPrint('hasPermission asd: $hasPermission');
-
-    if (hasPermission) {
-      ref.read(scanCameraProvider.notifier).setCameraPermissionGranted(true);
-      await _controller.start();
-    } else {
-      ref.read(scanCameraProvider.notifier).setCameraPermissionGranted(false);
     }
   }
 
@@ -100,7 +86,7 @@ class _ScanQrScreenState extends ConsumerState<ScanQrScreen> with WidgetsBinding
     await oldController.dispose();
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await _checkCameraPermission();
+      await _checkCameraPermission(isCheckPermission: false);
     });
   }
 
@@ -143,8 +129,6 @@ class _ScanQrScreenState extends ConsumerState<ScanQrScreen> with WidgetsBinding
 
   @override
   Widget build(BuildContext context) {
-    final cameraState = ref.watch(scanCameraProvider);
-
     final isLoading = ref.watch(scanQrProvider.select((s) => s.isLoading)); 
 
     ref.listen(scanQrProvider, (prev, next) {
@@ -155,6 +139,7 @@ class _ScanQrScreenState extends ConsumerState<ScanQrScreen> with WidgetsBinding
           final entity = val;
 
           ref.read(scanCameraProvider.notifier).pauseScanner();
+  
           context.pushReplacement(AppConstants.checkInRoute, extra: entity);
         },
         error: (msg) {
@@ -179,64 +164,26 @@ class _ScanQrScreenState extends ConsumerState<ScanQrScreen> with WidgetsBinding
     return Scaffold(
       body: Stack(
         children: [
-          if (!cameraState.isCameraPermissionGranted) ...[
-            Positioned(
-              child: Center(
-                child: _buildPermissionDeniedWidget(),
-              )
-            )
-          ] else ...[
-            Positioned.fill(
-              child: _buildScanner(),
-            ),
-            if (isLoading) ...[
-              AppLoading(message: 'Memproses kode QR...'),
-            ],
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  _buildPoweredBy(),
-                  _buildBottomMenu(),
-                ],
-              ),
-            ),
+          Positioned.fill(
+            child: _buildScanner(),
+          ),
+          if (isLoading) ...[
+            AppLoading(message: 'Memproses kode QR...'),
           ],
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _buildPoweredBy(),
+                _buildBottomMenu(),
+              ],
+            ),
+          ),
         ],
       ),
-    );
-  }
-
-  Widget _buildPermissionDeniedWidget() {
-    final theme = Theme.of(context);
-    final color = theme.colorScheme;
-
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Icon(Iconsax.camera_slash, size: 50, color: color.onSurface),
-        const SizedBox(height: 10),
-        Text('Izin kamera belum diberikan.', 
-          style: TextStyle(
-            fontSize: 16, 
-            fontWeight: FontWeight.w500, 
-            color: color.onSurface,
-          ),
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: 10),
-        AppIconButton(
-          height: 40,
-          label: 'Izinkan',
-          icon: const Icon(Icons.settings),
-          onPressed: () async => await openAppSettings(),
-        ),
-      ],
     );
   }
 

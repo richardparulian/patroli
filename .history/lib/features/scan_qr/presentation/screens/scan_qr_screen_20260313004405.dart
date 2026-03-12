@@ -73,8 +73,6 @@ class _ScanQrScreenState extends ConsumerState<ScanQrScreen> with WidgetsBinding
   Future<void> _checkCameraPermission() async {
     final hasPermission = await PermissionService.checkAndRequestCameraPermission();
 
-    debugPrint('hasPermission asd: $hasPermission');
-
     if (hasPermission) {
       ref.read(scanCameraProvider.notifier).setCameraPermissionGranted(true);
       await _controller.start();
@@ -100,7 +98,8 @@ class _ScanQrScreenState extends ConsumerState<ScanQrScreen> with WidgetsBinding
     await oldController.dispose();
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await _checkCameraPermission();
+      // await _checkCameraPermission(isCheckPermission: false);
+      await ref.read(scanCameraProvider.notifier).checkCameraPermission();
     });
   }
 
@@ -144,7 +143,6 @@ class _ScanQrScreenState extends ConsumerState<ScanQrScreen> with WidgetsBinding
   @override
   Widget build(BuildContext context) {
     final cameraState = ref.watch(scanCameraProvider);
-
     final isLoading = ref.watch(scanQrProvider.select((s) => s.isLoading)); 
 
     ref.listen(scanQrProvider, (prev, next) {
@@ -179,7 +177,7 @@ class _ScanQrScreenState extends ConsumerState<ScanQrScreen> with WidgetsBinding
     return Scaffold(
       body: Stack(
         children: [
-          if (!cameraState.isCameraPermissionGranted) ...[
+          if (cameraState.isCameraPermissionGranted) ...[
             Positioned(
               child: Center(
                 child: _buildPermissionDeniedWidget(),

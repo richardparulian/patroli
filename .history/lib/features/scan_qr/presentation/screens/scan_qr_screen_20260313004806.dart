@@ -144,6 +144,7 @@ class _ScanQrScreenState extends ConsumerState<ScanQrScreen> with WidgetsBinding
   @override
   Widget build(BuildContext context) {
     final cameraState = ref.watch(scanCameraProvider);
+    final hasPermission = ref.watch(scanCameraProvider.select((s) => s.isCameraPermissionGranted));
 
     final isLoading = ref.watch(scanQrProvider.select((s) => s.isLoading)); 
 

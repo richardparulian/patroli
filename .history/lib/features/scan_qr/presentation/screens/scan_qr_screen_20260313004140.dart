@@ -69,17 +69,14 @@ class _ScanQrScreenState extends ConsumerState<ScanQrScreen> with WidgetsBinding
       });
     }
   }
-
+  
   Future<void> _checkCameraPermission() async {
-    final hasPermission = await PermissionService.checkAndRequestCameraPermission();
+    final hasPermission = ref.read(scanCameraProvider.select((s) => s.isCameraPermissionGranted));
 
-    debugPrint('hasPermission asd: $hasPermission');
+    debugPrint('hasPermission: $hasPermission');
 
     if (hasPermission) {
-      ref.read(scanCameraProvider.notifier).setCameraPermissionGranted(true);
       await _controller.start();
-    } else {
-      ref.read(scanCameraProvider.notifier).setCameraPermissionGranted(false);
     }
   }
 
@@ -100,7 +97,8 @@ class _ScanQrScreenState extends ConsumerState<ScanQrScreen> with WidgetsBinding
     await oldController.dispose();
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await _checkCameraPermission();
+      // await _checkCameraPermission(isCheckPermission: false);
+      await ref.read(scanCameraProvider.notifier).checkCameraPermission();
     });
   }
 
@@ -144,7 +142,6 @@ class _ScanQrScreenState extends ConsumerState<ScanQrScreen> with WidgetsBinding
   @override
   Widget build(BuildContext context) {
     final cameraState = ref.watch(scanCameraProvider);
-
     final isLoading = ref.watch(scanQrProvider.select((s) => s.isLoading)); 
 
     ref.listen(scanQrProvider, (prev, next) {
@@ -233,7 +230,7 @@ class _ScanQrScreenState extends ConsumerState<ScanQrScreen> with WidgetsBinding
         AppIconButton(
           height: 40,
           label: 'Izinkan',
-          icon: const Icon(Icons.settings),
+          icon: const Icon(Iconsax.setting),
           onPressed: () async => await openAppSettings(),
         ),
       ],

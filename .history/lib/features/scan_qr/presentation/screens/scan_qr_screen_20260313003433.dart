@@ -44,7 +44,8 @@ class _ScanQrScreenState extends ConsumerState<ScanQrScreen> with WidgetsBinding
     ref.read(scanCameraProvider.notifier).setController(_controller);
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await _checkCameraPermission();
+      // await _checkCameraPermission(isCheckPermission: false);
+      await ref.read(scanCameraProvider.notifier).checkCameraPermission();
     });
   }
 
@@ -65,21 +66,8 @@ class _ScanQrScreenState extends ConsumerState<ScanQrScreen> with WidgetsBinding
     
     if (state == AppLifecycleState.resumed) {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
-        await _checkCameraPermission();
+        await ref.read(scanCameraProvider.notifier).checkCameraPermission();
       });
-    }
-  }
-
-  Future<void> _checkCameraPermission() async {
-    final hasPermission = await PermissionService.checkAndRequestCameraPermission();
-
-    debugPrint('hasPermission asd: $hasPermission');
-
-    if (hasPermission) {
-      ref.read(scanCameraProvider.notifier).setCameraPermissionGranted(true);
-      await _controller.start();
-    } else {
-      ref.read(scanCameraProvider.notifier).setCameraPermissionGranted(false);
     }
   }
 
@@ -100,7 +88,8 @@ class _ScanQrScreenState extends ConsumerState<ScanQrScreen> with WidgetsBinding
     await oldController.dispose();
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await _checkCameraPermission();
+      // await _checkCameraPermission(isCheckPermission: false);
+      await ref.read(scanCameraProvider.notifier).checkCameraPermission();
     });
   }
 
@@ -144,7 +133,6 @@ class _ScanQrScreenState extends ConsumerState<ScanQrScreen> with WidgetsBinding
   @override
   Widget build(BuildContext context) {
     final cameraState = ref.watch(scanCameraProvider);
-
     final isLoading = ref.watch(scanQrProvider.select((s) => s.isLoading)); 
 
     ref.listen(scanQrProvider, (prev, next) {
@@ -233,7 +221,7 @@ class _ScanQrScreenState extends ConsumerState<ScanQrScreen> with WidgetsBinding
         AppIconButton(
           height: 40,
           label: 'Izinkan',
-          icon: const Icon(Icons.settings),
+          icon: const Icon(Iconsax.setting),
           onPressed: () async => await openAppSettings(),
         ),
       ],

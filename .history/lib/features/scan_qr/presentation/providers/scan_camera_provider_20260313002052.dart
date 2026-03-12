@@ -5,19 +5,19 @@ import 'package:pos/core/services/permission_service.dart';
 class ScanQrState {
   final bool isTorchOn;
   final bool isProcessing;
-  final bool isCameraPermissionGranted;
 
   const ScanQrState({
     this.isTorchOn = false,
     this.isProcessing = false,
-    this.isCameraPermissionGranted = false,
   });
 
-  ScanQrState copyWith({bool? isTorchOn, bool? isProcessing,  bool? isCameraPermissionGranted}) {
+  ScanQrState copyWith({
+    bool? isTorchOn, 
+    bool? isProcessing, 
+  }) {
     return ScanQrState(
       isTorchOn: isTorchOn ?? this.isTorchOn,
       isProcessing: isProcessing ?? this.isProcessing,
-      isCameraPermissionGranted: isCameraPermissionGranted ?? this.isCameraPermissionGranted,
     );
   }
 }
@@ -53,8 +53,14 @@ class ScanCameraNotifier extends Notifier<ScanQrState> {
     state = state.copyWith(isTorchOn: !state.isTorchOn);
   }
 
-  void setCameraPermissionGranted(bool isCameraPermissionGranted) {
-    state = state.copyWith(isCameraPermissionGranted: isCameraPermissionGranted);
+  Future<void> checkCameraPermission({required bool isCheckPermission}) async { 
+    final hasPermission = await PermissionService.checkAndRequestCameraPermission(
+      isCheckPermission: isCheckPermission,
+    );
+
+    if (hasPermission) {
+      await _controller.start();
+    }
   }
 }
 

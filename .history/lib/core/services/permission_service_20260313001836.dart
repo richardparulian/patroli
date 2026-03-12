@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:pos/core/ui/dialogs/app_dialog.dart';
 
 class PermissionService {
   // :: Check if a specific permission is granted
@@ -55,7 +56,7 @@ class PermissionService {
   }
 
   // :: Check and request camera permission with default messages
-  static Future<bool> checkAndRequestCameraPermission({BuildContext? context, String? deniedMessage, String? permanentlyDeniedMessage}) async {
+  static Future<bool> checkAndRequestCameraPermission({BuildContext? context, String? deniedMessage, String? permanentlyDeniedMessage, bool isCheckPermission = false}) async {
     return checkAndRequestPermission(
       Permission.camera,
       context: context,
@@ -63,6 +64,7 @@ class PermissionService {
       permanentlyDeniedMessage: permanentlyDeniedMessage ?? 'Izinkan akses kamera untuk proses scan kode QR dan absensi',
       permanentlyDeniedTitle: 'Akses Kamera Ditolak',
       permanentlyDeniedButtonText: 'Izinkan',
+      isCheckPermission: isCheckPermission,
     );
   }
 
