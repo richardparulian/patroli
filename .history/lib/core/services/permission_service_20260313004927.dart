@@ -101,37 +101,37 @@ class PermissionService {
     await openAppSettings();
   }
 
-  // static String _getDefaultTitle(Permission permission) {
-  //   switch (permission) {
-  //     case Permission.camera:
-  //       return 'Akses Kamera Ditolak';
-  //     case Permission.location:
-  //       return 'Akses Lokasi Ditolak';
-  //     case Permission.storage:
-  //       return 'Akses Penyimpanan Ditolak';
-  //     case Permission.photos:
-  //       return 'Akses Foto Ditolak';
-  //     case Permission.microphone:
-  //       return 'Akses Mikrofon Ditolak';
-  //     default:
-  //       return 'Akses Ditolak';
-  //   }
-  // }
+  static String _getDefaultTitle(Permission permission) {
+    switch (permission) {
+      case Permission.camera:
+        return 'Akses Kamera Ditolak';
+      case Permission.location:
+        return 'Akses Lokasi Ditolak';
+      case Permission.storage:
+        return 'Akses Penyimpanan Ditolak';
+      case Permission.photos:
+        return 'Akses Foto Ditolak';
+      case Permission.microphone:
+        return 'Akses Mikrofon Ditolak';
+      default:
+        return 'Akses Ditolak';
+    }
+  }
 
-//   static String _getDefaultPermanentlyDeniedMessage(Permission permission) {
-//     switch (permission) {
-//       case Permission.camera:
-//         return 'Izinkan akses ke kamera untuk mengambil foto';
-//       case Permission.location:
-//         return 'Izinkan akses ke lokasi untuk melanjutkan';
-//       case Permission.storage:
-//         return 'Izinkan akses ke penyimpanan untuk menyimpan file';
-//       case Permission.photos:
-//         return 'Izinkan akses ke galeri untuk memilih foto';
-//       case Permission.microphone:
-//         return 'Izinkan akses ke mikrofon untuk merekam suara';
-//       default:
-//         return 'Izinkan akses yang diperlukan di pengaturan aplikasi';
-//     }
-//   }
+  static String _getDefaultPermanentlyDeniedMessage(Permission permission) {
+    switch (permission) {
+      case Permission.camera:
+        return 'Izinkan akses ke kamera untuk mengambil foto';
+      case Permission.location:
+        return 'Izinkan akses ke lokasi untuk melanjutkan';
+      case Permission.storage:
+        return 'Izinkan akses ke penyimpanan untuk menyimpan file';
+      case Permission.photos:
+        return 'Izinkan akses ke galeri untuk memilih foto';
+      case Permission.microphone:
+        return 'Izinkan akses ke mikrofon untuk merekam suara';
+      default:
+        return 'Izinkan akses yang diperlukan di pengaturan aplikasi';
+    }
+  }
 }

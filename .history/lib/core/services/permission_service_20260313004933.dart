@@ -118,20 +118,20 @@ class PermissionService {
   //   }
   // }
 
-//   static String _getDefaultPermanentlyDeniedMessage(Permission permission) {
-//     switch (permission) {
-//       case Permission.camera:
-//         return 'Izinkan akses ke kamera untuk mengambil foto';
-//       case Permission.location:
-//         return 'Izinkan akses ke lokasi untuk melanjutkan';
-//       case Permission.storage:
-//         return 'Izinkan akses ke penyimpanan untuk menyimpan file';
-//       case Permission.photos:
-//         return 'Izinkan akses ke galeri untuk memilih foto';
-//       case Permission.microphone:
-//         return 'Izinkan akses ke mikrofon untuk merekam suara';
-//       default:
-//         return 'Izinkan akses yang diperlukan di pengaturan aplikasi';
-//     }
-//   }
+  static String _getDefaultPermanentlyDeniedMessage(Permission permission) {
+    switch (permission) {
+      case Permission.camera:
+        return 'Izinkan akses ke kamera untuk mengambil foto';
+      case Permission.location:
+        return 'Izinkan akses ke lokasi untuk melanjutkan';
+      case Permission.storage:
+        return 'Izinkan akses ke penyimpanan untuk menyimpan file';
+      case Permission.photos:
+        return 'Izinkan akses ke galeri untuk memilih foto';
+      case Permission.microphone:
+        return 'Izinkan akses ke mikrofon untuk merekam suara';
+      default:
+        return 'Izinkan akses yang diperlukan di pengaturan aplikasi';
+    }
+  }
 }
