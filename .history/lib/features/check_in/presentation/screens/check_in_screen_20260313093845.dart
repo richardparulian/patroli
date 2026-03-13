@@ -253,7 +253,7 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> with SingleTicker
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Konfirmasi Masuk',
+              Text('Konfirmasi Kunjungan',
                 style: theme.textTheme.headlineSmall?.copyWith(
                   fontSize: 18,
                   color: color.onSurface,
