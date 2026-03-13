@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pos/features/reports/domain/entities/reports_entity.dart';
 import 'package:pos/features/reports/domain/usecases/reports_use_case.dart';

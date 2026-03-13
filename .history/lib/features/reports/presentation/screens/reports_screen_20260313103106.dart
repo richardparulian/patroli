@@ -58,8 +58,6 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
             PagingListener(
               controller: _pagingController,
               builder: (context, state, fetchNextPage) {
-                final items = state.items ?? [];
-
                 return PagedSliverList<int, ReportsEntity>(
                   state: state,
                   fetchNextPage: fetchNextPage,
@@ -142,7 +140,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                       ),
                     ),
                     itemBuilder: (context, report, index) {
-                      final isLast = index == items.length - 1;
+                      final isLast = index == reportController.reports.length - 1;
 
                       return Column(
                         children: [

@@ -21,7 +21,7 @@ class ReportsRemoteDataSourceImpl implements ReportsRemoteDataSource {
     try {
       final result = await _apiClient.get(ApiEndpoints.visitList, queryParameters: {
         'page': page,
-        'per_page': limit,
+        'limit': limit,
         'with_pagination': pagination,
       });
 

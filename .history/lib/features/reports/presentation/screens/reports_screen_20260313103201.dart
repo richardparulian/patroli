@@ -143,6 +143,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                     ),
                     itemBuilder: (context, report, index) {
                       final isLast = index == items.length - 1;
+                      // final isLast = index == reportController.reports.length - 1;
 
                       return Column(
                         children: [
