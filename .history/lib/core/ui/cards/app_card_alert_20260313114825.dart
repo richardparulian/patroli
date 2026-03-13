@@ -89,7 +89,7 @@ class AppAlertCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('$title${condition == null ? '' : condition! > AppConstants.store ? ' - Lahan Kosong' : ' - Ruko'}',
+                    Text('$title${condition > AppConstants.store ? ' - Lahan Kosong' : ' - Ruko'}',
                       style: textTheme.titleSmall?.copyWith(
                         color: colorScheme.onSurface,
                         fontWeight: FontWeight.w700,

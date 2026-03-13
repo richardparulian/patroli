@@ -6,7 +6,7 @@ import 'package:pos/core/enums/alert_type.dart';
 class AppAlertCard extends StatelessWidget {
   final String title;
   final String message;
-  final int? condition;
+  final int condition;
   final IconData? customIcon;
   final Color? customColor;
   final AlertType type;
@@ -16,7 +16,7 @@ class AppAlertCard extends StatelessWidget {
     super.key,
     required this.title,
     required this.message,
-    this.condition,
+    this.condition = 0,
     this.customIcon,
     this.customColor,
     this.type = AlertType.info,
@@ -82,14 +82,14 @@ class AppAlertCard extends StatelessWidget {
                   color: color.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: Icon(icon, color: color, size: 25), 
+                child: Icon(icon, color: color, size: 25),
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('$title${condition == null ? '' : condition! > AppConstants.store ? ' - Lahan Kosong' : ' - Ruko'}',
+                    Text('$title${condition > AppConstants.store ? ' - Lahan Kosong' : ' - Ruko'}',
                       style: textTheme.titleSmall?.copyWith(
                         color: colorScheme.onSurface,
                         fontWeight: FontWeight.w700,
