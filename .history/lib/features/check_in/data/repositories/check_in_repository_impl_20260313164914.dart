@@ -14,16 +14,17 @@ class CheckInRepositoryImpl implements CheckInRepository {
 
   @override
   Future<Either<Failure, CheckInEntity>> createCheckIn(CheckInRequest request) async {
-    try {
-      final model = await _remoteDataSource.createCheckIn(request);
-      return Right(model.toEntity());
-    } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message));
-    } on NetworkException catch (e) {
-      return Left(NetworkFailure(message: e.message));
-    } on Exception catch (e) {
-      return Left(ServerFailure(message: e.toString()));
-    }
+    // try {
+      
+    // } on ServerException {
+    //   return Left(ServerFailure(message: 'Failed to fetch check in'));
+    // } on NetworkException {
+    //   return Left(NetworkFailure(message: 'No internet connection'));
+    // } on Exception catch (e) {
+    //   return Left(ServerFailure(message: e.toString()));
+    // }
+    final model = await _remoteDataSource.createCheckIn(request);
+    return Right(model.toEntity());
   }
 }
 
