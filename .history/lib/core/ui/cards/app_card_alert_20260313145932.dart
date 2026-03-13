@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:pos/core/constants/app_constants.dart';
 import 'package:pos/core/enums/alert_type.dart';
 
 class AppAlertCard extends StatelessWidget {
@@ -76,7 +77,7 @@ class AppAlertCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                padding: const EdgeInsets.all(15),
+                padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
                   color: color.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(10),
@@ -88,7 +89,7 @@ class AppAlertCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(title,
+                    Text('$title${condition == null ? '' : condition! > AppConstants.store ? ' - Lahan Kosong' : ' - Ruko'}',
                       style: textTheme.titleSmall?.copyWith(
                         color: colorScheme.onSurface,
                         fontWeight: FontWeight.w700,

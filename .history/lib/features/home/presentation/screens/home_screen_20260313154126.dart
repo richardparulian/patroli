@@ -46,7 +46,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final isLoading = ref.watch(authLogoutProvider.select((s) => s.isLoading));  
 
     return Scaffold(
-      // backgroundColor: color.primary,
       // body: Container(
       //   decoration: BoxDecoration(
       //     gradient: LinearGradient(
@@ -181,142 +180,135 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       //     ],
       //   ),
       // ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.topRight,
-            colors: [
-              color.primary,
-              color.primaryContainer,
-            ],
-          ),
-        ),
-        child: RefreshIndicator(
-          onRefresh: () => ref.read(countReportsProvider.notifier).fetchCount(),
-          child: CustomScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            slivers: [
-              SliverAppBar(
-                pinned: true,
-                elevation: 0,
-                expandedHeight: 120,
-                scrolledUnderElevation: 2,
-                backgroundColor: theme.colorScheme.primary,
-                title: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Image.asset(Assets.images.logos.pgiHorizontalWhite.path, width: 120),
-                    CircleAvatar(
-                      radius: 18,
-                      backgroundColor: Colors.grey.shade200,
-                      child: ClipOval(
-                        child: CircleImages(
-                          name: userSession?.name ?? 'Security Patrol',
-                        ),
+      body: RefreshIndicator(
+        onRefresh: () => ref.read(countReportsProvider.notifier).fetchCount(),
+        child: CustomScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          slivers: [
+            SliverAppBar(
+              pinned: true,
+              elevation: 0,
+              expandedHeight: 120,
+              backgroundColor: color.primary,
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Image.asset(Assets.images.logos.pgiHorizontalWhite.path, width: 120),
+                  CircleAvatar(
+                    radius: 18,
+                    backgroundColor: Colors.grey.shade200,
+                    child: ClipOval(
+                      child: CircleImages(
+                        name: userSession?.name ?? 'Security Patrol',
                       ),
-                    ),
-                  ],
-                ),
-                flexibleSpace: FlexibleSpaceBar(
-                  background: Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          color.primary,
-                          color.primaryContainer,
-                        ],
-                      ),
-                    ),
-                    padding: const EdgeInsets.fromLTRB(20, kToolbarHeight + 35, 20, 20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text('Sistem Patroli Keamanan',
-                          style: theme.textTheme.titleMedium?.copyWith(
-                            color: color.onPrimary,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text('Kontrol dan pelaporan kondisi cabang',
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: color.onPrimary.withValues(alpha: 0.8),
-                          ),
-                        ),
-                      ],
                     ),
                   ),
-                ),
+                ],
               ),
-              SliverFillRemaining(
-                hasScrollBody: true,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20, 
-                    vertical: 10,
-                  ),
-                  decoration: BoxDecoration(
-                    color: color.surface,
-                    borderRadius: const BorderRadius.vertical(
-                      top: Radius.circular(30),
-                    ),
-                  ),
+
+              /// Header besar
+              flexibleSpace: FlexibleSpaceBar(
+                background: Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 120, 20, 20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Text('Halo, ${(userSession?.name.firstNameSecondName) ?? '---'}',
-                              style: theme.textTheme.titleMedium?.copyWith(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          const ThemeToggleSwitch(),
-                        ],
-                      ),
-                      const SizedBox(height: 15),
-                      Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: countReports.isError ? color.error.withValues(alpha: 0.5) : color.primaryContainer,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: countReports.when(
-                          idle: () => const SizedBox(),
-                          loading: () => const ShimmerDashboard(),
-                          success: (data) => SummaryDashboard(
-                            totalReports: data.total,
-                            byStatus: data.byStatus,
-                          ),
-                          error: (message) => ErrorDashboard(errorMessage: message),
+                      // const SizedBox(height: 30),
+
+                      Text(
+                        'Sistem Patroli Keamanan',
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          color: color.onPrimary,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const SizedBox(height: 25),
-                      _buildMenuCard(
-                        context,
-                        title: 'Tambah Laporan',
-                        subtitle: 'Buat laporan patroli',
-                        icon: Iconsax.scan,
-                        onTap: () => context.push(AppConstants.scanQrRoute),
-                      ),
-                      const SizedBox(height: 10),
-                      _buildMenuCard(
-                        context,
-                        title: 'Daftar Laporan',
-                        subtitle: 'Lihat laporan yang telah dibuat',
-                        icon: Iconsax.document_text_1,
-                        onTap: () => context.goNamed('history_report'),
+                      Text(
+                        'Kontrol dan pelaporan kondisi cabang',
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: color.onPrimary.withValues(alpha: 0.8),
+                        ),
                       ),
                     ],
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+
+            /// BODY
+            SliverFillRemaining(
+              hasScrollBody: true,
+              child: Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: color.surface,
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(30),
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            'Halo, ${(userSession?.name.firstNameSecondName) ?? '---'}',
+                            style: theme.textTheme.titleMedium?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        const ThemeToggleSwitch(),
+                      ],
+                    ),
+
+                    const SizedBox(height: 15),
+
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: countReports.isError
+                            ? color.error.withValues(alpha: 0.5)
+                            : color.primaryContainer,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: countReports.when(
+                        idle: () => const SizedBox(),
+                        loading: () => const ShimmerDashboard(),
+                        success: (data) => SummaryDashboard(
+                          totalReports: data.total,
+                          byStatus: data.byStatus,
+                        ),
+                        error: (message) =>
+                            ErrorDashboard(errorMessage: message),
+                      ),
+                    ),
+
+                    const SizedBox(height: 25),
+
+                    _buildMenuCard(
+                      context,
+                      title: 'Tambah Laporan',
+                      subtitle: 'Buat laporan patroli',
+                      icon: Iconsax.scan,
+                      onTap: () => context.push(AppConstants.scanQrRoute),
+                    ),
+
+                    const SizedBox(height: 10),
+
+                    _buildMenuCard(
+                      context,
+                      title: 'Daftar Laporan',
+                      subtitle: 'Lihat laporan yang telah dibuat',
+                      icon: Iconsax.document_text_1,
+                      onTap: () => context.goNamed('history_report'),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
       ),
       bottomNavigationBar: Container(

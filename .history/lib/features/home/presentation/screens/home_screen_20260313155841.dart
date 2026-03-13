@@ -252,10 +252,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               SliverFillRemaining(
                 hasScrollBody: true,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20, 
-                    vertical: 10,
-                  ),
+                  padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
                     color: color.surface,
                     borderRadius: const BorderRadius.vertical(
@@ -278,11 +275,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           const ThemeToggleSwitch(),
                         ],
                       ),
+
                       const SizedBox(height: 15),
+
                       Container(
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: countReports.isError ? color.error.withValues(alpha: 0.5) : color.primaryContainer,
+                          color: countReports.isError
+                              ? color.error.withValues(alpha: 0.5)
+                              : color.primaryContainer,
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: countReports.when(
@@ -292,10 +293,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             totalReports: data.total,
                             byStatus: data.byStatus,
                           ),
-                          error: (message) => ErrorDashboard(errorMessage: message),
+                          error: (message) =>
+                              ErrorDashboard(errorMessage: message),
                         ),
                       ),
+
                       const SizedBox(height: 25),
+
                       _buildMenuCard(
                         context,
                         title: 'Tambah Laporan',
@@ -303,7 +307,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         icon: Iconsax.scan,
                         onTap: () => context.push(AppConstants.scanQrRoute),
                       ),
+
                       const SizedBox(height: 10),
+
                       _buildMenuCard(
                         context,
                         title: 'Daftar Laporan',

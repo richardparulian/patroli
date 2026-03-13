@@ -255,6 +255,7 @@ class _VisitScreenState extends ConsumerState<VisitScreen> {
                   icon: Iconsax.sidebar_right,
                   value: form.conditionRight,
                   condition: visitData.visitAttention?.conditionRightType ?? 0,
+                  // notes: visitData.visitAttention?.conditionRightNotes?.trim() ?? '',
                   errorText: form.errors['conditionRight'],
                   options: const ['Aman', 'Taruna'],
                   onChanged: notifier.setConditionRight,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:pos/core/constants/app_constants.dart';
 import 'package:pos/core/enums/alert_type.dart';
 
 class AppAlertCard extends StatelessWidget {
@@ -76,12 +77,12 @@ class AppAlertCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                padding: const EdgeInsets.all(15),
+                padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
                   color: color.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: Icon(icon, color: color, size: 25), 
+                child: Icon(icon, color: color, size: 20), 
               ),
               const SizedBox(width: 12),
               Expanded(

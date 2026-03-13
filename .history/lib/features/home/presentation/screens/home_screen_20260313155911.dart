@@ -252,10 +252,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               SliverFillRemaining(
                 hasScrollBody: true,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20, 
-                    vertical: 10,
-                  ),
+                  padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
                     color: color.surface,
                     borderRadius: const BorderRadius.vertical(

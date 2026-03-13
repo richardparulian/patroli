@@ -187,7 +187,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             begin: Alignment.topLeft,
             end: Alignment.topRight,
             colors: [
-              color.primary,
+              Colors.red,
               color.primaryContainer,
             ],
           ),
@@ -201,8 +201,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 pinned: true,
                 elevation: 0,
                 expandedHeight: 120,
-                scrolledUnderElevation: 2,
-                backgroundColor: theme.colorScheme.primary,
+                backgroundColor: color.primary,
                 title: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -219,15 +218,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   ],
                 ),
                 flexibleSpace: FlexibleSpaceBar(
-                  background: Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          color.primary,
-                          color.primaryContainer,
-                        ],
-                      ),
-                    ),
+                  background: Padding(
                     padding: const EdgeInsets.fromLTRB(20, kToolbarHeight + 35, 20, 20),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -249,13 +240,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   ),
                 ),
               ),
+
               SliverFillRemaining(
                 hasScrollBody: true,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20, 
-                    vertical: 10,
-                  ),
+                  padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
                     color: color.surface,
                     borderRadius: const BorderRadius.vertical(
@@ -269,7 +258,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Expanded(
-                            child: Text('Halo, ${(userSession?.name.firstNameSecondName) ?? '---'}',
+                            child: Text(
+                              'Halo, ${(userSession?.name.firstNameSecondName) ?? '---'}',
                               style: theme.textTheme.titleMedium?.copyWith(
                                 fontWeight: FontWeight.bold,
                               ),
@@ -278,11 +268,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           const ThemeToggleSwitch(),
                         ],
                       ),
+
                       const SizedBox(height: 15),
+
                       Container(
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: countReports.isError ? color.error.withValues(alpha: 0.5) : color.primaryContainer,
+                          color: countReports.isError
+                              ? color.error.withValues(alpha: 0.5)
+                              : color.primaryContainer,
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: countReports.when(
@@ -292,10 +286,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             totalReports: data.total,
                             byStatus: data.byStatus,
                           ),
-                          error: (message) => ErrorDashboard(errorMessage: message),
+                          error: (message) =>
+                              ErrorDashboard(errorMessage: message),
                         ),
                       ),
+
                       const SizedBox(height: 25),
+
                       _buildMenuCard(
                         context,
                         title: 'Tambah Laporan',
@@ -303,7 +300,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         icon: Iconsax.scan,
                         onTap: () => context.push(AppConstants.scanQrRoute),
                       ),
+
                       const SizedBox(height: 10),
+
                       _buildMenuCard(
                         context,
                         title: 'Daftar Laporan',

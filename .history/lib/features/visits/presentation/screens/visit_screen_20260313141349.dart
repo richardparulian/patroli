@@ -193,161 +193,159 @@ class _VisitScreenState extends ConsumerState<VisitScreen> {
     return ref.watch(visitAttentionProvider).when(
       idle: () => AppLoading(message: 'Menunggu data...'),
       loading: () => AppLoading(message: 'Memproses pengambilan data...'),
-      success: (visitData) {
-        return RefreshIndicator(
-          onRefresh: () => Future.sync(() => ref.read(visitAttentionProvider.notifier).runVisitAttention(
-            widget.scanQrData?.qrcode ?? widget.reportData?.branch?.qrcode ?? ''),
-          ),
-          child: SingleChildScrollView(
-            padding: EdgeInsets.symmetric(
-              horizontal: 16,
+      success: (visitData) => SingleChildScrollView(
+        padding: EdgeInsets.symmetric(
+          horizontal: 16,
+        ),
+        child: Column(
+          children: [
+            if (visitData.visitAttention?.requireAttentions == 1) ...[
+              const SizedBox(height: 10),
+              AppAlertCard(
+                title: 'Perhatian!',
+                message: visitData.visitAttention?.notes ?? '--',
+                type: AlertType.warning,
+              ),
+            ],
+            const SizedBox(height: 10),
+            AppRadioGroup<String>(
+              title: 'Lampu Banner',
+              icon: Iconsax.lamp_charge,
+              value: form.lampuBanner,
+              errorText: form.errors['lightsStatus'],
+              options: const ['Menyala', 'Mati'],
+              onChanged: notifier.setLampuBanner,
             ),
-            child: Column(
-              children: [
-                if (visitData.visitAttention?.requireAttentions == 1) ...[
-                  const SizedBox(height: 10),
-                  AppAlertCard(
-                    title: 'Perhatian!',
-                    message: visitData.visitAttention?.notes ?? '--',
-                    type: AlertType.warning,
-                  ),
-                ],
-                const SizedBox(height: 10),
-                AppRadioGroup<String>(
-                  title: 'Lampu Banner',
-                  icon: Iconsax.lamp_charge,
-                  value: form.lampuBanner,
-                  errorText: form.errors['lightsStatus'],
-                  options: const ['Menyala', 'Mati'],
-                  onChanged: notifier.setLampuBanner,
+            const SizedBox(height: 10),
+            AppRadioGroup<String>(
+              title: 'Banner Utama',
+              icon: Iconsax.image,
+              value: form.bannerUtama,
+              errorText: form.errors['bannerStatus'],
+              options: const ['Bagus', 'Rusak'],
+              onChanged: notifier.setBannerUtama,
+            ),
+            const SizedBox(height: 10),
+            AppRadioGroup<String>(
+              title: 'Rolling Door',
+              icon: Icons.door_front_door,
+              value: form.rollingDoor,
+              errorText: form.errors['rollingDoorStatus'],
+              options: const ['Tertutup Rapat', 'Terbuka/Renggang'],
+              onChanged: notifier.setRollingDoor,
+            ),
+            const SizedBox(height: 10),
+            AppCheckboxGroup(
+              errorText: form.errors['rollingDoorChecklist'],
+              options: const [
+                'Saya sudah menyinari rolling door menggunakan senter',
+                'Saya sudah melakukan tahap gedor rolling door',
+              ],
+              values: form.rollingDoorChecklist,
+              onChanged: notifier.setRollingDoorChecklist,
+            ),
+            const SizedBox(height: 10),
+            AppRadioGroup<String>(
+              title: 'Kondisi Cabang (Kanan)',
+              icon: Iconsax.sidebar_right,
+              value: form.conditionRight,
+              condition: visitData.visitAttention?.conditionRightType ?? 0,
+              // notes: visitData.visitAttention?.conditionRightNotes?.trim() ?? '',
+              errorText: form.errors['conditionRight'],
+              options: const ['Aman', 'Taruna'],
+              onChanged: notifier.setConditionRight,
+            ),
+            const SizedBox(height: 10),
+            AppRadioGroup<String>(
+              title: 'Kondisi Cabang (Kiri)',
+              icon: Iconsax.sidebar_left,
+              value: form.conditionLeft,
+              condition: visitData.visitAttention?.conditionLeftType ?? 0,
+              // notes: visitData.visitAttention?.conditionLeftNotes?.trim() ?? '',
+              errorText: form.errors['conditionLeft'],
+              options: const ['Aman', 'Taruna'],
+              onChanged: notifier.setConditionLeft,
+            ),
+            const SizedBox(height: 10),
+            AppRadioGroup<String>(
+              title: 'Kondisi Cabang (Belakang)',
+              icon: Iconsax.undo,
+              value: form.conditionBack,
+              condition: visitData.visitAttention?.conditionBackType ?? 0,
+              // notes: visitData.visitAttention?.conditionBackNotes?.trim() ?? '',
+              errorText: form.errors['conditionBack'],
+              options: const ['Aman', 'Taruna'],
+              onChanged: notifier.setConditionBack,
+            ),
+            const SizedBox(height: 10),
+            AppRadioGroup<String>(
+              title: 'Kondisi Cabang (Sekitar)',
+              icon: Iconsax.story,
+              value: form.conditionAround,
+              condition: visitData.visitAttention?.conditionAroundType ?? 0,
+              // notes: visitData.visitAttention?.conditionAroundNotes?.trim() ?? '',
+              errorText: form.errors['conditionAround'],
+              options: const ['Ruko Kosong', 'Sepi', 'Ramai'],
+              onChanged: notifier.setConditionAround,
+            ),
+            const SizedBox(height: 15),
+            AppTextField(
+              radius: 16,
+              cursor: true,
+              isDense: false,
+              label: 'Catatan (Opsional)',
+              hint: 'Masukkan catatan',
+              focusNode: noteFocusNode,
+              controller: noteController,
+              isMultiline: true,
+            ),
+            const SizedBox(height: 20),
+            AppIconButton(
+              label: 'Kirim',
+              icon: isLoadingVisitCreate ? SizedBox(
+                height: ScreenUtil.sw(14),
+                width: ScreenUtil.sw(14),
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  strokeCap: StrokeCap.round,
+                  color: Colors.white,
                 ),
-                const SizedBox(height: 10),
-                AppRadioGroup<String>(
-                  title: 'Banner Utama',
-                  icon: Iconsax.image,
-                  value: form.bannerUtama,
-                  errorText: form.errors['bannerStatus'],
-                  options: const ['Bagus', 'Rusak'],
-                  onChanged: notifier.setBannerUtama,
-                ),
-                const SizedBox(height: 10),
-                AppRadioGroup<String>(
-                  title: 'Rolling Door',
-                  icon: Icons.door_front_door,
-                  value: form.rollingDoor,
-                  errorText: form.errors['rollingDoorStatus'],
-                  options: const ['Tertutup Rapat', 'Terbuka/Renggang'],
-                  onChanged: notifier.setRollingDoor,
-                ),
-                const SizedBox(height: 10),
-                AppCheckboxGroup(
-                  errorText: form.errors['rollingDoorChecklist'],
-                  options: const [
-                    'Saya sudah menyinari rolling door menggunakan senter',
-                    'Saya sudah melakukan tahap gedor rolling door',
-                  ],
-                  values: form.rollingDoorChecklist,
-                  onChanged: notifier.setRollingDoorChecklist,
-                ),
-                const SizedBox(height: 10),
-                AppRadioGroup<String>(
-                  title: 'Kondisi Cabang (Kanan)',
-                  icon: Iconsax.sidebar_right,
-                  value: form.conditionRight,
-                  condition: visitData.visitAttention?.conditionRightType ?? 0,
-                  errorText: form.errors['conditionRight'],
-                  options: const ['Aman', 'Taruna'],
-                  onChanged: notifier.setConditionRight,
-                ),
-                const SizedBox(height: 10),
-                AppRadioGroup<String>(
-                  title: 'Kondisi Cabang (Kiri)',
-                  icon: Iconsax.sidebar_left,
-                  value: form.conditionLeft,
-                  condition: visitData.visitAttention?.conditionLeftType ?? 0,
-                  errorText: form.errors['conditionLeft'],
-                  options: const ['Aman', 'Taruna'],
-                  onChanged: notifier.setConditionLeft,
-                ),
-                const SizedBox(height: 10),
-                AppRadioGroup<String>(
-                  title: 'Kondisi Cabang (Belakang)',
-                  icon: Iconsax.undo,
-                  value: form.conditionBack,
-                  condition: visitData.visitAttention?.conditionBackType ?? 0,
-                  errorText: form.errors['conditionBack'],
-                  options: const ['Aman', 'Taruna'],
-                  onChanged: notifier.setConditionBack,
-                ),
-                const SizedBox(height: 10),
-                AppRadioGroup<String>(
-                  title: 'Kondisi Cabang (Sekitar)',
-                  icon: Iconsax.story,
-                  value: form.conditionAround,
-                  errorText: form.errors['conditionAround'],
-                  options: const ['Ruko Kosong', 'Sepi', 'Ramai'],
-                  onChanged: notifier.setConditionAround,
-                ),
-                const SizedBox(height: 15),
-                AppTextField(
-                  radius: 16,
-                  cursor: true,
-                  isDense: false,
-                  label: 'Catatan (Opsional)',
-                  hint: 'Masukkan catatan',
-                  focusNode: noteFocusNode,
-                  controller: noteController,
-                  isMultiline: true,
-                ),
-                const SizedBox(height: 20),
-                AppIconButton(
-                  label: 'Kirim',
-                  icon: isLoadingVisitCreate ? SizedBox(
-                    height: ScreenUtil.sw(14),
-                    width: ScreenUtil.sw(14),
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      strokeCap: StrokeCap.round,
-                      color: Colors.white,
-                    ),
-                  ) : Icon(Iconsax.send_1),
-                  type: IconButtonType.primary,
-                  minimumSize: const Size(double.infinity, 45),
-                  onPressed: isLoadingVisitCreate ? null : () async {
-                    noteFocusNode.unfocus();
+              ) : Icon(Iconsax.send_1),
+              type: IconButtonType.primary,
+              minimumSize: const Size(double.infinity, 45),
+              onPressed: isLoadingVisitCreate ? null : () async {
+                noteFocusNode.unfocus();
 
-                    final isValid = notifier.validate();
+                final isValid = notifier.validate();
 
-                    if (!isValid) return;
+                if (!isValid) return;
 
-                    AppDialog.showConfirm(
-                      context: context,
-                      title: 'Konfirmasi',
-                      message: 'Apakah Anda yakin ingin mengirim laporan ini?',
-                      onConfirm: () async {
-                        await ref.read(visitCreateProvider.notifier).runVisitCreate(
-                          request: VisitRequest(
-                            lightsStatus: form.lampuBanner ?? '',
-                            bannerStatus: form.bannerUtama ?? '',
-                            rollingDoorStatus: form.rollingDoor ?? '',
-                            conditionRight: form.conditionRight ?? '',
-                            conditionLeft: form.conditionLeft ?? '',
-                            conditionBack: form.conditionBack ?? '',
-                            conditionAround: form.conditionAround ?? '', 
-                            notes: noteController.text.trim(),
-                          ),
-                          reportId: widget.checkInData?.id ?? widget.reportData?.id ?? 0,
-                        );
-                      },
+                AppDialog.showConfirm(
+                  context: context,
+                  title: 'Konfirmasi',
+                  message: 'Apakah Anda yakin ingin mengirim laporan ini?',
+                  onConfirm: () async {
+                    await ref.read(visitCreateProvider.notifier).runVisitCreate(
+                      request: VisitRequest(
+                        lightsStatus: form.lampuBanner ?? '',
+                        bannerStatus: form.bannerUtama ?? '',
+                        rollingDoorStatus: form.rollingDoor ?? '',
+                        conditionRight: form.conditionRight ?? '',
+                        conditionLeft: form.conditionLeft ?? '',
+                        conditionBack: form.conditionBack ?? '',
+                        conditionAround: form.conditionAround ?? '', 
+                        notes: noteController.text.trim(),
+                      ),
+                      reportId: widget.checkInData?.id ?? widget.reportData?.id ?? 0,
                     );
                   },
-                ),
-                const SizedBox(height: 20),
-              ],
+                );
+              },
             ),
-          ),
-        );
-      },
+            const SizedBox(height: 20),
+          ],
+        ),
+      ),
       error: (msg) => Center(child: Text('Error: $msg')),
     );
   }

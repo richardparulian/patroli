@@ -195,9 +195,7 @@ class _VisitScreenState extends ConsumerState<VisitScreen> {
       loading: () => AppLoading(message: 'Memproses pengambilan data...'),
       success: (visitData) {
         return RefreshIndicator(
-          onRefresh: () => Future.sync(() => ref.read(visitAttentionProvider.notifier).runVisitAttention(
-            widget.scanQrData?.qrcode ?? widget.reportData?.branch?.qrcode ?? ''),
-          ),
+          onRefresh: () => Future.sync(() => ref.read(visitAttentionProvider.notifier).runVisitAttention(widget.scanQrData?.qrcode ?? widget.reportData?.branch?.qrcode ?? '')),
           child: SingleChildScrollView(
             padding: EdgeInsets.symmetric(
               horizontal: 16,
@@ -255,6 +253,7 @@ class _VisitScreenState extends ConsumerState<VisitScreen> {
                   icon: Iconsax.sidebar_right,
                   value: form.conditionRight,
                   condition: visitData.visitAttention?.conditionRightType ?? 0,
+                  // notes: visitData.visitAttention?.conditionRightNotes?.trim() ?? '',
                   errorText: form.errors['conditionRight'],
                   options: const ['Aman', 'Taruna'],
                   onChanged: notifier.setConditionRight,
@@ -265,6 +264,7 @@ class _VisitScreenState extends ConsumerState<VisitScreen> {
                   icon: Iconsax.sidebar_left,
                   value: form.conditionLeft,
                   condition: visitData.visitAttention?.conditionLeftType ?? 0,
+                  // notes: visitData.visitAttention?.conditionLeftNotes?.trim() ?? '',
                   errorText: form.errors['conditionLeft'],
                   options: const ['Aman', 'Taruna'],
                   onChanged: notifier.setConditionLeft,
@@ -275,6 +275,7 @@ class _VisitScreenState extends ConsumerState<VisitScreen> {
                   icon: Iconsax.undo,
                   value: form.conditionBack,
                   condition: visitData.visitAttention?.conditionBackType ?? 0,
+                  // notes: visitData.visitAttention?.conditionBackNotes?.trim() ?? '',
                   errorText: form.errors['conditionBack'],
                   options: const ['Aman', 'Taruna'],
                   onChanged: notifier.setConditionBack,
@@ -284,6 +285,8 @@ class _VisitScreenState extends ConsumerState<VisitScreen> {
                   title: 'Kondisi Cabang (Sekitar)',
                   icon: Iconsax.story,
                   value: form.conditionAround,
+                  condition: visitData.visitAttention?.conditionAroundType ?? 0,
+                  // notes: visitData.visitAttention?.conditionAroundNotes?.trim() ?? '',
                   errorText: form.errors['conditionAround'],
                   options: const ['Ruko Kosong', 'Sepi', 'Ramai'],
                   onChanged: notifier.setConditionAround,

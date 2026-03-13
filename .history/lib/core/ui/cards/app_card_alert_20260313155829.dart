@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:pos/core/constants/app_constants.dart';
 import 'package:pos/core/enums/alert_type.dart';
 
 class AppAlertCard extends StatelessWidget {
