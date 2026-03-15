@@ -1,7 +1,10 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pos/features/auth/domain/entities/user_entity.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-class AuthSessionNotifier extends Notifier<UserEntity?> {
+part 'auth_session_provider.g.dart';
+
+@Riverpod(keepAlive: true)
+class AuthSession extends _$AuthSession {
   @override
   UserEntity? build() {
     return null;
@@ -15,5 +18,3 @@ class AuthSessionNotifier extends Notifier<UserEntity?> {
     state = null;
   }
 }
-
-final authSessionProvider = NotifierProvider<AuthSessionNotifier, UserEntity?>(AuthSessionNotifier.new);

@@ -52,7 +52,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
     if (!isFormValid) return;
 
-    ref.read(authLoginProvider.notifier).setLoading();
 
     usernameFocusNode.unfocus();
     passwordFocusNode.unfocus();

@@ -1,6 +1,9 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-class AuthPasswordNotifier extends Notifier<bool> {
+part 'auth_password_provider.g.dart';
+
+@riverpod
+class AuthPassword extends _$AuthPassword {
   @override
   bool build() => false;
 
@@ -8,5 +11,3 @@ class AuthPasswordNotifier extends Notifier<bool> {
   void show() => state = true;
   void hide() => state = false;
 }
-
-final authPasswordProvider = NotifierProvider<AuthPasswordNotifier, bool>(AuthPasswordNotifier.new);
