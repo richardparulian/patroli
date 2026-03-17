@@ -1,10 +1,10 @@
 import 'package:equatable/equatable.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:pos/core/error/failures.dart';
-import 'package:pos/core/usecases/usecase.dart';
-import 'package:pos/features/auth/data/dtos/request/login_request.dart';
-import 'package:pos/features/auth/domain/entities/user_entity.dart';
-import 'package:pos/features/auth/domain/repositories/auth_repository.dart';
+import 'package:patroli/core/error/failures.dart';
+import 'package:patroli/core/usecases/usecase.dart';
+import 'package:patroli/features/auth/data/dtos/request/login_request.dart';
+import 'package:patroli/features/auth/domain/entities/user_entity.dart';
+import 'package:patroli/features/auth/domain/repositories/auth_repository.dart';
 
 // :: Parameters for login use case
 class LoginParams extends Equatable {

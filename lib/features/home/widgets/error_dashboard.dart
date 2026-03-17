@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:pos/core/ui/buttons/app_icon_button.dart';
-import 'package:pos/features/reports/presentation/providers/reports_count_provider.dart';
+import 'package:patroli/core/ui/buttons/app_icon_button.dart';
+import 'package:patroli/features/reports/presentation/providers/reports_count_provider.dart';
 
 class ErrorDashboard extends ConsumerWidget {
   final String errorMessage;

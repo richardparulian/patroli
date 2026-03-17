@@ -1,4 +1,4 @@
-import 'package:pos/config/env.dart';
+import 'package:patroli/config/env.dart';
 
 /// Enum untuk Environment Type
 enum Environment {

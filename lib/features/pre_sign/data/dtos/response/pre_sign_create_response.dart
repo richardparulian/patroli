@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:pos/features/pre_sign/data/models/pre_sign_create_model.dart';
+import 'package:patroli/features/pre_sign/data/models/pre_sign_create_model.dart';
 
 part 'pre_sign_create_response.g.dart';
 

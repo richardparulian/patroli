@@ -2,7 +2,7 @@
 
 # Flutter Riverpod Clean Architecture - Feature Generator
 # Generates a feature with modern Riverpod and Clean Architecture best practices.
-# Pattern based on auth feature in patroli_v2 project
+# Pattern based on the current starter project structure
 
 # Color definitions
 GREEN='\033[0;32m'
@@ -111,7 +111,7 @@ write_repository_interface() {
   local file="$1"
   cat > "$file" << 'REPOEOF'
 import 'package:fpdart/fpdart.dart';
-import 'package:pos/core/error/failures.dart';
+import 'package:patroli/core/error/failures.dart';
 import '../entities/@FEATURE_NAME@_entity.dart';
 
 abstract class @PASCAL_CASE@Repository {
@@ -130,10 +130,10 @@ write_usecase_getall() {
   local file="$1"
   cat > "$file" << 'USECASEEOF'
 import 'package:fpdart/fpdart.dart';
-import 'package:pos/core/error/failures.dart';
-import 'package:pos/core/usecases/usecase.dart';
-import 'package:pos/features/@FEATURE_NAME@/domain/entities/@FEATURE_NAME@_entity.dart';
-import 'package:pos/features/@FEATURE_NAME@/domain/repositories/@FEATURE_NAME@_repository.dart';
+import 'package:patroli/core/error/failures.dart';
+import 'package:patroli/core/usecases/usecase.dart';
+import 'package:patroli/features/@FEATURE_NAME@/domain/entities/@FEATURE_NAME@_entity.dart';
+import 'package:patroli/features/@FEATURE_NAME@/domain/repositories/@FEATURE_NAME@_repository.dart';
 
 class Get@PASCAL_CASE@sUseCase implements UseCase<List<@PASCAL_CASE@Entity>, NoParams> {
   final @PASCAL_CASE@Repository _repository;
@@ -158,10 +158,10 @@ write_usecase_getbyid() {
   cat > "$file" << 'USECASEEOF'
 import 'package:equatable/equatable.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:pos/core/error/failures.dart';
-import 'package:pos/core/usecases/usecase.dart';
-import 'package:pos/features/@FEATURE_NAME@/domain/entities/@FEATURE_NAME@_entity.dart';
-import 'package:pos/features/@FEATURE_NAME@/domain/repositories/@FEATURE_NAME@_repository.dart';
+import 'package:patroli/core/error/failures.dart';
+import 'package:patroli/core/usecases/usecase.dart';
+import 'package:patroli/features/@FEATURE_NAME@/domain/entities/@FEATURE_NAME@_entity.dart';
+import 'package:patroli/features/@FEATURE_NAME@/domain/repositories/@FEATURE_NAME@_repository.dart';
 
 // :: Parameters for get @FEATURE_NAME@ by id use case
 class Get@PASCAL_CASE@ByIdParams extends Equatable {
@@ -325,9 +325,9 @@ write_datasource() {
   local file="$1"
   cat > "$file" << 'DSOEOF'
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pos/core/network/api_client.dart';
-import 'package:pos/core/network/api_endpoints.dart';
-import 'package:pos/core/providers/network_providers.dart';
+import 'package:patroli/core/network/api_client.dart';
+import 'package:patroli/core/network/api_endpoints.dart';
+import 'package:patroli/core/providers/network_providers.dart';
 import '../models/@FEATURE_NAME@_model.dart';
 
 abstract class @PASCAL_CASE@RemoteDataSource {
@@ -387,12 +387,12 @@ write_repository_impl() {
   cat > "$file" << 'REPOIMPLEOF'
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:pos/core/error/exceptions.dart';
-import 'package:pos/core/error/failures.dart';
-import 'package:pos/features/@FEATURE_NAME@/data/datasources/@FEATURE_NAME@_remote_data_source.dart';
-import 'package:pos/features/@FEATURE_NAME@/data/models/@FEATURE_NAME@_model.dart';
-import 'package:pos/features/@FEATURE_NAME@/domain/entities/@FEATURE_NAME@_entity.dart';
-import 'package:pos/features/@FEATURE_NAME@/domain/repositories/@FEATURE_NAME@_repository.dart';
+import 'package:patroli/core/error/exceptions.dart';
+import 'package:patroli/core/error/failures.dart';
+import 'package:patroli/features/@FEATURE_NAME@/data/datasources/@FEATURE_NAME@_remote_data_source.dart';
+import 'package:patroli/features/@FEATURE_NAME@/data/models/@FEATURE_NAME@_model.dart';
+import 'package:patroli/features/@FEATURE_NAME@/domain/entities/@FEATURE_NAME@_entity.dart';
+import 'package:patroli/features/@FEATURE_NAME@/domain/repositories/@FEATURE_NAME@_repository.dart';
 
 class @PASCAL_CASE@RepositoryImpl implements @PASCAL_CASE@Repository {
   final @PASCAL_CASE@RemoteDataSource _remoteDataSource;
@@ -450,9 +450,9 @@ write_di_provider() {
   local file="$1"
   cat > "$file" << 'DIPROVEOF'
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pos/features/@FEATURE_NAME@/data/repositories/@FEATURE_NAME@_repository_impl.dart';
-import 'package:pos/features/@FEATURE_NAME@/domain/usecases/get_@FEATURE_NAME@s_use_case.dart';
-import 'package:pos/features/@FEATURE_NAME@/domain/usecases/get_@FEATURE_NAME@_by_id_use_case.dart';
+import 'package:patroli/features/@FEATURE_NAME@/data/repositories/@FEATURE_NAME@_repository_impl.dart';
+import 'package:patroli/features/@FEATURE_NAME@/domain/usecases/get_@FEATURE_NAME@s_use_case.dart';
+import 'package:patroli/features/@FEATURE_NAME@/domain/usecases/get_@FEATURE_NAME@_by_id_use_case.dart';
 
 final get@PASCAL_CASE@sUseCaseProvider = Provider<Get@PASCAL_CASE@sUseCase>((ref) {
   return Get@PASCAL_CASE@sUseCase(ref.watch(@CAMEL_CASE@RepositoryProvider));
@@ -477,11 +477,11 @@ write_controller() {
   local file="$1"
   cat > "$file" << 'CONTROLEOF'
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pos/core/usecases/usecase.dart';
-import 'package:pos/features/@FEATURE_NAME@/domain/entities/@FEATURE_NAME@_entity.dart';
-import 'package:pos/features/@FEATURE_NAME@/domain/usecases/get_@FEATURE_NAME@s_use_case.dart';
-import 'package:pos/features/@FEATURE_NAME@/domain/usecases/get_@FEATURE_NAME@_by_id_use_case.dart';
-import 'package:pos/features/@FEATURE_NAME@/presentation/providers/@FEATURE_NAME@_di_provider.dart';
+import 'package:patroli/core/usecases/usecase.dart';
+import 'package:patroli/features/@FEATURE_NAME@/domain/entities/@FEATURE_NAME@_entity.dart';
+import 'package:patroli/features/@FEATURE_NAME@/domain/usecases/get_@FEATURE_NAME@s_use_case.dart';
+import 'package:patroli/features/@FEATURE_NAME@/domain/usecases/get_@FEATURE_NAME@_by_id_use_case.dart';
+import 'package:patroli/features/@FEATURE_NAME@/presentation/providers/@FEATURE_NAME@_di_provider.dart';
 
 class @PASCAL_CASE@Controller extends AsyncNotifier<void> {
   @override
@@ -531,7 +531,7 @@ write_state_provider() {
   local file="$1"
   cat > "$file" << 'STATEPROVEOF'
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pos/features/@FEATURE_NAME@/domain/entities/@FEATURE_NAME@_entity.dart';
+import 'package:patroli/features/@FEATURE_NAME@/domain/entities/@FEATURE_NAME@_entity.dart';
 
 class @PASCAL_CASE@ListNotifier extends Notifier<AsyncValue<List<@PASCAL_CASE@Entity>>> {
   @override
@@ -585,8 +585,8 @@ if [[ "$WITH_UI" == "yes" ]]; then
     cat > "$file" << 'SCREENDOF'
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pos/features/@FEATURE_NAME@/domain/entities/@FEATURE_NAME@_entity.dart';
-import 'package:pos/features/@FEATURE_NAME@/presentation/providers/@FEATURE_NAME@_state_provider.dart';
+import 'package:patroli/features/@FEATURE_NAME@/domain/entities/@FEATURE_NAME@_entity.dart';
+import 'package:patroli/features/@FEATURE_NAME@/presentation/providers/@FEATURE_NAME@_state_provider.dart';
 
 class @PASCAL_CASE@Screen extends ConsumerStatefulWidget {
   const @PASCAL_CASE@Screen({super.key});
@@ -719,5 +719,5 @@ echo ""
 echo -e "${YELLOW}Next steps:${NC}"
 echo -e "  ${BLUE}1. dart run build_runner build --delete-conflicting-outputs${NC}"
 echo -e "  ${BLUE}2. Update API endpoints in ${BASE_DIR}/data/datasources/${FEATURE_NAME}_remote_data_source.dart${NC}"
-echo -e "  ${BLUE}3. Add routes to lib/core/router/app_router.dart${NC}"
+echo -e "  ${BLUE}3. Add routes to the current app router if needed${NC}"
 echo -e "  ${BLUE}4. Customize entity fields, models, DTOs, and use cases${NC}"

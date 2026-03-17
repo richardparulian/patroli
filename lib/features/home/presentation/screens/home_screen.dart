@@ -2,21 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:pos/core/constants/app_constants.dart';
-import 'package:pos/core/extensions/helper_state_extension.dart';
-import 'package:pos/core/extensions/result_string_extension.dart';
-import 'package:pos/core/ui/buttons/app_icon_button.dart';
-import 'package:pos/core/ui/dialogs/app_dialog.dart';
-import 'package:pos/core/ui/images/circle_image.dart';
-import 'package:pos/core/utils/screen_util.dart';
-import 'package:pos/features/auth/application/providers/auth_session_provider.dart';
-import 'package:pos/features/auth/presentation/providers/auth_logout_provider.dart';
-import 'package:pos/features/home/widgets/error_dashboard.dart';
-import 'package:pos/features/home/widgets/shimmer_dashboard.dart';
-import 'package:pos/features/home/widgets/summary_dashboard.dart';
-import 'package:pos/features/home/widgets/theme_toggle_switch.dart';
-import 'package:pos/features/reports/presentation/providers/reports_count_provider.dart';
-import 'package:pos/gen/assets.gen.dart';
+import 'package:patroli/app/constants/app_routes.dart';
+import 'package:patroli/core/extensions/helper_state_extension.dart';
+import 'package:patroli/core/extensions/result_string_extension.dart';
+import 'package:patroli/core/ui/buttons/app_icon_button.dart';
+import 'package:patroli/core/ui/dialogs/app_dialog.dart';
+import 'package:patroli/core/ui/images/circle_image.dart';
+import 'package:patroli/core/utils/screen_util.dart';
+import 'package:patroli/features/auth/application/providers/auth_session_provider.dart';
+import 'package:patroli/features/auth/presentation/providers/auth_logout_provider.dart';
+import 'package:patroli/features/home/widgets/error_dashboard.dart';
+import 'package:patroli/features/home/widgets/shimmer_dashboard.dart';
+import 'package:patroli/features/home/widgets/summary_dashboard.dart';
+import 'package:patroli/features/home/widgets/theme_toggle_switch.dart';
+import 'package:patroli/features/reports/presentation/providers/reports_count_provider.dart';
+import 'package:patroli/gen/assets.gen.dart';
 
 class HomeScreen extends ConsumerStatefulWidget { 
   const HomeScreen({super.key});
@@ -160,7 +160,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       //                         title: 'Tambah Laporan',
       //                         subtitle: 'Buat laporan patroli',
       //                         icon: Iconsax.scan,
-      //                         onTap: () => context.push(AppConstants.scanQrRoute),
+      //                         onTap: () => context.push(AppRoutes.scanQr),
       //                       ),
       //                       const SizedBox(height: 10),
       //                       _buildMenuCard(
@@ -301,7 +301,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         title: 'Tambah Laporan',
                         subtitle: 'Buat laporan patroli',
                         icon: Iconsax.scan,
-                        onTap: () => context.push(AppConstants.scanQrRoute),
+                        onTap: () => context.push(AppRoutes.scanQr),
                       ),
                       const SizedBox(height: 10),
                       _buildMenuCard(

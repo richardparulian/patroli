@@ -1,7 +1,7 @@
 import 'package:fpdart/fpdart.dart';
 import 'dart:async';
 import 'package:dio/dio.dart';
-import 'package:pos/core/error/failures.dart';
+import 'package:patroli/core/error/failures.dart';
 
 class ApiResponse {
   final int statusCode;

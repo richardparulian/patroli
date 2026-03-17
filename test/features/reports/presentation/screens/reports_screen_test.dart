@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:pos/features/reports/domain/entities/reports_entity.dart';
-import 'package:pos/features/reports/presentation/providers/reports_fetch_provider.dart';
-import 'package:pos/features/reports/presentation/providers/reports_paging_provider.dart';
-import 'package:pos/features/reports/presentation/providers/reports_state_provider.dart';
-import 'package:pos/features/reports/presentation/screens/reports_screen.dart';
+import 'package:patroli/features/reports/domain/entities/reports_entity.dart';
+import 'package:patroli/features/reports/presentation/providers/reports_fetch_provider.dart';
+import 'package:patroli/features/reports/presentation/providers/reports_paging_provider.dart';
+import 'package:patroli/features/reports/presentation/providers/reports_state_provider.dart';
+import 'package:patroli/features/reports/presentation/screens/reports_screen.dart';
 
 void main() {
   testWidgets('shows loading shimmer on first page loading state', (tester) async {

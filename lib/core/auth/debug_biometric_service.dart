@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:pos/core/auth/biometric_service.dart';
+import 'package:patroli/core/auth/biometric_service.dart';
 
 /// A debug implementation of BiometricService
 class DebugBiometricService implements BiometricService {

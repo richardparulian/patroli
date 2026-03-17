@@ -1,4 +1,4 @@
-import 'package:pos/features/reports/domain/entities/reports_entity.dart';
+import 'package:patroli/features/reports/domain/entities/reports_entity.dart';
 
 extension ReportValidation on ReportsEntity {
   bool get isEmptyReport {

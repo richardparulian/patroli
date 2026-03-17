@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
-import 'package:pos/core/analytics/analytics_event.dart';
-import 'package:pos/core/analytics/analytics_service.dart';
+import 'package:patroli/core/analytics/analytics_event.dart';
+import 'package:patroli/core/analytics/analytics_service.dart';
 
 /// Implementation of AnalyticsService using Firebase Analytics
 /// Note: In a real app, you would include the firebase_analytics package

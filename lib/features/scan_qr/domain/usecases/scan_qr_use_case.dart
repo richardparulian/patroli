@@ -1,10 +1,10 @@
 import 'package:equatable/equatable.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:pos/core/error/failures.dart';
-import 'package:pos/core/usecases/usecase.dart';
-import 'package:pos/features/scan_qr/data/dtos/request/scan_qr_request.dart';
-import 'package:pos/features/scan_qr/domain/entities/scan_qr_entity.dart';
-import 'package:pos/features/scan_qr/domain/repositories/scan_qr_repository.dart';
+import 'package:patroli/core/error/failures.dart';
+import 'package:patroli/core/usecases/usecase.dart';
+import 'package:patroli/features/scan_qr/data/dtos/request/scan_qr_request.dart';
+import 'package:patroli/features/scan_qr/domain/entities/scan_qr_entity.dart';
+import 'package:patroli/features/scan_qr/domain/repositories/scan_qr_repository.dart';
 
 // :: Parameters for get scan_qr by id use case
 class ScanQrParams extends Equatable {

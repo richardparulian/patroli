@@ -1,10 +1,10 @@
 import 'package:equatable/equatable.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:pos/core/error/failures.dart';
-import 'package:pos/core/usecases/usecase.dart';
-import 'package:pos/features/check_in/data/dtos/request/check_in_request.dart';
-import 'package:pos/features/check_in/domain/entities/check_in_entity.dart';
-import 'package:pos/features/check_in/domain/repositories/check_in_repository.dart';
+import 'package:patroli/core/error/failures.dart';
+import 'package:patroli/core/usecases/usecase.dart';
+import 'package:patroli/features/check_in/data/dtos/request/check_in_request.dart';
+import 'package:patroli/features/check_in/domain/entities/check_in_entity.dart';
+import 'package:patroli/features/check_in/domain/repositories/check_in_repository.dart';
 
 // :: Parameters for create check_in use case
 class CreateCheckInParams extends Equatable {

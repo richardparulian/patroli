@@ -41,7 +41,7 @@ final class ReportsFetchProvider
   }
 }
 
-String _$reportsFetchHash() => r'003633864d771328c3c114d7ed38523a796fbdcb';
+String _$reportsFetchHash() => r'7e6a773dceaf9cbf7fc7b5865f8a36cbae134a6b';
 
 abstract class _$ReportsFetch extends $Notifier<ReportsState> {
   ReportsState build();

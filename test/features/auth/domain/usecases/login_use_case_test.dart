@@ -1,11 +1,11 @@
 import 'package:fpdart/fpdart.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:pos/core/error/failures.dart';
-import 'package:pos/features/auth/data/dtos/request/login_request.dart';
-import 'package:pos/features/auth/domain/entities/user_entity.dart';
-import 'package:pos/features/auth/domain/repositories/auth_repository.dart';
-import 'package:pos/features/auth/domain/usecases/login_use_case.dart';
+import 'package:patroli/core/error/failures.dart';
+import 'package:patroli/features/auth/data/dtos/request/login_request.dart';
+import 'package:patroli/features/auth/domain/entities/user_entity.dart';
+import 'package:patroli/features/auth/domain/repositories/auth_repository.dart';
+import 'package:patroli/features/auth/domain/usecases/login_use_case.dart';
 
 class MockAuthRepository extends Mock implements AuthRepository {}
 

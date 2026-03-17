@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:pos/core/feature_flags/feature_flag_service.dart';
+import 'package:patroli/core/feature_flags/feature_flag_service.dart';
 
 /// A feature flag service implementation that uses local values
 /// Useful for development, testing or as a fallback

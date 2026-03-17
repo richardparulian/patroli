@@ -3,9 +3,9 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pos/core/images/debug_image_processor.dart';
-import 'package:pos/core/images/image_processor.dart';
-import 'package:pos/core/storage/cache_manager.dart';
+import 'package:patroli/core/images/debug_image_processor.dart';
+import 'package:patroli/core/images/image_processor.dart';
+import 'package:patroli/core/storage/cache_manager.dart';
 
 /// Provider for the image processor
 final imageProcessorProvider = Provider<ImageProcessor>((ref) {

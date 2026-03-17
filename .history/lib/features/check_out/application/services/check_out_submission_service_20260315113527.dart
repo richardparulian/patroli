@@ -1,0 +1,53 @@
+import 'package:image_picker/image_picker.dart';
+import 'package:pos/core/extensions/result_state_extension.dart';
+import 'package:pos/features/check_out/application/providers/check_out_di_provider.dart';
+import 'package:pos/features/check_out/data/dtos/request/check_out_request.dart';
+import 'package:pos/features/check_out/domain/usecases/check_out_use_case.dart';
+import 'package:pos/features/pre_sign/application/services/pre_sign_upload_service.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'check_out_submission_service.g.dart';
+
+class CheckOutSubmissionService {
+  CheckOutSubmissionService(this.ref);
+
+  final Ref ref;
+
+  Future<ResultState<void>> submit({
+    required XFile image,
+    required String filename,
+    required int branchId,
+    required int reportId,
+  }) async {
+    try {
+      final uploadResult = await ref.read(preSignUploadServiceProvider).createAndUpload(
+        filename: filename,
+        image: image,
+      );
+      final presign = uploadResult.dataOrThrow;
+
+      final checkOutUseCase = ref.read(checkOutUseCaseProvider);
+      final result = await checkOutUseCase(
+        CreateCheckOutParams(
+          reportId: reportId,
+          request: CheckOutRequest(
+            branchId: branchId,
+            selfieCheckOut: presign.fileUrl ?? '',
+          ),
+        ),
+      );
+
+      return result.fold(
+        (failure) => Error(failure.message),
+        (_) => const Success(null),
+      );
+    } catch (e) {
+      return Error(e.toString().replaceFirst('Exception: ', ''));
+    }
+  }
+}
+
+@riverpod
+CheckOutSubmissionService checkOutSubmissionService(Ref ref) {
+  return CheckOutSubmissionService(ref);
+}

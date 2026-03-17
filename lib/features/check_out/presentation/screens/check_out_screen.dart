@@ -6,18 +6,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:ntp/ntp.dart';
-import 'package:pos/core/constants/app_constants.dart';
-import 'package:pos/core/enums/alert_type.dart';
-import 'package:pos/core/extensions/helper_state_extension.dart';
-import 'package:pos/core/providers/camera_provider.dart';
-import 'package:pos/core/services/camera_service.dart';
-import 'package:pos/core/services/permission_service.dart';
-import 'package:pos/core/ui/buttons/app_icon_button.dart';
-import 'package:pos/core/ui/cards/app_card_alert.dart';
-import 'package:pos/core/ui/dialogs/app_dialog.dart';
-import 'package:pos/core/ui/widgets/app_loading.dart';
-import 'package:pos/features/check_out/presentation/providers/check_out_provider.dart';
-import 'package:pos/features/reports/application/coordinators/reports_refresh_coordinator_provider.dart';
+import 'package:patroli/app/constants/app_routes.dart';
+import 'package:patroli/core/enums/alert_type.dart';
+import 'package:patroli/core/extensions/helper_state_extension.dart';
+import 'package:patroli/app/camera/camera_provider.dart';
+import 'package:patroli/core/services/camera_service.dart';
+import 'package:patroli/core/services/permission_service.dart';
+import 'package:patroli/core/ui/buttons/app_icon_button.dart';
+import 'package:patroli/core/ui/cards/app_card_alert.dart';
+import 'package:patroli/core/ui/dialogs/app_dialog.dart';
+import 'package:patroli/core/ui/widgets/app_loading.dart';
+import 'package:patroli/features/check_out/presentation/providers/check_out_provider.dart';
+import 'package:patroli/features/reports/application/coordinators/reports_refresh_coordinator_provider.dart';
 import 'package:uuid/uuid.dart';
 
 class CheckOutScreen extends ConsumerStatefulWidget {
@@ -160,7 +160,7 @@ class _CheckOutScreenState extends ConsumerState<CheckOutScreen> with SingleTick
     final isLoading = ref.watch(checkOutProvider.select((s) => s.isLoading));
 
     if (widget.branchName?.isEmpty ?? true) {
-      return _buildErrorWidget(Iconsax.shop, 'Data cabang tidak ditemukan', 'Kembali ke Beranda', Iconsax.home, () => context.go(AppConstants.homeRoute));
+      return _buildErrorWidget(Iconsax.shop, 'Data cabang tidak ditemukan', 'Kembali ke Beranda', Iconsax.home, () => context.go(AppRoutes.home));
     }
 
     final isInitialized = _cameraController?.value.isInitialized ?? false;

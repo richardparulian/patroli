@@ -1,8 +1,8 @@
 // Storage Providers
 // Riverpod providers for storage-related services
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pos/core/storage/local_storage_service.dart';
-import 'package:pos/core/storage/secure_storage_service.dart';
+import 'package:patroli/core/storage/local_storage_service.dart';
+import 'package:patroli/core/storage/secure_storage_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// Provider for SharedPreferences instance

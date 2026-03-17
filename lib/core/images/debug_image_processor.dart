@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
-import 'package:pos/core/images/image_processor.dart';
+import 'package:patroli/core/images/image_processor.dart';
 
 /// A debug implementation of ImageProcessor for testing
 class DebugImageProcessor implements ImageProcessor {

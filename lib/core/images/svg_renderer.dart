@@ -3,7 +3,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pos/core/storage/cache_manager.dart';
+import 'package:patroli/core/storage/cache_manager.dart';
 
 /// Provider for SVG cache
 final svgCacheProvider = Provider<CacheManager<ui.Image>>((ref) {

@@ -6,22 +6,22 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:ntp/ntp.dart';
-import 'package:pos/core/constants/app_constants.dart';
-import 'package:pos/core/entities/visit_global_entity.dart';
-import 'package:pos/core/enums/alert_type.dart';
-import 'package:pos/core/extensions/helper_state_extension.dart';
-import 'package:pos/core/extensions/pre_sign_extension.dart';
-import 'package:pos/core/providers/camera_provider.dart';
-import 'package:pos/core/services/camera_service.dart';
-import 'package:pos/core/services/permission_service.dart';
-import 'package:pos/core/ui/buttons/app_icon_button.dart';
-import 'package:pos/core/ui/cards/app_card_alert.dart';
-import 'package:pos/core/ui/dialogs/app_dialog.dart';
-import 'package:pos/core/ui/widgets/app_loading.dart';
-import 'package:pos/features/check_in/presentation/providers/check_in_provider.dart';
-import 'package:pos/features/check_in/presentation/providers/upload_file_provider.dart';
-import 'package:pos/features/reports/application/coordinators/reports_refresh_coordinator_provider.dart';
-import 'package:pos/features/scan_qr/domain/entities/scan_qr_entity.dart';
+import 'package:patroli/app/constants/app_routes.dart';
+import 'package:patroli/app/router/route_args/visit_route_args.dart';
+import 'package:patroli/core/enums/alert_type.dart';
+import 'package:patroli/core/extensions/helper_state_extension.dart';
+import 'package:patroli/features/check_in/presentation/extensions/pre_sign_extension.dart';
+import 'package:patroli/app/camera/camera_provider.dart';
+import 'package:patroli/core/services/camera_service.dart';
+import 'package:patroli/core/services/permission_service.dart';
+import 'package:patroli/core/ui/buttons/app_icon_button.dart';
+import 'package:patroli/core/ui/cards/app_card_alert.dart';
+import 'package:patroli/core/ui/dialogs/app_dialog.dart';
+import 'package:patroli/core/ui/widgets/app_loading.dart';
+import 'package:patroli/features/check_in/presentation/providers/check_in_provider.dart';
+import 'package:patroli/features/check_in/presentation/providers/upload_file_provider.dart';
+import 'package:patroli/features/reports/application/coordinators/reports_refresh_coordinator_provider.dart';
+import 'package:patroli/features/scan_qr/domain/entities/scan_qr_entity.dart';
 import 'package:uuid/uuid.dart';
 
 class CheckInScreen extends ConsumerStatefulWidget {
@@ -201,7 +201,7 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> with SingleTicker
             onButtonPressed: () async {
               await ref.read(reportsRefreshCoordinatorProvider).refreshReportsAndDashboard();
               if (!context.mounted) return;
-              context.pushReplacement(AppConstants.visitRoute, extra: VisitRouteArgs(
+              context.pushReplacement(AppRoutes.visit, extra: VisitRouteArgs(
                 scanQr: widget.scanQrData,
                 checkIn: value,
               ));
@@ -238,7 +238,7 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> with SingleTicker
             context: context,
             title: 'Konfirmasi',
             message: 'Apakah Anda yakin ingin keluar dari halaman ini?',
-            onConfirm: () => context.go(AppConstants.homeRoute),
+            onConfirm: () => context.go(AppRoutes.home),
           );
         }
       },
@@ -275,7 +275,7 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> with SingleTicker
                 context: context,
                 title: 'Konfirmasi',
                 message: 'Apakah Anda yakin ingin meninggalkan halaman ini?',
-                onConfirm: () => context.go(AppConstants.homeRoute),
+                onConfirm: () => context.go(AppRoutes.home),
               );
             },
           ),
@@ -351,7 +351,7 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> with SingleTicker
         ),
         const SizedBox(height: 16),
         AppIconButton(
-          onPressed: () => context.go(AppConstants.homeRoute),
+          onPressed: () => context.go(AppRoutes.home),
           label: 'Kembali ke Beranda',
           icon: Icon(Iconsax.home),
           type: IconButtonType.primary,

@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:pos/features/reports/data/models/reports_model.dart';
+import 'package:patroli/features/reports/data/models/reports_model.dart';
 
 part 'reports_response.g.dart';
 

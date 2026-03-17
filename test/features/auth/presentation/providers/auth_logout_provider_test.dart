@@ -2,13 +2,13 @@ import 'package:fpdart/fpdart.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:pos/core/error/failures.dart';
-import 'package:pos/core/extensions/result_state_extension.dart';
-import 'package:pos/features/auth/application/providers/auth_di_provider.dart';
-import 'package:pos/features/auth/application/services/auth_session_sync_provider.dart';
-import 'package:pos/features/auth/domain/usecases/logout_use_case.dart';
-import 'package:pos/features/auth/presentation/providers/auth_logout_provider.dart';
-import 'package:pos/core/usecases/usecase.dart';
+import 'package:patroli/core/error/failures.dart';
+import 'package:patroli/core/extensions/result_state_extension.dart';
+import 'package:patroli/features/auth/application/providers/auth_di_provider.dart';
+import 'package:patroli/features/auth/application/services/auth_session_sync_provider.dart';
+import 'package:patroli/features/auth/domain/usecases/logout_use_case.dart';
+import 'package:patroli/features/auth/presentation/providers/auth_logout_provider.dart';
+import 'package:patroli/core/usecases/usecase.dart';
 
 class MockLogoutUseCase extends Mock implements LogoutUseCase {}
 

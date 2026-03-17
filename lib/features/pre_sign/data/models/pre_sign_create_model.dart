@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:pos/features/pre_sign/domain/entities/pre_sign_create_entity.dart';
+import 'package:patroli/features/pre_sign/domain/entities/pre_sign_create_entity.dart';
 
 part 'pre_sign_create_model.freezed.dart';
 part 'pre_sign_create_model.g.dart';

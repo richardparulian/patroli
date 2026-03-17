@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:pos/core/error/exceptions.dart';
+import 'package:patroli/core/error/exceptions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LocalStorageService {

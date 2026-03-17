@@ -1,5 +1,5 @@
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:pos/features/reports/domain/entities/reports_entity.dart';
+import 'package:patroli/features/reports/domain/entities/reports_entity.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'reports_fetch_provider.dart';
 

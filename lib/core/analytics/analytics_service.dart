@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
-import 'package:pos/core/analytics/analytics_event.dart';
+import 'package:patroli/core/analytics/analytics_event.dart';
 
 /// Interface for analytics service implementations
 abstract class AnalyticsService {

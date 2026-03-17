@@ -1,7 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:pos/features/scan_qr/data/models/attention_model.dart';
-import 'package:pos/features/scan_qr/domain/entities/attention.entity.dart';
-import 'package:pos/features/scan_qr/domain/entities/scan_qr_entity.dart';
+import 'package:patroli/features/scan_qr/data/models/attention_model.dart';
+import 'package:patroli/features/scan_qr/domain/entities/attention.entity.dart';
+import 'package:patroli/features/scan_qr/domain/entities/scan_qr_entity.dart';
 
 part 'scan_qr_model.freezed.dart';
 part 'scan_qr_model.g.dart';

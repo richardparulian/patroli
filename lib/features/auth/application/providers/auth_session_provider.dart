@@ -1,4 +1,4 @@
-import 'package:pos/features/auth/domain/entities/user_entity.dart';
+import 'package:patroli/features/auth/domain/entities/user_entity.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'auth_session_provider.g.dart';

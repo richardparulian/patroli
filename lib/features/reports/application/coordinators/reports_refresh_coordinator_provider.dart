@@ -1,5 +1,5 @@
-import 'package:pos/features/reports/presentation/providers/reports_count_provider.dart';
-import 'package:pos/features/reports/presentation/providers/reports_paging_provider.dart';
+import 'package:patroli/features/reports/presentation/providers/reports_count_provider.dart';
+import 'package:patroli/features/reports/presentation/providers/reports_paging_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'reports_refresh_coordinator_provider.g.dart';

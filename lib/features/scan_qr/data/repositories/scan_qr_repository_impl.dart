@@ -1,11 +1,13 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:pos/core/error/exceptions.dart';
-import 'package:pos/core/error/failures.dart';
-import 'package:pos/features/scan_qr/data/datasources/scan_qr_remote_data_source.dart';
-import 'package:pos/features/scan_qr/data/dtos/request/scan_qr_request.dart';
-import 'package:pos/features/scan_qr/domain/entities/scan_qr_entity.dart';
-import 'package:pos/features/scan_qr/domain/repositories/scan_qr_repository.dart';
+import 'package:patroli/core/error/exceptions.dart';
+import 'package:patroli/core/error/failures.dart';
+import 'package:patroli/features/scan_qr/data/datasources/scan_qr_remote_data_source.dart';
+import 'package:patroli/features/scan_qr/data/dtos/request/scan_qr_request.dart';
+import 'package:patroli/features/scan_qr/domain/entities/scan_qr_entity.dart';
+import 'package:patroli/features/scan_qr/domain/repositories/scan_qr_repository.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'scan_qr_repository_impl.g.dart';
 
 class ScanQrRepositoryImpl implements ScanQrRepository {
   final ScanQrRemoteDataSource _remoteDataSource;
@@ -29,8 +31,8 @@ class ScanQrRepositoryImpl implements ScanQrRepository {
   }
 }
 
-// Provider
-final scanQrRepositoryProvider = Provider<ScanQrRepository>((ref) {
+@riverpod
+ScanQrRepository scanQrRepository(Ref ref) {
   final remoteDataSource = ref.watch(scanQrRemoteDataSourceProvider);
   return ScanQrRepositoryImpl(remoteDataSource);
-});
+}

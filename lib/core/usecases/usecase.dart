@@ -3,7 +3,7 @@
 
 import 'package:fpdart/fpdart.dart';
 import 'package:equatable/equatable.dart';
-import 'package:pos/core/error/failures.dart';
+import 'package:patroli/core/error/failures.dart';
 
 /// Base interface for all use cases
 ///

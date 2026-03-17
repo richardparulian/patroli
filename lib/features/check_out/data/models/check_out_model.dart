@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:pos/features/check_out/domain/entities/check_out_entity.dart';
+import 'package:patroli/features/check_out/domain/entities/check_out_entity.dart';
 
 part 'check_out_model.freezed.dart';
 part 'check_out_model.g.dart';

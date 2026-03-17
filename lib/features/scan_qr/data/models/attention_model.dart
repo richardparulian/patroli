@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:pos/features/scan_qr/domain/entities/attention.entity.dart';
+import 'package:patroli/features/scan_qr/domain/entities/attention.entity.dart';
 
 part 'attention_model.freezed.dart';
 part 'attention_model.g.dart';

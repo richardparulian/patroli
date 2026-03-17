@@ -1,4 +1,4 @@
-import 'package:pos/core/extensions/result_state_extension.dart';
+import 'package:patroli/core/extensions/result_state_extension.dart';
 
 extension ResultStateX<T> on ResultState<T> {
 

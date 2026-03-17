@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:pos/features/visits/domain/entities/visit_entity.dart';
+import 'package:patroli/features/visits/domain/entities/visit_entity.dart';
 
 part 'visit_model.freezed.dart';
 part 'visit_model.g.dart';

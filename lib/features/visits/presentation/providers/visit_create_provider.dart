@@ -1,9 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pos/core/extensions/result_state_extension.dart';
-import 'package:pos/features/visits/data/dtos/request/visit_request.dart';
-import 'package:pos/features/visits/domain/entities/visit_entity.dart';
-import 'package:pos/features/visits/domain/usecases/visit_use_case.dart';
-import 'package:pos/features/visits/presentation/providers/visit_di_provider.dart';
+import 'package:patroli/core/extensions/result_state_extension.dart';
+import 'package:patroli/features/visits/application/services/visit_create_service.dart';
+import 'package:patroli/features/visits/data/dtos/request/visit_request.dart';
+import 'package:patroli/features/visits/domain/entities/visit_entity.dart';
 
 class VisitCreateNotifier extends Notifier<ResultState<VisitEntity>> {
   @override
@@ -13,22 +12,10 @@ class VisitCreateNotifier extends Notifier<ResultState<VisitEntity>> {
 
   Future<void> runVisitCreate({required VisitRequest request, required int reportId}) async {
     state = const Loading();
-    
-    try {
-      final visitUseCase = ref.read(visitUseCaseProvider);
-
-      final result = await visitUseCase(CreateVisitParams(
-        request: request,
-        reportId: reportId,
-      ));
-
-      result.fold(
-        (failure) => state = Error(failure.message),
-        (value) => state = Success(value),
-      );
-    } catch (e) {
-      state = Error(e.toString().replaceFirst('Exception: ', ''));
-    }
+    state = await ref.read(visitCreateServiceProvider).submit(
+      request: request,
+      reportId: reportId,
+    );
   }
 }
 

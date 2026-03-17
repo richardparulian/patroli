@@ -2,8 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:photo_view/photo_view.dart';
-import 'package:pos/core/storage/cache/cache_manager.dart';
-import 'package:pos/core/utils/screen_util.dart';
+import 'package:patroli/core/storage/cache/cache_manager.dart';
+import 'package:patroli/core/utils/screen_util.dart';
 
 class ImagePreviewScreen extends ConsumerWidget {
   final String imageUrl;

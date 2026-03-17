@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:pos/features/reports/application/coordinators/reports_refresh_coordinator_provider.dart';
+import 'package:patroli/features/reports/application/coordinators/reports_refresh_coordinator_provider.dart';
 
 class MockReportsRefreshCoordinator extends Mock implements ReportsRefreshCoordinator {}
 

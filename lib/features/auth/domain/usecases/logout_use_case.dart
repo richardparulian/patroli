@@ -1,7 +1,7 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:pos/core/error/failures.dart';
-import 'package:pos/core/usecases/usecase.dart';
-import 'package:pos/features/auth/domain/repositories/auth_repository.dart';
+import 'package:patroli/core/error/failures.dart';
+import 'package:patroli/core/usecases/usecase.dart';
+import 'package:patroli/features/auth/domain/repositories/auth_repository.dart';
 
 class LogoutUseCase implements UseCase<void, NoParams> {
   final AuthRepository _repository;

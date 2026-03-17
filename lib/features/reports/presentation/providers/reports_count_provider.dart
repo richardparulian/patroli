@@ -1,7 +1,7 @@
-import 'package:pos/core/extensions/result_state_extension.dart';
-import 'package:pos/features/reports/application/providers/reports_di_provider.dart';
-import 'package:pos/features/reports/domain/entities/reports_count.dart';
-import 'package:pos/features/reports/domain/usecases/reports_use_case.dart';
+import 'package:patroli/core/extensions/result_state_extension.dart';
+import 'package:patroli/features/reports/application/providers/reports_di_provider.dart';
+import 'package:patroli/features/reports/domain/entities/reports_count.dart';
+import 'package:patroli/features/reports/domain/usecases/reports_use_case.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'reports_count_provider.g.dart';

@@ -3,11 +3,11 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:pos/core/storage/cache/cache_manager.dart';
-import 'package:pos/core/utils/extensions/date_time_extensions.dart';
-import 'package:pos/features/reports/domain/entities/reports_entity.dart';
-import 'package:pos/core/ui/animation/animated_card.dart';
-import 'package:pos/features/reports/presentation/providers/reports_carousel_provider.dart';
+import 'package:patroli/core/storage/cache/cache_manager.dart';
+import 'package:patroli/core/utils/extensions/date_time_extensions.dart';
+import 'package:patroli/features/reports/domain/entities/reports_entity.dart';
+import 'package:patroli/core/ui/animation/animated_card.dart';
+import 'package:patroli/features/reports/presentation/providers/reports_carousel_provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class ReportCard extends ConsumerStatefulWidget {

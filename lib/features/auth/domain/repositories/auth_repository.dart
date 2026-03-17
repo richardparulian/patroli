@@ -1,7 +1,7 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:pos/core/error/failures.dart';
-import 'package:pos/features/auth/data/dtos/request/login_request.dart';
-import 'package:pos/features/auth/domain/entities/user_entity.dart';
+import 'package:patroli/core/error/failures.dart';
+import 'package:patroli/features/auth/data/dtos/request/login_request.dart';
+import 'package:patroli/features/auth/domain/entities/user_entity.dart';
 
 abstract class AuthRepository {
   // :: Login a user with email and password

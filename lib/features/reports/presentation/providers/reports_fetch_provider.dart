@@ -1,21 +1,9 @@
-import 'package:pos/features/reports/domain/entities/reports_entity.dart';
-import 'package:pos/features/reports/domain/usecases/reports_use_case.dart';
-import 'package:pos/features/reports/application/providers/reports_di_provider.dart';
-import 'package:pos/features/reports/presentation/providers/reports_state_provider.dart';
+import 'package:patroli/features/reports/domain/entities/reports_entity.dart';
+import 'package:patroli/features/reports/application/services/reports_fetch_service.dart';
+import 'package:patroli/features/reports/presentation/providers/reports_state_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'reports_fetch_provider.g.dart';
-
-class ReportsPagingException implements Exception {
-  ReportsPagingException(this.message);
-
-  final String message;
-
-  @override
-  String toString() {
-    return message;
-  }
-}
 
 @riverpod
 class ReportsFetch extends _$ReportsFetch {
@@ -29,25 +17,30 @@ class ReportsFetch extends _$ReportsFetch {
   }
 
   Future<List<ReportsEntity>> getReports({int? page, int? limit, int? pagination}) async {
-    final reportsUseCase = ref.read(reportsUseCaseProvider);
+    final reportsFetchService = ref.read(reportsFetchServiceProvider);
 
-    final result = await reportsUseCase(
-      ReportsParams(
+    try {
+      final response = await reportsFetchService.fetch(
         page: page,
         limit: limit,
         pagination: pagination,
-      ),
-    );
+      );
+      state = state.copyWith(errorMessage: null);
+      return response;
+    } on ReportsFetchException catch (e) {
+      state = state.copyWith(errorMessage: e.message);
+      throw ReportsPagingException(e.message);
+    }
+  }
+}
 
-    return result.fold(
-      (failure) {
-        state = state.copyWith(errorMessage: failure.message);
-        throw ReportsPagingException(failure.message);
-      },
-      (response) {
-        state = state.copyWith(errorMessage: null);
-        return response;
-      },
-    );
+class ReportsPagingException implements Exception {
+  ReportsPagingException(this.message);
+
+  final String message;
+
+  @override
+  String toString() {
+    return message;
   }
 }

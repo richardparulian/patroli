@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:pos/features/auth/domain/entities/user_entity.dart';
+import 'package:patroli/features/auth/domain/entities/user_entity.dart';
 
 part 'user_model.freezed.dart';
 part 'user_model.g.dart';

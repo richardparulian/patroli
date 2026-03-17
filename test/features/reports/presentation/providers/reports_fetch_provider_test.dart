@@ -2,11 +2,11 @@ import 'package:fpdart/fpdart.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:pos/core/error/failures.dart';
-import 'package:pos/features/reports/application/providers/reports_di_provider.dart';
-import 'package:pos/features/reports/domain/entities/reports_entity.dart';
-import 'package:pos/features/reports/domain/usecases/reports_use_case.dart';
-import 'package:pos/features/reports/presentation/providers/reports_fetch_provider.dart';
+import 'package:patroli/core/error/failures.dart';
+import 'package:patroli/features/reports/application/providers/reports_di_provider.dart';
+import 'package:patroli/features/reports/domain/entities/reports_entity.dart';
+import 'package:patroli/features/reports/domain/usecases/reports_use_case.dart';
+import 'package:patroli/features/reports/presentation/providers/reports_fetch_provider.dart';
 
 class MockReportsUseCase extends Mock implements ReportsUseCase {}
 

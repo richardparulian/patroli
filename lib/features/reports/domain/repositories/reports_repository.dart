@@ -1,5 +1,5 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:pos/core/error/failures.dart';
+import 'package:patroli/core/error/failures.dart';
 import '../entities/reports_entity.dart';
 
 abstract class ReportsRepository {

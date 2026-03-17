@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pos/features/auth/data/dtos/request/login_request.dart';
+import 'package:patroli/features/auth/data/dtos/request/login_request.dart';
 
 void main() {
   group('LoginRequest', () {

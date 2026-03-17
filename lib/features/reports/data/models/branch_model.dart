@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:pos/features/reports/domain/entities/branch_entity.dart';
+import 'package:patroli/features/reports/domain/entities/branch_entity.dart';
 
 part 'branch_model.freezed.dart';
 part 'branch_model.g.dart';

@@ -2,14 +2,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pos/core/enums/alert_type.dart';
-import 'package:pos/core/extensions/helper_state_extension.dart';
-import 'package:pos/core/ui/buttons/app_button.dart';
-import 'package:pos/core/ui/cards/app_card_alert.dart';
-import 'package:pos/core/ui/inputs/app_text_field.dart';
-import 'package:pos/core/utils/screen_util.dart';
-import 'package:pos/features/auth/presentation/providers/auth_login_provider.dart';
-import 'package:pos/features/auth/presentation/providers/auth_password_provider.dart';
+import 'package:patroli/core/enums/alert_type.dart';
+import 'package:patroli/core/extensions/helper_state_extension.dart';
+import 'package:patroli/core/ui/buttons/app_button.dart';
+import 'package:patroli/core/ui/cards/app_card_alert.dart';
+import 'package:patroli/core/ui/inputs/app_text_field.dart';
+import 'package:patroli/core/utils/screen_util.dart';
+import 'package:patroli/features/auth/presentation/providers/auth_login_provider.dart';
+import 'package:patroli/features/auth/presentation/providers/auth_password_provider.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});

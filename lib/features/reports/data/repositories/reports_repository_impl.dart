@@ -1,9 +1,9 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:pos/core/error/exceptions.dart';
-import 'package:pos/core/error/failures.dart';
-import 'package:pos/features/reports/data/datasources/reports_remote_data_source.dart';
-import 'package:pos/features/reports/domain/entities/reports_entity.dart';
-import 'package:pos/features/reports/domain/repositories/reports_repository.dart';
+import 'package:patroli/core/error/exceptions.dart';
+import 'package:patroli/core/error/failures.dart';
+import 'package:patroli/features/reports/data/datasources/reports_remote_data_source.dart';
+import 'package:patroli/features/reports/domain/entities/reports_entity.dart';
+import 'package:patroli/features/reports/domain/repositories/reports_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'reports_repository_impl.g.dart';

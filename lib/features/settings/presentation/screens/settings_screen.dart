@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pos/l10n/l10n.dart';
+import 'package:patroli/l10n/l10n.dart';
 
 /// Settings screen with various app configuration options
 class SettingsScreen extends ConsumerWidget {

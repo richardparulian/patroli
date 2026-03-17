@@ -41,7 +41,7 @@ final class AuthLoginProvider
   }
 }
 
-String _$authLoginHash() => r'3d03ad79cc502cac9b5445ab6fed7ec9c0a28e04';
+String _$authLoginHash() => r'188a918d14e87303bc036ae47f6a82d5eac8e835';
 
 abstract class _$AuthLogin extends $Notifier<ResultState<void>> {
   ResultState<void> build();

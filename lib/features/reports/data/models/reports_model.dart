@@ -1,9 +1,9 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:pos/features/reports/data/models/branch_model.dart';
-import 'package:pos/features/reports/data/models/created_model.dart';
-import 'package:pos/features/reports/domain/entities/branch_entity.dart';
-import 'package:pos/features/reports/domain/entities/created_entity.dart';
-import 'package:pos/features/reports/domain/entities/reports_entity.dart';
+import 'package:patroli/features/reports/data/models/branch_model.dart';
+import 'package:patroli/features/reports/data/models/created_model.dart';
+import 'package:patroli/features/reports/domain/entities/branch_entity.dart';
+import 'package:patroli/features/reports/domain/entities/created_entity.dart';
+import 'package:patroli/features/reports/domain/entities/reports_entity.dart';
 
 part 'reports_model.freezed.dart';
 part 'reports_model.g.dart';
