@@ -1,0 +1,19 @@
+#!/usr/bin/env sh
+set -eu
+
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM | tr '\n' ' ')
+if [ -z "${STAGED_FILES}" ]; then
+  exit 0
+fi
+
+DART_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.dart$' || true)
+if [ -n "${DART_FILES}" ]; then
+  echo "[pre-commit] Checking Dart formatting for staged files..."
+  dart format --output=none --set-exit-if-changed ${DART_FILES}
+fi
+
+ANALYZE_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep -E '^(lib|test)/.*\.dart$' || true)
+if [ -n "${ANALYZE_FILES}" ]; then
+  echo "[pre-commit] Analyzing staged Dart files..."
+  flutter analyze ${ANALYZE_FILES}
+fi

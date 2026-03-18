@@ -45,6 +45,25 @@ install: ## Install all Flutter dependencies
 setup: install setup-env generate-code ## Full project setup
 	@echo "$(GREEN)✓ Project setup complete$(NC)"
 
+.PHONY: hooks-install
+hooks-install: ## Install local git hooks from .githooks
+	@echo "$(BLUE)Installing local git hooks...$(NC)"
+	git config core.hooksPath .githooks
+	@echo "$(GREEN)✓ Git hooks installed$(NC)"
+
+.PHONY: hooks-uninstall
+hooks-uninstall: ## Reset git hooks path to default
+	@echo "$(BLUE)Resetting git hooks path...$(NC)"
+	git config --unset core.hooksPath || true
+	@echo "$(GREEN)✓ Git hooks reset$(NC)"
+
+.PHONY: hooks-status
+hooks-status: ## Show local git hooks status
+	@echo "$(BLUE)Git hooks path:$(NC)"
+	@git config --get core.hooksPath || echo default
+	@echo "$(BLUE)Available local hooks:$(NC)"
+	@ls -1 .githooks 2>/dev/null || true
+
 .PHONY: setup-env
 setup-env: ## Setup environment files
 	@echo "$(BLUE)Setting up environment...$(NC)"
@@ -228,6 +247,70 @@ test-localization: ## Run localization guardrail tests
 	@echo "$(BLUE)Running localization tests...$(NC)"
 	$(FLUTTER) test test/app/localization
 	@echo "$(GREEN)✓ Localization tests passed$(NC)"
+
+.PHONY: test-home-logout
+test-home-logout: ## Run home logout redirect widget test
+	@echo "$(BLUE)Running home logout redirect test...$(NC)"
+	$(FLUTTER) test test/features/home/presentation/screens/home_logout_redirect_test.dart
+	@echo "$(GREEN)✓ Home logout redirect test passed$(NC)"
+
+.PHONY: test-auth
+test-auth: ## Run auth feature tests
+	@echo "$(BLUE)Running auth feature tests...$(NC)"
+	$(FLUTTER) test test/features/auth
+	@echo "$(GREEN)✓ Auth feature tests passed$(NC)"
+
+.PHONY: test-reports
+test-reports: ## Run reports feature tests
+	@echo "$(BLUE)Running reports feature tests...$(NC)"
+	$(FLUTTER) test test/features/reports
+	@echo "$(GREEN)✓ Reports feature tests passed$(NC)"
+
+.PHONY: test-home
+test-home: ## Run home feature tests
+	@echo "$(BLUE)Running home feature tests...$(NC)"
+	$(FLUTTER) test test/features/home
+	@echo "$(GREEN)✓ Home feature tests passed$(NC)"
+
+.PHONY: test-settings
+test-settings: ## Run settings feature tests
+	@echo "$(BLUE)Running settings feature tests...$(NC)"
+	$(FLUTTER) test test/features/settings
+	@echo "$(GREEN)✓ Settings feature tests passed$(NC)"
+
+.PHONY: test-language-switcher
+test-language-switcher: ## Run language switcher feature tests
+	@echo "$(BLUE)Running language switcher feature tests...$(NC)"
+	$(FLUTTER) test test/features/language_switcher
+	@echo "$(GREEN)✓ Language switcher feature tests passed$(NC)"
+
+.PHONY: test-check-in
+test-check-in: ## Run check-in feature tests
+	@echo "$(BLUE)Running check-in feature tests...$(NC)"
+	$(FLUTTER) test test/features/check_in
+	@echo "$(GREEN)✓ Check-in feature tests passed$(NC)"
+
+.PHONY: test-check-out
+test-check-out: ## Run check-out feature tests
+	@echo "$(BLUE)Running check-out feature tests...$(NC)"
+	$(FLUTTER) test test/features/check_out
+	@echo "$(GREEN)✓ Check-out feature tests passed$(NC)"
+
+.PHONY: test-visits
+test-visits: ## Run visits feature tests
+	@echo "$(BLUE)Running visits feature tests...$(NC)"
+	$(FLUTTER) test test/features/visits
+	@echo "$(GREEN)✓ Visits feature tests passed$(NC)"
+
+.PHONY: test-scan-qr
+test-scan-qr: ## Run scan QR feature tests
+	@echo "$(BLUE)Running scan QR feature tests...$(NC)"
+	$(FLUTTER) test test/features/scan_qr
+	@echo "$(GREEN)✓ Scan QR feature tests passed$(NC)"
+
+.PHONY: test-core-features
+test-core-features: test-auth test-home test-settings test-language-switcher test-check-in test-check-out test-visits test-scan-qr test-reports ## Run core feature test suite
+	@echo "$(GREEN)✓ Core feature test suite passed$(NC)"
 
 # =============================================================================
 # CODE QUALITY
@@ -649,12 +732,18 @@ ci-build: install generate-code analyze test test-generators test-localization #
 	@echo "$(GREEN)✓ CI build successful$(NC)"
 
 .PHONY: ci-test
-ci-test: install generate-code test test-generators test-localization ## CI test pipeline
+ci-test: install generate-code test-core-features test-generators test-localization ## CI test pipeline
 	@echo "$(GREEN)✓ CI tests successful$(NC)"
 
 .PHONY: ci-quality
 ci-quality: install generate-code analyze format-check ## CI quality check
 	@echo "$(GREEN)✓ CI quality checks passed$(NC)"
+
+.PHONY: ci-validate
+ci-validate: ## Validate CI workflow structure
+	@echo "$(BLUE)Validating CI workflow...$(NC)"
+	@ruby -e "require 'yaml'; data = YAML.load_file('.github/workflows/flutter_ci.yml'); jobs = data.fetch('jobs'); abort('missing ci-test job') unless jobs.key?('ci-test'); abort('missing ci-build job') unless jobs.key?('ci-build'); abort('ci-build must depend on ci-test') unless jobs.dig('ci-build', 'needs') == 'ci-test'; puts 'CI workflow structure is valid'"
+	@echo "$(GREEN)✓ CI workflow validation passed$(NC)"
 
 # =============================================================================
 # WORKFLOW
