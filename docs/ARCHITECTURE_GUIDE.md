@@ -146,6 +146,20 @@ We separate Data DI from UI State:
 - **`[feature]_providers.dart`**: Provides Repositories, Use Cases, Data Sources.
 - **`[feature]_provider.dart`**: Provides `NotifierProvider` for UI state.
 
+### Localization Boundary
+Localization is treated as a **presentation/application concern**, not a domain or data concern.
+- **Domain/Data**: May return stable error messages or failure messages, but must not depend on `BuildContext`, Flutter localization APIs, or translation lookups.
+- **Application/Presentation**: Responsible for converting known messages into localized UI text before rendering.
+- **Shared UI**: Must use `context.tr(...)` / `context.trParams(...)` for visible strings.
+- **Custom localization map keys** in `lib/l10n/l10n.dart` must use **`snake_case`**.
+- **Generated ARB keys** are allowed to follow the generator's naming, but do not introduce new custom `camelCase` keys in the manual map.
+
+### Error Message Policy
+To keep architecture clean while still localizing legacy and backend-facing messages:
+- Use `lib/app/localization/localized_message.dart` at the application/presentation boundary.
+- Prefer mapping stable message identifiers or known strings to localization keys.
+- Unknown backend messages may fall back to the raw message.
+
 ---
 
 ## 4. Testing Strategy

@@ -1,4 +1,5 @@
 import 'package:image_picker/image_picker.dart';
+import 'package:patroli/app/localization/localized_message.dart';
 import 'package:patroli/core/extensions/helper_state_extension.dart';
 import 'package:patroli/core/extensions/result_state_extension.dart';
 import 'package:patroli/features/check_out/application/providers/check_out_di_provider.dart';
@@ -10,8 +11,9 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'check_out_submission_service.g.dart';
 
 class CheckOutSubmissionService {
-  CheckOutSubmissionService(this._checkOutUseCase, this._preSignUploadService);
+  CheckOutSubmissionService(this.ref, this._checkOutUseCase, this._preSignUploadService);
 
+  final Ref ref;
   final CreateCheckOutUseCase _checkOutUseCase;
   final PreSignUploadService _preSignUploadService;
 
@@ -39,11 +41,11 @@ class CheckOutSubmissionService {
       );
 
       return result.fold(
-        (failure) => Error(failure.message),
+        (failure) => Error(localizeMessage(ref, failure.message)),
         (_) => const Success(null),
       );
     } catch (e) {
-      return Error(e.toString().replaceFirst('Exception: ', ''));
+      return Error(localizeMessage(ref, e.toString().replaceFirst('Exception: ', '')));
     }
   }
 }
@@ -51,6 +53,7 @@ class CheckOutSubmissionService {
 @riverpod
 CheckOutSubmissionService checkOutSubmissionService(Ref ref) {
   return CheckOutSubmissionService(
+    ref,
     ref.read(checkOutUseCaseProvider),
     ref.read(preSignUploadServiceProvider),
   );

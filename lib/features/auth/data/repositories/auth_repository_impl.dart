@@ -1,7 +1,6 @@
 import 'package:fpdart/fpdart.dart';
 import 'package:patroli/core/error/exceptions.dart';
 import 'package:patroli/core/error/failures.dart';
-import 'package:patroli/core/providers/storage_providers.dart';
 import 'package:patroli/core/storage/local_storage_service.dart';
 import 'package:patroli/core/storage/secure_storage_service.dart';
 import 'package:patroli/core/storage/storage_keys.dart';
@@ -10,9 +9,6 @@ import 'package:patroli/features/auth/data/dtos/request/login_request.dart';
 import 'package:patroli/features/auth/data/models/user_model.dart';
 import 'package:patroli/features/auth/domain/entities/user_entity.dart';
 import 'package:patroli/features/auth/domain/repositories/auth_repository.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-part 'auth_repository_impl.g.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource _remoteDataSource;
@@ -90,13 +86,4 @@ class AuthRepositoryImpl implements AuthRepository {
       return const Left(ServerFailure());
     }
   }
-}
-
-@riverpod
-AuthRepository authRepository(Ref ref) {
-  final remoteDataSource = ref.watch(authRemoteDataSourceProvider);
-  final localStorageService = ref.watch(localStorageServiceProvider);
-  final secureStorageService = ref.watch(secureStorageServiceProvider);
-
-  return AuthRepositoryImpl(remoteDataSource, localStorageService, secureStorageService);
 }

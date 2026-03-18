@@ -1,4 +1,3 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:patroli/core/error/exceptions.dart';
 import 'package:patroli/core/error/failures.dart';
@@ -26,9 +25,3 @@ class CheckOutRepositoryImpl implements CheckOutRepository {
     }
   }
 }
-
-// Provider
-final checkOutRepositoryProvider = Provider<CheckOutRepository>((ref) {
-  final remoteDataSource = ref.watch(checkOutRemoteDataSourceProvider);
-  return CheckOutRepositoryImpl(remoteDataSource);
-});

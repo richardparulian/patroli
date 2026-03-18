@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:patroli/core/utils/screen_util.dart';
 
 class AppLoading extends ConsumerWidget {
   final String? message;
@@ -19,12 +20,12 @@ class AppLoading extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             CircularProgressIndicator(
-              strokeWidth: 5,
+              strokeWidth: ScreenUtil.sw(5),
               color: colorScheme.onSurface,
               strokeCap: StrokeCap.round,
             ),
             if (messageText.isNotEmpty) ...[
-              const SizedBox(height: 16),
+              SizedBox(height: ScreenUtil.sh(16)),
               Text(messageText,
                 style: TextStyle(
                   color: colorScheme.onSurface,

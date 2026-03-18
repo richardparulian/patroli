@@ -44,7 +44,7 @@ void main() {
     final result = await container.read(scanQrSubmissionServiceProvider).submit('x');
 
     expect(result, isA<Error<ScanQrEntity>>());
-    expect((result as Error<ScanQrEntity>).message, 'Kode QR tidak valid');
+    expect((result as Error<ScanQrEntity>).message, 'Invalid QR code');
     verify(() => mockScanQrUseCase.isValidQrCode('x')).called(1);
     verifyNever(() => mockScanQrUseCase(any()));
   });

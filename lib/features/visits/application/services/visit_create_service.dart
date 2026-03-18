@@ -1,4 +1,5 @@
 import 'package:patroli/core/extensions/result_state_extension.dart';
+import 'package:patroli/app/localization/localized_message.dart';
 import 'package:patroli/features/visits/application/providers/visit_di_provider.dart';
 import 'package:patroli/features/visits/data/dtos/request/visit_request.dart';
 import 'package:patroli/features/visits/domain/entities/visit_entity.dart';
@@ -26,11 +27,11 @@ class VisitCreateService {
       );
 
       return result.fold(
-        (failure) => Error(failure.message),
+        (failure) => Error(localizeMessage(ref, failure.message)),
         (value) => Success(value),
       );
     } catch (e) {
-      return Error(e.toString().replaceFirst('Exception: ', ''));
+      return Error(localizeMessage(ref, e.toString().replaceFirst('Exception: ', '')));
     }
   }
 }

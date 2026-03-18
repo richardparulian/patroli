@@ -5,31 +5,42 @@ import 'package:patroli/core/providers/storage_providers.dart';
 final themeModeProvider = NotifierProvider<ThemeModeNotifier, ThemeMode>(ThemeModeNotifier.new);
 
 class ThemeModeNotifier extends Notifier<ThemeMode> {
-  static const _key = 'is_dark';
+  static const _key = 'theme_mode';
+  static const _legacyKey = 'is_dark';
 
   @override
   ThemeMode build() {
     final storage = ref.read(localStorageServiceProvider);
 
-    final saved = storage.getBool(_key);
-
-    if (saved != null) {
-      return saved ? ThemeMode.dark : ThemeMode.light;
+    final saved = storage.getString(_key);
+    switch (saved) {
+      case 'light':
+        return ThemeMode.light;
+      case 'dark':
+        return ThemeMode.dark;
+      case 'system':
+        return ThemeMode.system;
     }
 
-    final brightness = WidgetsBinding.instance.platformDispatcher.platformBrightness;
+    final legacy = storage.getBool(_legacyKey);
+    if (legacy != null) {
+      return legacy ? ThemeMode.dark : ThemeMode.light;
+    }
 
-    final isDark = brightness == Brightness.dark;
-
-    storage.setBool(_key, isDark);
-
-    return isDark ? ThemeMode.dark : ThemeMode.light;
+    return ThemeMode.system;
   }
 
   Future<void> set(ThemeMode mode) async {
     state = mode;
 
     final storage = ref.read(localStorageServiceProvider);
-    await storage.setBool(_key, mode == ThemeMode.dark);
+    switch (mode) {
+      case ThemeMode.light:
+        await storage.setString(_key, 'light');
+      case ThemeMode.dark:
+        await storage.setString(_key, 'dark');
+      case ThemeMode.system:
+        await storage.setString(_key, 'system');
+    }
   }
 }

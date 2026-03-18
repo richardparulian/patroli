@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:in_app_review/in_app_review.dart';
+import 'package:patroli/l10n/l10n.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// Interface for the app review service
@@ -155,8 +156,8 @@ class AppReviewServiceImpl implements AppReviewService {
             TextField(
               controller: controller,
               maxLines: 4,
-              decoration: const InputDecoration(
-                hintText: 'Enter your feedback here',
+              decoration: InputDecoration(
+                hintText: context.tr('enter_feedback_here'),
                 border: OutlineInputBorder(),
               ),
             ),
@@ -167,7 +168,7 @@ class AppReviewServiceImpl implements AppReviewService {
             onPressed: () {
               Navigator.of(context).pop();
             },
-            child: const Text('Cancel'),
+            child: Text(context.tr('cancel')),
           ),
           ElevatedButton(
             onPressed: () {
@@ -176,7 +177,7 @@ class AppReviewServiceImpl implements AppReviewService {
               debugPrint('⭐️ User feedback: ${controller.text}');
               Navigator.of(context).pop();
             },
-            child: const Text('Submit'),
+            child: Text(context.tr('submit')),
           ),
         ],
       ),

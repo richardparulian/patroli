@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:patroli/core/utils/screen_util.dart';
 
 enum IconButtonType { primary, outlined, text }
 
@@ -21,7 +22,7 @@ class AppIconButton extends StatefulWidget {
   final EdgeInsetsGeometry? padding;
   final Size? minimumSize;
 
-  AppIconButton({
+  const AppIconButton({
     super.key,
     this.onPressed,
     this.label,
@@ -37,12 +38,10 @@ class AppIconButton extends StatefulWidget {
     this.disabledForegroundColor,
     this.borderColor,
     this.type = IconButtonType.primary,
-    OutlinedBorder? shape,
+    this.shape,
     this.padding,
     this.minimumSize = const Size(0, 0),
-  }) : shape = shape ?? RoundedRectangleBorder(
-    borderRadius: BorderRadius.circular(borderRadius),
-  );
+  });
 
   @override
   State<AppIconButton> createState() => _AppIconButtonState();
@@ -123,23 +122,27 @@ class _AppIconButtonState extends State<AppIconButton> with SingleTickerProvider
   }
 
   Widget _buildButton(ColorScheme color, Color bg, Color br) {
+    final resolvedShape = widget.shape ?? RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(ScreenUtil.radius(widget.borderRadius)),
+    );
+
     switch (widget.type) {
       case IconButtonType.primary:
         return ElevatedButton.icon(
           onPressed: widget.onPressed,
           icon: widget.icon ?? const SizedBox.shrink(),
           label: widget.label != null ? Text(widget.label!,
-            style: TextStyle(fontSize: widget.fontSize),
+            style: TextStyle(fontSize: ScreenUtil.sp(widget.fontSize)),
           ) : const SizedBox.shrink(),
           style: ElevatedButton.styleFrom(
             padding: widget.padding,
             backgroundColor: bg,
             foregroundColor: color.onPrimary,
-            textStyle: TextStyle(fontSize: widget.fontSize),
+            textStyle: TextStyle(fontSize: ScreenUtil.sp(widget.fontSize)),
             disabledBackgroundColor: widget.disabledBackgroundColor ?? color.surfaceContainerHighest,
             disabledForegroundColor: widget.disabledForegroundColor ?? color.onSurface.withValues(alpha: 0.5),
-            fixedSize: Size(double.infinity, widget.height),
-            shape: widget.shape,
+            fixedSize: Size(double.infinity, ScreenUtil.sh(widget.height)),
+            shape: resolvedShape,
             elevation: _isPressed ? 2 : 4,
             minimumSize: widget.minimumSize,
           ),
@@ -150,15 +153,15 @@ class _AppIconButtonState extends State<AppIconButton> with SingleTickerProvider
           onPressed: widget.onPressed,
           icon: widget.icon ?? const SizedBox.shrink(),
           label: widget.label != null ? Text(widget.label!,
-            style: TextStyle(fontSize: widget.fontSize),
+            style: TextStyle(fontSize: ScreenUtil.sp(widget.fontSize)),
           ) : const SizedBox.shrink(),
           style: OutlinedButton.styleFrom(
             padding: widget.padding,
             foregroundColor: color.onSurface,
-            textStyle: TextStyle(fontSize: widget.fontSize),
-            side: BorderSide(color: br, width: 1.2),
-            fixedSize: Size(double.infinity, widget.height),
-            shape: widget.shape,
+            textStyle: TextStyle(fontSize: ScreenUtil.sp(widget.fontSize)),
+            side: BorderSide(color: br, width: ScreenUtil.sw(1.2)),
+            fixedSize: Size(double.infinity, ScreenUtil.sh(widget.height)),
+            shape: resolvedShape,
             elevation: _isPressed ? 0 : 2,
           ),
         );
@@ -168,7 +171,7 @@ class _AppIconButtonState extends State<AppIconButton> with SingleTickerProvider
           onPressed: widget.onPressed,
           icon: widget.icon ?? const SizedBox.shrink(),
           label: widget.label != null ? Text(widget.label!,
-            style: TextStyle(fontSize: widget.fontSize),
+            style: TextStyle(fontSize: ScreenUtil.sp(widget.fontSize)),
           ) : const SizedBox.shrink(),
           style: TextButton.styleFrom(
             foregroundColor: color.primary,

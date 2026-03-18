@@ -1,4 +1,5 @@
 import 'package:patroli/core/extensions/result_state_extension.dart';
+import 'package:patroli/app/localization/localized_message.dart';
 import 'package:patroli/features/auth/application/providers/auth_bootstrap_provider.dart';
 import 'package:patroli/features/auth/application/providers/auth_di_provider.dart';
 import 'package:patroli/features/auth/application/providers/auth_session_provider.dart';
@@ -27,7 +28,7 @@ class AuthLoginService {
     );
 
     return result.fold(
-      (failure) => Error(failure.message),
+      (failure) => Error(localizeMessage(ref, failure.message)),
       (response) {
         sessionNotifier.setUser(response);
         if (ref.mounted) {

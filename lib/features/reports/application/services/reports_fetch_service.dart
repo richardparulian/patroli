@@ -1,3 +1,4 @@
+import 'package:patroli/app/localization/localized_message.dart';
 import 'package:patroli/features/reports/application/providers/reports_di_provider.dart';
 import 'package:patroli/features/reports/domain/entities/reports_entity.dart';
 import 'package:patroli/features/reports/domain/usecases/reports_use_case.dart';
@@ -22,7 +23,7 @@ class ReportsFetchService {
     );
 
     return result.fold(
-      (failure) => throw ReportsFetchException(failure.message),
+      (failure) => throw ReportsFetchException(localizeMessage(ref, failure.message)),
       (response) => response,
     );
   }

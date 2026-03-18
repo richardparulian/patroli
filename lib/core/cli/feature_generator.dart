@@ -1,631 +1,464 @@
-/// Flutter Riverpod Clean Architecture Feature Generator
-///
-/// This Dart file can be used programmatically to generate new features
-/// It mirrors the functionality of the generate_feature.sh script
-/// but allows for more complex integration with IDE plugins or Flutter tools.
 library;
 
 import 'dart:io';
 
 class FeatureGenerator {
+  FeatureGenerator({
+    required this.featureName,
+    this.withUi = true,
+    this.withTests = true,
+    this.withDocs = true,
+  })  : pascalCase = _toPascalCase(featureName),
+        camelCase = _toCamelCase(featureName);
+
   final String featureName;
   final bool withUi;
   final bool withTests;
   final bool withDocs;
+  final String pascalCase;
+  final String camelCase;
 
-  /// Feature name in PascalCase (e.g., UserProfile)
-  late final String pascalCase;
-
-  /// Feature name in camelCase (e.g., userProfile)
-  late final String camelCase;
-
-  FeatureGenerator({required this.featureName, this.withUi = true, this.withTests = true, this.withDocs = true}) {
-    pascalCase = _toPascalCase(featureName);
-    camelCase = _toCamelCase(featureName);
-  }
-
-  /// Generate all files and folders for the feature
   Future<void> generate() async {
     stdout.writeln('Generating feature: $featureName');
-
     await _createDirectories();
     await _createFiles();
-
     stdout.writeln('Feature $featureName generated successfully!');
   }
 
-  /// Create the directory structure for the feature
   Future<void> _createDirectories() async {
     final baseDir = 'lib/features/$featureName';
 
-    // Data layer
     await _createDir('$baseDir/data/datasources');
     await _createDir('$baseDir/data/models');
+    await _createDir('$baseDir/data/dtos/request');
+    await _createDir('$baseDir/data/dtos/response');
     await _createDir('$baseDir/data/repositories');
-
-    // Domain layer
     await _createDir('$baseDir/domain/entities');
     await _createDir('$baseDir/domain/repositories');
     await _createDir('$baseDir/domain/usecases');
+    await _createDir('$baseDir/application/providers');
+    await _createDir('$baseDir/application/services');
+    await _createDir('$baseDir/presentation/providers');
+    await _createDir('$baseDir/presentation/screens');
 
-    // Presentation layer (if enabled)
-    if (withUi) {
-      await _createDir('$baseDir/presentation/providers');
-      await _createDir('$baseDir/presentation/screens');
-      await _createDir('$baseDir/presentation/widgets');
-    }
-
-    // Providers folder
-    await _createDir('$baseDir/providers');
-
-    // Test directories (if enabled)
     if (withTests) {
       await _createDir('test/features/$featureName/data');
       await _createDir('test/features/$featureName/domain');
-      if (withUi) {
-        await _createDir('test/features/$featureName/presentation');
-      }
+      await _createDir('test/features/$featureName/presentation');
     }
 
-    // Documentation (if enabled)
     if (withDocs) {
       await _createDir('docs/features');
     }
   }
 
-  /// Create all template files for the feature
   Future<void> _createFiles() async {
     final baseDir = 'lib/features/$featureName';
 
-    // Data Layer Files
-    await _createFile('$baseDir/data/models/${featureName}_model.dart', '''
-// $pascalCase Model
-// Implements the ${pascalCase}Entity with additional data layer functionality
-
-import '../../domain/entities/${featureName}_entity.dart';
-
-class ${pascalCase}Model extends ${pascalCase}Entity {
-  ${pascalCase}Model({
-    required String id,
-    // Add required fields here
-  }) : super(
-          id: id,
-          // Initialize super class with required fields
-        );
-
-  // Factory method to create a model from JSON
-  factory ${pascalCase}Model.fromJson(Map<String, dynamic> json) {
-    return ${pascalCase}Model(
-      id: json['id'],
-      // Map other fields from JSON
-    );
-  }
-
-  // Convert model to JSON
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      // Add other fields here
-    };
-  }
-
-  // Create a copy with modified fields
-  ${pascalCase}Model copyWith({
-    String? id,
-    // Add other fields here
-  }) {
-    return ${pascalCase}Model(
-      id: id ?? this.id,
-      // Add other fields with null-coalescing
-    );
-  }
-}
-''');
-
-    await _createFile(
-      '$baseDir/data/datasources/${featureName}_remote_datasource.dart',
-      '''
-// $pascalCase Remote Data Source
-// Handles API calls and external data sources
-
-import '../models/${featureName}_model.dart';
-
-abstract class ${pascalCase}RemoteDataSource {
-  /// Fetches $camelCase data from the remote API
-  ///
-  /// Throws a [ServerException] for all error codes
-  Future<List<${pascalCase}Model>> get${pascalCase}s();
-  
-  /// Fetches a specific $camelCase by ID
-  Future<${pascalCase}Model?> get${pascalCase}ById(String id);
-}
-
-class ${pascalCase}RemoteDataSourceImpl implements ${pascalCase}RemoteDataSource {
-  // Add your API client here
-  // final ApiClient apiClient;
-  
-  ${pascalCase}RemoteDataSourceImpl(/*{required this.apiClient}*/);
-  
-  @override
-  Future<List<${pascalCase}Model>> get${pascalCase}s() async {
-    // TODO: Implement API call
-    throw UnimplementedError();
-  }
-  
-  @override
-  Future<${pascalCase}Model?> get${pascalCase}ById(String id) async {
-    // TODO: Implement API call
-    throw UnimplementedError();
-  }
-}
-''',
-    );
-
-    await _createFile(
-      '$baseDir/data/datasources/${featureName}_local_datasource.dart',
-      '''
-// $pascalCase Local Data Source
-// Handles local storage operations (SharedPreferences, SQLite, etc.)
-
-import '../models/${featureName}_model.dart';
-
-abstract class ${pascalCase}LocalDataSource {
-  /// Gets cached $camelCase data
-  ///
-  /// Throws a [CacheException] if no cached data is present
-  Future<List<${pascalCase}Model>> getCached${pascalCase}s();
-  
-  /// Caches $camelCase data
-  Future<void> cache${pascalCase}s(List<${pascalCase}Model> ${camelCase}s);
-}
-
-class ${pascalCase}LocalDataSourceImpl implements ${pascalCase}LocalDataSource {
-  // Add your storage client here
-  // final SharedPreferences sharedPreferences;
-  
-  ${pascalCase}LocalDataSourceImpl(/*{required this.sharedPreferences}*/);
-  
-  @override
-  Future<List<${pascalCase}Model>> getCached${pascalCase}s() async {
-    // TODO: Implement local storage retrieval
-    throw UnimplementedError();
-  }
-  
-  @override
-  Future<void> cache${pascalCase}s(List<${pascalCase}Model> ${camelCase}s) async {
-    // TODO: Implement local storage caching
-    throw UnimplementedError();
-  }
-}
-''',
-    );
-
-    await _createFile(
-      '$baseDir/data/repositories/${featureName}_repository_impl.dart',
-      '''
-// $pascalCase Repository Implementation
-// Implements the repository interface from domain layer
-
-import 'package:fpdart/fpdart.dart';
-
-import '../../../../core/error/failures.dart';
-import '../../../../core/error/exceptions.dart';
-import '../../../../core/network/network_info.dart';
-import '../../domain/entities/${featureName}_entity.dart';
-import '../../domain/repositories/${featureName}_repository.dart';
-import '../datasources/${featureName}_local_datasource.dart';
-import '../datasources/${featureName}_remote_datasource.dart';
-import '../models/${featureName}_model.dart';
-
-class ${pascalCase}RepositoryImpl implements ${pascalCase}Repository {
-  final ${pascalCase}RemoteDataSource remoteDataSource;
-  final ${pascalCase}LocalDataSource localDataSource;
-  final NetworkInfo networkInfo;
-  
-  ${pascalCase}RepositoryImpl({
-    required this.remoteDataSource,
-    required this.localDataSource,
-    required this.networkInfo,
-  });
-  
-  @override
-  Future<Either<Failure, List<${pascalCase}Entity>>> getAll${pascalCase}s() async {
-    if (await networkInfo.isConnected) {
-      try {
-        final remote${pascalCase}s = await remoteDataSource.get${pascalCase}s();
-        await localDataSource.cache${pascalCase}s(remote${pascalCase}s);
-        return Right(remote${pascalCase}s);
-      } on ServerException {
-        return Left(ServerFailure());
-      }
-    } else {
-      try {
-        final local${pascalCase}s = await localDataSource.getCached${pascalCase}s();
-        return Right(local${pascalCase}s);
-      } on CacheException {
-        return Left(CacheFailure());
-      }
-    }
-  }
-  
-  @override
-  Future<Either<Failure, ${pascalCase}Entity>> get${pascalCase}ById(String id) async {
-    // TODO: Implement get by ID functionality
-    throw UnimplementedError();
-  }
-}
-''',
-    );
-
-    // Domain Layer Files
     await _createFile('$baseDir/domain/entities/${featureName}_entity.dart', '''
-// $pascalCase Entity
-// Core business entity, independent of data sources
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-import 'package:equatable/equatable.dart';
+part '${featureName}_entity.freezed.dart';
 
-class ${pascalCase}Entity extends Equatable {
-  final String id;
-  // Add more fields here
-  
-  const ${pascalCase}Entity({
-    required this.id,
-    // Add required fields here
-  });
-  
-  @override
-  List<Object> get props => [id];
+@freezed
+abstract class ${pascalCase}Entity with _\$${pascalCase}Entity {
+  const factory ${pascalCase}Entity({
+    required int id,
+    required String name,
+  }) = _${pascalCase}Entity;
+
+  factory ${pascalCase}Entity.empty() => const ${pascalCase}Entity(id: 0, name: '');
 }
 ''');
 
-    await _createFile(
-      '$baseDir/domain/repositories/${featureName}_repository.dart',
-      '''
-// $pascalCase Repository Interface
-// Define contract for data operations
-
+    await _createFile('$baseDir/domain/repositories/${featureName}_repository.dart', '''
 import 'package:fpdart/fpdart.dart';
-
-import '../../../../core/error/failures.dart';
+import 'package:patroli/core/error/failures.dart';
+import 'package:patroli/features/$featureName/data/dtos/request/${featureName}_request.dart';
 import '../entities/${featureName}_entity.dart';
 
 abstract class ${pascalCase}Repository {
-  /// Gets all $camelCase entities
-  ///
-  /// Returns [Failure] or [List<${pascalCase}Entity>]
-  Future<Either<Failure, List<${pascalCase}Entity>>> getAll${pascalCase}s();
-  
-  /// Gets a specific $camelCase entity by ID
-  ///
-  /// Returns [Failure] or [${pascalCase}Entity]
-  Future<Either<Failure, ${pascalCase}Entity>> get${pascalCase}ById(String id);
+  Future<Either<Failure, ${pascalCase}Entity>> submit(${pascalCase}Request request);
 }
-''',
-    );
-
-    await _createFile(
-      '$baseDir/domain/usecases/get_all_${featureName}s.dart',
-      '''
-// Get All ${pascalCase}s Use Case
-// Business logic for retrieving all $camelCase entities
-
-import 'package:fpdart/fpdart.dart';
-
-import '../../../../core/error/failures.dart';
-import '../../../../core/usecases/usecase.dart';
-import '../entities/${featureName}_entity.dart';
-import '../repositories/${featureName}_repository.dart';
-
-class GetAll${pascalCase}s implements UseCase<List<${pascalCase}Entity>, NoParams> {
-  final ${pascalCase}Repository repository;
-  
-  GetAll${pascalCase}s(this.repository);
-  
-  @override
-  Future<Either<Failure, List<${pascalCase}Entity>>> call(NoParams params) {
-    return repository.getAll${pascalCase}s();
-  }
-}
-''',
-    );
-
-    await _createFile(
-      '$baseDir/domain/usecases/get_${featureName}_by_id.dart',
-      '''
-// Get $pascalCase By ID Use Case
-// Business logic for retrieving a specific $camelCase entity
-
-import 'package:dartz/dartz.dart';
-import 'package:equatable/equatable.dart';
-
-import '../../../../core/error/failures.dart';
-import '../../../../core/usecases/usecase.dart';
-import '../entities/${featureName}_entity.dart';
-import '../repositories/${featureName}_repository.dart';
-
-class Get${pascalCase}ById implements UseCase<${pascalCase}Entity, ${pascalCase}Params> {
-  final ${pascalCase}Repository repository;
-  
-  Get${pascalCase}ById(this.repository);
-  
-  @override
-  Future<Either<Failure, ${pascalCase}Entity>> call(${pascalCase}Params params) {
-    return repository.get${pascalCase}ById(params.id);
-  }
-}
-
-class ${pascalCase}Params extends Equatable {
-  final String id;
-  
-  const ${pascalCase}Params({required this.id});
-  
-  @override
-  List<Object> get props => [id];
-}
-''',
-    );
-
-    // Add UI files if requested
-    if (withUi) {
-      await _createUiFiles(baseDir);
-    }
-
-    // Provider Files
-    await _createFile('$baseDir/providers/${featureName}_providers.dart', '''
-// $pascalCase Providers
-// Riverpod providers for the $featureName feature
-
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../../../core/network/network_info.dart';
-import '../data/datasources/${featureName}_local_datasource.dart';
-import '../data/datasources/${featureName}_remote_datasource.dart';
-import '../data/repositories/${featureName}_repository_impl.dart';
-import '../domain/entities/${featureName}_entity.dart';
-import '../domain/repositories/${featureName}_repository.dart';
-import '../domain/usecases/get_all_${featureName}s.dart';
-import '../domain/usecases/get_${featureName}_by_id.dart';
-
-// Data sources
-final ${camelCase}RemoteDataSourceProvider = Provider<${pascalCase}RemoteDataSource>(
-  (ref) => ${pascalCase}RemoteDataSourceImpl(
-    // Add dependencies here
-  ),
-);
-
-final ${camelCase}LocalDataSourceProvider = Provider<${pascalCase}LocalDataSource>(
-  (ref) => ${pascalCase}LocalDataSourceImpl(
-    // Add dependencies here
-  ),
-);
-
-// Repository
-final ${camelCase}RepositoryProvider = Provider<${pascalCase}Repository>(
-  (ref) => ${pascalCase}RepositoryImpl(
-    remoteDataSource: ref.read(${camelCase}RemoteDataSourceProvider),
-    localDataSource: ref.read(${camelCase}LocalDataSourceProvider),
-    networkInfo: ref.read(networkInfoProvider),
-  ),
-);
-
-// Use cases
-final getAll${pascalCase}sProvider = Provider<GetAll${pascalCase}s>(
-  (ref) => GetAll${pascalCase}s(ref.read(${camelCase}RepositoryProvider)),
-);
-
-final get${pascalCase}ByIdProvider = Provider<Get${pascalCase}ById>(
-  (ref) => Get${pascalCase}ById(ref.read(${camelCase}RepositoryProvider)),
-);
-
-// State providers
-final ${camelCase}ListProvider = FutureProvider<List<${pascalCase}Entity>>(
-  (ref) async {
-    final usecase = ref.read(getAll${pascalCase}sProvider);
-    final result = await usecase(NoParams());
-    
-    return result.fold(
-      (failure) => throw Exception(failure.toString()),
-      (${camelCase}s) => ${camelCase}s,
-    );
-  },
-);
-
-final selected${pascalCase}IdProvider = StateProvider<String?>((ref) => null);
-
-final selected${pascalCase}Provider = FutureProvider<${pascalCase}Entity?>((ref) async {
-  final id = ref.watch(selected${pascalCase}IdProvider);
-  if (id == null) return null;
-  
-  final usecase = ref.read(get${pascalCase}ByIdProvider);
-  final result = await usecase(${pascalCase}Params(id: id));
-  
-  return result.fold(
-    (failure) => throw Exception(failure.toString()),
-    ($camelCase) => $camelCase,
-  );
-});
 ''');
 
-    // Create test files if requested
-    if (withTests) {
-      await _createTestFiles();
-    }
+    await _createFile('$baseDir/domain/usecases/${featureName}_use_case.dart', '''
+import 'package:equatable/equatable.dart';
+import 'package:fpdart/fpdart.dart';
+import 'package:patroli/core/error/failures.dart';
+import 'package:patroli/core/usecases/usecase.dart';
+import 'package:patroli/features/$featureName/data/dtos/request/${featureName}_request.dart';
+import 'package:patroli/features/$featureName/domain/entities/${featureName}_entity.dart';
+import 'package:patroli/features/$featureName/domain/repositories/${featureName}_repository.dart';
 
-    // Create documentation if requested
-    if (withDocs) {
-      await _createDocFiles();
-    }
-  }
+class Create${pascalCase}Params extends Equatable {
+  const Create${pascalCase}Params({
+    required this.request,
+  });
 
-  /// Create presentation layer files
-  Future<void> _createUiFiles(String baseDir) async {
-    await _createFile(
-      '$baseDir/presentation/screens/${featureName}_list_screen.dart',
-      '''
-// $pascalCase List Screen
-// Screen that displays a list of $camelCase items
-
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../providers/${featureName}_providers.dart';
-import '../widgets/${featureName}_list_item.dart';
-
-class ${pascalCase}ListScreen extends ConsumerWidget {
-  const ${pascalCase}ListScreen({Key? key}) : super(key: key);
+  final ${pascalCase}Request request;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final ${camelCase}sAsync = ref.watch(${camelCase}ListProvider);
-    
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('${pascalCase}s'),
-      ),
-      body: ${camelCase}sAsync.when(
-        data: (${camelCase}s) => ListView.builder(
-          itemCount: ${camelCase}s.length,
-          itemBuilder: (context, index) => ${pascalCase}ListItem(
-            $camelCase: ${camelCase}s[index],
-            onTap: () {
-              ref.read(selected${pascalCase}IdProvider.notifier).state = ${camelCase}s[index].id;
-              // Navigate to detail screen
-            },
-          ),
-        ),
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stack) => Center(
-          child: Text('Error: \${error.toString()}'),
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Add new $camelCase action
-        },
-        child: const Icon(Icons.add),
-      ),
-    );
-  }
+  List<Object?> get props => [request];
 }
-''',
-    );
 
-    await _createFile(
-      '$baseDir/presentation/screens/${featureName}_detail_screen.dart',
-      '''
-// $pascalCase Detail Screen
-// Screen that displays details of a specific $camelCase
+class Create${pascalCase}UseCase implements UseCase<${pascalCase}Entity, Create${pascalCase}Params> {
+  Create${pascalCase}UseCase(this._repository);
 
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../providers/${featureName}_providers.dart';
-
-class ${pascalCase}DetailScreen extends ConsumerWidget {
-  const ${pascalCase}DetailScreen({Key? key}) : super(key: key);
+  final ${pascalCase}Repository _repository;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final ${camelCase}Async = ref.watch(selected${pascalCase}Provider);
-    
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('$pascalCase Details'),
-      ),
-      body: ${camelCase}Async.when(
-        data: ($camelCase) {
-          if ($camelCase == null) {
-            return const Center(child: Text('$pascalCase not found'));
-          }
-          
-          return Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('ID: \${$camelCase.id}', style: Theme.of(context).textTheme.headlineSmall),
-                const SizedBox(height: 16),
-                // Add more fields here
-              ],
-            ),
-          );
-        },
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stack) => Center(
-          child: Text('Error: \${error.toString()}'),
-        ),
-      ),
-    );
+  Future<Either<Failure, ${pascalCase}Entity>> call(Create${pascalCase}Params params) {
+    return _repository.submit(params.request);
   }
 }
-''',
-    );
+''');
 
-    await _createFile(
-      '$baseDir/presentation/widgets/${featureName}_list_item.dart',
-      '''
-// $pascalCase List Item
-// Widget that displays a single $camelCase in a list
+    await _createFile('$baseDir/data/models/${featureName}_model.dart', '''
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:patroli/features/$featureName/domain/entities/${featureName}_entity.dart';
 
-import 'package:flutter/material.dart';
+part '${featureName}_model.freezed.dart';
+part '${featureName}_model.g.dart';
 
-import '../../domain/entities/${featureName}_entity.dart';
+@freezed
+abstract class ${pascalCase}Model with _\$${pascalCase}Model {
+  const ${pascalCase}Model._();
 
-class ${pascalCase}ListItem extends StatelessWidget {
-  final ${pascalCase}Entity $camelCase;
-  final VoidCallback onTap;
-  
-  const ${pascalCase}ListItem({
-    Key? key,
+  const factory ${pascalCase}Model({
+    required int id,
+    required String name,
+  }) = _${pascalCase}Model;
+
+  factory ${pascalCase}Model.fromJson(Map<String, dynamic> json) =>
+      _\$${pascalCase}ModelFromJson(json);
+
+  ${pascalCase}Entity toEntity() => ${pascalCase}Entity(id: id, name: name);
+}
+''');
+
+    await _createFile('$baseDir/data/dtos/request/${featureName}_request.dart', '''
+import 'package:json_annotation/json_annotation.dart';
+
+part '${featureName}_request.g.dart';
+
+@JsonSerializable(fieldRename: FieldRename.snake)
+class ${pascalCase}Request {
+  ${pascalCase}Request({
+    required this.name,
+  });
+
+  final String name;
+
+  factory ${pascalCase}Request.fromJson(Map<String, dynamic> json) =>
+      _\$${pascalCase}RequestFromJson(json);
+
+  Map<String, dynamic> toJson() => _\$${pascalCase}RequestToJson(this);
+
+  @override
+  String toString() => '${pascalCase}(name: \$name)';
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is ${pascalCase}Request && other.name == name;
+  }
+
+  @override
+  int get hashCode => Object.hash(name, runtimeType);
+}
+''');
+
+    await _createFile('$baseDir/data/dtos/response/${featureName}_response.dart', '''
+import 'package:json_annotation/json_annotation.dart';
+import '../../models/${featureName}_model.dart';
+
+part '${featureName}_response.g.dart';
+
+@JsonSerializable(fieldRename: FieldRename.snake)
+class ${pascalCase}Response {
+  ${pascalCase}Response({
     required this.$camelCase,
-    required this.onTap,
-  }) : super(key: key);
+  });
+
+  final ${pascalCase}Model $camelCase;
+
+  factory ${pascalCase}Response.fromJson(Map<String, dynamic> json) =>
+      _\$${pascalCase}ResponseFromJson(json);
+
+  Map<String, dynamic> toJson() => _\$${pascalCase}ResponseToJson(this);
+
+  @override
+  String toString() => '${pascalCase}($camelCase: \$$camelCase)';
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is ${pascalCase}Response && other.$camelCase == $camelCase;
+  }
+
+  @override
+  int get hashCode => Object.hash($camelCase, runtimeType);
+}
+''');
+
+    await _createFile('$baseDir/data/dtos/dtos.dart', '''
+library;
+
+export 'request/${featureName}_request.dart';
+export 'response/${featureName}_response.dart';
+''');
+
+    await _createFile('$baseDir/data/datasources/${featureName}_remote_data_source.dart', '''
+import 'package:patroli/core/network/api_client.dart';
+import 'package:patroli/features/$featureName/data/dtos/request/${featureName}_request.dart';
+import 'package:patroli/features/$featureName/data/dtos/response/${featureName}_response.dart';
+import '../models/${featureName}_model.dart';
+
+abstract class ${pascalCase}RemoteDataSource {
+  Future<${pascalCase}Model> submit${pascalCase}(${pascalCase}Request request);
+}
+
+class ${pascalCase}RemoteDataSourceImpl implements ${pascalCase}RemoteDataSource {
+  ${pascalCase}RemoteDataSourceImpl(this._apiClient);
+
+  final ApiClient _apiClient;
+
+  @override
+  Future<${pascalCase}Model> submit${pascalCase}(${pascalCase}Request request) async {
+    final result = await _apiClient.post('/$featureName', data: request.toJson());
+
+    return result.fold(
+      (failure) => throw Exception(failure.message),
+      (response) => ${pascalCase}Response.fromJson(response).$camelCase,
+    );
+  }
+}
+''');
+
+    await _createFile('$baseDir/data/repositories/${featureName}_repository_impl.dart', '''
+import 'package:fpdart/fpdart.dart';
+import 'package:patroli/core/error/exceptions.dart';
+import 'package:patroli/core/error/failures.dart';
+import 'package:patroli/features/$featureName/data/datasources/${featureName}_remote_data_source.dart';
+import 'package:patroli/features/$featureName/data/dtos/request/${featureName}_request.dart';
+import 'package:patroli/features/$featureName/domain/entities/${featureName}_entity.dart';
+import 'package:patroli/features/$featureName/domain/repositories/${featureName}_repository.dart';
+
+class ${pascalCase}RepositoryImpl implements ${pascalCase}Repository {
+  ${pascalCase}RepositoryImpl(this._remoteDataSource);
+
+  final ${pascalCase}RemoteDataSource _remoteDataSource;
+
+  @override
+  Future<Either<Failure, ${pascalCase}Entity>> submit(${pascalCase}Request request) async {
+    try {
+      final model = await _remoteDataSource.submit${pascalCase}(request);
+      return Right(model.toEntity());
+    } on ServerException {
+      return Left(ServerFailure(message: 'Failed to submit $featureName'));
+    } on NetworkException {
+      return Left(NetworkFailure(message: 'No internet connection'));
+    } on Exception catch (e) {
+      return Left(ServerFailure(message: e.toString()));
+    }
+  }
+}
+''');
+
+    await _createFile('$baseDir/application/providers/${featureName}_data_providers.dart', '''
+import 'package:patroli/app/network/network_providers.dart';
+import 'package:patroli/core/network/api_client.dart';
+import 'package:patroli/features/$featureName/data/datasources/${featureName}_remote_data_source.dart';
+import 'package:patroli/features/$featureName/data/repositories/${featureName}_repository_impl.dart';
+import 'package:patroli/features/$featureName/domain/repositories/${featureName}_repository.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part '${featureName}_data_providers.g.dart';
+
+@riverpod
+ApiClient ${camelCase}ApiClient(Ref ref) {
+  final dio = ref.watch(dioWithAuthProvider);
+  return ApiClient(dio);
+}
+
+@riverpod
+${pascalCase}RemoteDataSource ${camelCase}RemoteDataSource(Ref ref) {
+  final apiClient = ref.watch(${camelCase}ApiClientProvider);
+  return ${pascalCase}RemoteDataSourceImpl(apiClient);
+}
+
+@riverpod
+${pascalCase}Repository ${camelCase}Repository(Ref ref) {
+  final remoteDataSource = ref.watch(${camelCase}RemoteDataSourceProvider);
+  return ${pascalCase}RepositoryImpl(remoteDataSource);
+}
+''');
+
+    await _createFile('$baseDir/application/providers/${featureName}_di_provider.dart', '''
+import 'package:patroli/features/$featureName/application/providers/${featureName}_data_providers.dart';
+import 'package:patroli/features/$featureName/domain/usecases/${featureName}_use_case.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part '${featureName}_di_provider.g.dart';
+
+@riverpod
+Create${pascalCase}UseCase ${camelCase}UseCase(Ref ref) {
+  return Create${pascalCase}UseCase(ref.watch(${camelCase}RepositoryProvider));
+}
+''');
+
+    await _createFile('$baseDir/application/services/${featureName}_service.dart', '''
+import 'package:patroli/core/extensions/result_state_extension.dart';
+import 'package:patroli/features/$featureName/application/providers/${featureName}_di_provider.dart';
+import 'package:patroli/features/$featureName/data/dtos/request/${featureName}_request.dart';
+import 'package:patroli/features/$featureName/domain/entities/${featureName}_entity.dart';
+import 'package:patroli/features/$featureName/domain/usecases/${featureName}_use_case.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part '${featureName}_service.g.dart';
+
+class ${pascalCase}Service {
+  ${pascalCase}Service(this.ref);
+
+  final Ref ref;
+
+  Future<ResultState<${pascalCase}Entity>> submit({
+    required String name,
+  }) async {
+    try {
+      final useCase = ref.read(${camelCase}UseCaseProvider);
+      final result = await useCase(
+        Create${pascalCase}Params(
+          request: ${pascalCase}Request(name: name),
+        ),
+      );
+
+      return result.fold(
+        (failure) => Error(failure.message),
+        (entity) => Success(entity),
+      );
+    } catch (e) {
+      return Error(e.toString().replaceFirst('Exception: ', ''));
+    }
+  }
+}
+
+@riverpod
+${pascalCase}Service ${camelCase}Service(Ref ref) {
+  return ${pascalCase}Service(ref);
+}
+''');
+
+    await _createFile('$baseDir/presentation/providers/${featureName}_provider.dart', '''
+import 'package:patroli/core/extensions/result_state_extension.dart';
+import 'package:patroli/features/$featureName/application/services/${featureName}_service.dart';
+import 'package:patroli/features/$featureName/domain/entities/${featureName}_entity.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part '${featureName}_provider.g.dart';
+
+@riverpod
+class ${pascalCase} extends _\$${pascalCase} {
+  @override
+  ResultState<${pascalCase}Entity> build() {
+    return const Idle();
+  }
+
+  Future<void> run({required String name}) async {
+    state = const Loading();
+    state = await ref.read(${camelCase}ServiceProvider).submit(name: name);
+  }
+}
+''');
+
+    if (withUi) {
+      await _createFile('$baseDir/presentation/screens/${featureName}_screen.dart', '''
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:patroli/core/extensions/helper_state_extension.dart';
+import 'package:patroli/features/$featureName/presentation/providers/${featureName}_provider.dart';
+
+class ${pascalCase}Screen extends ConsumerStatefulWidget {
+  const ${pascalCase}Screen({super.key});
+
+  @override
+  ConsumerState<${pascalCase}Screen> createState() => _${pascalCase}ScreenState();
+}
+
+class _${pascalCase}ScreenState extends ConsumerState<${pascalCase}Screen> {
+  late final TextEditingController _nameController;
+
+  @override
+  void initState() {
+    super.initState();
+    _nameController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: ListTile(
-        title: Text('$pascalCase \${$camelCase.id}'),
-        // Add more details here
-        trailing: const Icon(Icons.arrow_forward_ios),
-        onTap: onTap,
+    final state = ref.watch(${camelCase}Provider);
+    final data = state.dataOrNull;
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('$pascalCase'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            TextField(
+              controller: _nameController,
+              decoration: const InputDecoration(
+                labelText: 'Name',
+                hintText: 'Enter a value',
+              ),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: state.isLoading
+                  ? null
+                  : () {
+                      ref.read(${camelCase}Provider.notifier).run(
+                            name: _nameController.text.trim(),
+                          );
+                    },
+              child: state.isLoading
+                  ? const SizedBox(
+                      height: 16,
+                      width: 16,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Text('Submit'),
+            ),
+            const SizedBox(height: 24),
+            if (state.isError)
+              Text(
+                state.errorMessage ?? 'Unknown error',
+                style: const TextStyle(color: Colors.red),
+              ),
+            if (data != null) ...[
+              Text('Saved ID: \${data.id}'),
+              Text('Saved Name: \${data.name}'),
+            ],
+          ],
+        ),
       ),
     );
   }
 }
-''',
-    );
-
-    await _createFile(
-      '$baseDir/presentation/providers/${featureName}_ui_providers.dart',
-      '''
-// $pascalCase UI Providers
-// Riverpod providers specific to UI state
-
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-// UI state providers
-final ${camelCase}FilterProvider = StateProvider<String>((ref) => '');
-
-final ${camelCase}SortOrderProvider = StateProvider<SortOrder>((ref) => SortOrder.asc);
-
-enum SortOrder { asc, desc }
-''',
-    );
+''');
+    }
   }
 
-  /// Create test files
-  Future<void> _createTestFiles() async {
-    // This would mirror the shell script's test file creation
-  }
-
-  /// Create documentation files
-  Future<void> _createDocFiles() async {
-    // This would mirror the shell script's documentation file creation
-  }
-
-  /// Helper method to create a directory and its parents if they don't exist
   Future<void> _createDir(String path) async {
     final dir = Directory(path);
     if (!await dir.exists()) {
@@ -634,31 +467,28 @@ enum SortOrder { asc, desc }
     }
   }
 
-  /// Helper method to create a file with the given content
   Future<void> _createFile(String path, String content) async {
     final file = File(path);
     await file.writeAsString(content);
     stdout.writeln('Created file: $path');
   }
 
-  /// Convert snake_case to PascalCase
-  String _toPascalCase(String input) {
-    return input.split('_').map((word) => word.isEmpty ? '' : word[0].toUpperCase() + word.substring(1).toLowerCase()).join('');
+  static String _toPascalCase(String input) {
+    return input
+        .split('_')
+        .map((word) => word.isEmpty ? '' : word[0].toUpperCase() + word.substring(1).toLowerCase())
+        .join();
   }
 
-  /// Convert snake_case to camelCase
-  String _toCamelCase(String input) {
+  static String _toCamelCase(String input) {
     final pascal = _toPascalCase(input);
     return pascal.isEmpty ? '' : pascal[0].toLowerCase() + pascal.substring(1);
   }
 }
 
 void main(List<String> args) {
-  // Example usage:
-  // dart run lib/core/cli/feature_generator.dart user_profile
   if (args.isEmpty) {
     stdout.writeln('Please provide a feature name in snake_case format.');
-    
     return;
   }
 

@@ -11,8 +11,13 @@ class AuthLogout extends _$AuthLogout {
     return const Idle();
   }
 
-  Future<void> runLogout() async {
+  Future<ResultState<void>> runLogout() async {
     state = const Loading();
-    state = await ref.read(authLogoutServiceProvider).logout();
+
+    final result = await ref.read(authLogoutServiceProvider).logout();
+    if (!ref.mounted) return const Idle();
+
+    state = result;
+    return result;
   }
 }

@@ -1,15 +1,10 @@
-import 'package:patroli/app/network/network_providers.dart';
 import 'package:patroli/core/error/exceptions.dart';
 import 'package:patroli/core/network/api_client.dart';
 import 'package:patroli/core/network/api_endpoints.dart';
-import 'package:patroli/core/providers/storage_providers.dart';
 import 'package:patroli/core/storage/secure_storage_service.dart';
 import 'package:patroli/core/storage/storage_keys.dart';
 import 'package:patroli/features/auth/data/dtos/dtos.dart';
 import 'package:patroli/features/auth/data/models/user_model.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-part 'auth_remote_data_source.g.dart';
 
 abstract class AuthRemoteDataSource {
   // :: Login a user with username and password
@@ -47,17 +42,4 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       },
     );
   }
-}
-
-@riverpod
-ApiClient apiClient(Ref ref) {
-  final dio = ref.watch(dioWithAuthProvider);
-  return ApiClient(dio);
-}
-
-@riverpod
-AuthRemoteDataSource authRemoteDataSource(Ref ref) {
-  final apiClient = ref.watch(apiClientProvider);
-  final secureStorageService = ref.watch(secureStorageServiceProvider);
-  return AuthRemoteDataSourceImpl(apiClient, secureStorageService);
 }

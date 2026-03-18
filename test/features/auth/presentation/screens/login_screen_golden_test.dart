@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:golden_toolkit/golden_toolkit.dart';
 import 'package:patroli/core/utils/screen_util.dart';
 import 'package:patroli/features/auth/presentation/screens/login_screen.dart';
+import 'package:patroli/l10n/l10n.dart';
 
 void main() {
   testGoldens('LoginScreen golden test', (tester) async {
@@ -19,6 +20,9 @@ void main() {
               return MaterialApp(
                 debugShowCheckedModeBanner: false,
                 theme: ThemeData(useMaterial3: true, colorSchemeSeed: Colors.blue),
+                localizationsDelegates: AppLocalizations.localizationsDelegates,
+                supportedLocales: AppLocalizations.supportedLocales,
+                locale: const Locale('en'),
                 home: const LoginScreen(),
               );
             },

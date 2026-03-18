@@ -1,5 +1,5 @@
 import 'package:patroli/features/auth/application/providers/auth_session_provider.dart';
-import 'package:patroli/features/auth/data/repositories/auth_repository_impl.dart';
+import 'package:patroli/features/auth/application/providers/auth_data_providers.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'auth_bootstrap_provider.g.dart';

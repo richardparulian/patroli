@@ -41,7 +41,7 @@ final class AuthLogoutProvider
   }
 }
 
-String _$authLogoutHash() => r'e23c7bbe2382bf2c6a88c9d1b536ad7d8e645f85';
+String _$authLogoutHash() => r'0fe891366109d38fd2c7ae469d6e47d7e7089cf5';
 
 abstract class _$AuthLogout extends $Notifier<ResultState<void>> {
   ResultState<void> build();

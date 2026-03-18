@@ -3,6 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:patroli/core/ui/buttons/app_button.dart';
+import 'package:patroli/l10n/l10n.dart';
+import 'package:patroli/core/utils/screen_util.dart';
 
 enum DialogType {
   info,
@@ -30,24 +32,24 @@ class AppDialog {
   static Widget _buildDialogContent({required Widget title, required Widget content, required List<Widget> actions, IconData? icon, Color? iconColor, EdgeInsets? contentPadding, double? borderRadius, Color? backgroundColor}) {
     return AlertDialog(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(borderRadius ?? 20),
+        borderRadius: BorderRadius.circular(borderRadius ?? ScreenUtil.radius(20)),
       ),
       backgroundColor: backgroundColor,
-      titlePadding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
+      titlePadding: EdgeInsets.fromLTRB(ScreenUtil.sw(15), ScreenUtil.sh(10), ScreenUtil.sw(15), 0),
       actionsPadding: EdgeInsets.zero,
-      contentPadding: contentPadding ?? const EdgeInsets.fromLTRB(20, 20, 20, 20),
+      contentPadding: contentPadding ?? EdgeInsets.fromLTRB(ScreenUtil.sw(20), ScreenUtil.sh(20), ScreenUtil.sw(20), ScreenUtil.sh(20)),
       title: Row(
         children: [
           if (icon != null) ...[
             Container(
-              padding: const EdgeInsets.all(8),
+              padding: ScreenUtil.paddingFromDesign(all: 8),
               decoration: BoxDecoration(
                 color: (iconColor ?? Colors.blue).withValues(alpha: 0.15),
                 shape: BoxShape.circle,
               ),
-              child: Icon(icon, color: iconColor, size: 24),
+              child: Icon(icon, color: iconColor, size: ScreenUtil.icon(24)),
             ),
-            const SizedBox(width: 10),
+            SizedBox(width: ScreenUtil.sw(10)),
           ],
           Expanded(child: title),
         ],
@@ -55,7 +57,7 @@ class AppDialog {
       content: content,
       actions: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(16, 0, 20, 16),
+          padding: EdgeInsets.fromLTRB(ScreenUtil.sw(16), 0, ScreenUtil.sw(20), ScreenUtil.sh(16)),
           child: Row(
             children: actions,
           ),
@@ -64,7 +66,7 @@ class AppDialog {
     );
   }
 
-  static Future<bool?> showConfirm({required BuildContext context, required String title, required String message, String confirmText = 'Ya', String cancelText = 'Batal', VoidCallback? onConfirm, VoidCallback? onCancel, bool barrierDismissible = true}) {
+  static Future<bool?> showConfirm({required BuildContext context, required String title, required String message, String? confirmText, String? cancelText, VoidCallback? onConfirm, VoidCallback? onCancel, bool barrierDismissible = true}) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -91,18 +93,18 @@ class AppDialog {
                 onCancel?.call();
                 Navigator.of(context).pop(true);
               },
-              label: cancelText,
+              label: cancelText ?? context.tr('cancel'),
               type: ButtonType.outlined,
             ),
           ),
-          const SizedBox(width: 12),
+          SizedBox(width: ScreenUtil.sw(12)),
           Expanded(
             child: AppButton(
               onPressed: () {
                 onConfirm?.call();
                 Navigator.of(context).pop(true);
               },
-              label: confirmText,
+              label: confirmText ?? context.tr('yes'),
               type: ButtonType.primary,
             ),
           ),
@@ -111,7 +113,7 @@ class AppDialog {
     );
   }
 
-  static Future<void> showInfo({required BuildContext context, required String title, required String message, String buttonText = 'OK', VoidCallback? onButtonPressed, bool barrierDismissible = true}) {
+  static Future<void> showInfo({required BuildContext context, required String title, required String message, String? buttonText, VoidCallback? onButtonPressed, bool barrierDismissible = true}) {
     final theme = Theme.of(context);
 
     return _showDialog<void>(
@@ -137,7 +139,7 @@ class AppDialog {
                 onButtonPressed?.call();
                 Navigator.of(context).pop();
               },
-              label: buttonText,
+              label: buttonText ?? context.tr('ok'),
               type: ButtonType.primary,
               backgroundColor: Colors.blue,
             ),
@@ -147,7 +149,7 @@ class AppDialog {
     );
   }
 
-  static Future<void> showSuccess({required BuildContext context, required String title, required String message, String buttonText = 'OK', VoidCallback? onButtonPressed, bool barrierDismissible = true}) {
+  static Future<void> showSuccess({required BuildContext context, required String title, required String message, String? buttonText, VoidCallback? onButtonPressed, bool barrierDismissible = true}) {
     final theme = Theme.of(context);
 
     return _showDialog<void>(
@@ -173,7 +175,7 @@ class AppDialog {
                 onButtonPressed?.call();
                 Navigator.of(context).pop();
               },
-              label: buttonText,
+              label: buttonText ?? context.tr('ok'),
               type: ButtonType.primary,
               backgroundColor: Colors.green,
             ),
@@ -183,7 +185,7 @@ class AppDialog {
     );
   }
 
-  static Future<void> showError({required BuildContext context, required String title, required String message, String buttonText = 'OK', VoidCallback? onButtonPressed, bool barrierDismissible = true}) {
+  static Future<void> showError({required BuildContext context, required String title, required String message, String? buttonText, VoidCallback? onButtonPressed, bool barrierDismissible = true}) {
     final theme = Theme.of(context);
 
     return _showDialog<void>(
@@ -209,7 +211,7 @@ class AppDialog {
                 onButtonPressed?.call();
                 Navigator.of(context).pop();
               },
-              label: buttonText,
+              label: buttonText ?? context.tr('ok'),
               type: ButtonType.primary,
               backgroundColor: Colors.red,
             ),
@@ -219,7 +221,7 @@ class AppDialog {
     );
   }
 
-  static Future<void> showWarning({required BuildContext context, required String title, required String message, String buttonText = 'OK', VoidCallback? onButtonPressed, bool barrierDismissible = true}) {
+  static Future<void> showWarning({required BuildContext context, required String title, required String message, String? buttonText, VoidCallback? onButtonPressed, bool barrierDismissible = true}) {
     final theme = Theme.of(context);
 
     return _showDialog<void>(
@@ -245,7 +247,7 @@ class AppDialog {
                 onButtonPressed?.call();
                 Navigator.of(context).pop();
               },
-              label: buttonText,
+              label: buttonText ?? context.tr('ok'),
               type: ButtonType.primary,
               backgroundColor: Colors.orange,
             ),
@@ -262,15 +264,15 @@ class AppDialog {
       barrierColor: barrierColor,
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(borderRadius ?? 20),
+          borderRadius: BorderRadius.circular(borderRadius ?? ScreenUtil.radius(20)),
         ),
         backgroundColor: backgroundColor,
-        contentPadding: contentPadding ?? const EdgeInsets.fromLTRB(24, 20, 24, 24),
+        contentPadding: contentPadding ?? EdgeInsets.fromLTRB(ScreenUtil.sw(24), ScreenUtil.sh(20), ScreenUtil.sw(24), ScreenUtil.sh(24)),
         title: title,
         content: content,
         actions: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(24, 0, 24, 20),
+            padding: EdgeInsets.fromLTRB(ScreenUtil.sw(24), 0, ScreenUtil.sw(24), ScreenUtil.sh(20)),
             child: Row(
               children: actions,
             ),
@@ -284,10 +286,10 @@ class AppDialog {
     required String itemName, VoidCallback? onConfirm, VoidCallback? onCancel}) {
     return showConfirm(
       context: context,
-      title: 'Hapus $itemName?',
-      message: 'Apakah Anda yakin ingin menghapus $itemName ini? Tindakan ini tidak dapat dibatalkan.',
-      confirmText: 'Ya',
-      cancelText: 'Batal',
+      title: context.trParams('delete_item_title', {'itemName': itemName}),
+      message: context.trParams('delete_item_message', {'itemName': itemName}),
+      confirmText: context.tr('yes'),
+      cancelText: context.tr('cancel'),
       onConfirm: onConfirm,
       onCancel: onCancel,
     );
@@ -296,10 +298,10 @@ class AppDialog {
   static Future<bool?> showLogoutConfirm({required BuildContext context, VoidCallback? onConfirm, VoidCallback? onCancel}) {
     return showConfirm(
       context: context,
-      title: 'Keluar?',
-      message: 'Apakah Anda yakin ingin keluar dari aplikasi?',
-      confirmText: 'Ya',
-      cancelText: 'Batal',
+      title: context.tr('logout_confirmation_title'),
+      message: context.tr('logout_confirmation_message'),
+      confirmText: context.tr('yes'),
+      cancelText: context.tr('cancel'),
       onConfirm: onConfirm,
       onCancel: onCancel,
     );

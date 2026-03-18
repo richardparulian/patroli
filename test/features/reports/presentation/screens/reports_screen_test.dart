@@ -7,6 +7,8 @@ import 'package:patroli/features/reports/presentation/providers/reports_fetch_pr
 import 'package:patroli/features/reports/presentation/providers/reports_paging_provider.dart';
 import 'package:patroli/features/reports/presentation/providers/reports_state_provider.dart';
 import 'package:patroli/features/reports/presentation/screens/reports_screen.dart';
+import 'package:patroli/core/utils/screen_util.dart';
+import 'package:patroli/l10n/l10n.dart';
 
 void main() {
   testWidgets('shows loading shimmer on first page loading state', (tester) async {
@@ -28,8 +30,16 @@ void main() {
           reportsFetchProvider.overrideWithValue(const ReportsState()),
           reportPagingProvider.overrideWithValue(pagingController),
         ],
-        child: const MaterialApp(
-          home: ReportsScreen(),
+        child: MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          locale: const Locale('id'),
+          home: Builder(
+            builder: (context) {
+              ScreenUtil.init(context);
+              return const ReportsScreen();
+            },
+          ),
         ),
       ),
     );
@@ -54,8 +64,16 @@ void main() {
           ),
           reportPagingProvider.overrideWithValue(pagingController),
         ],
-        child: const MaterialApp(
-          home: ReportsScreen(),
+        child: MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          locale: const Locale('id'),
+          home: Builder(
+            builder: (context) {
+              ScreenUtil.init(context);
+              return const ReportsScreen();
+            },
+          ),
         ),
       ),
     );
@@ -70,7 +88,7 @@ void main() {
     );
     await tester.pump();
 
-    expect(find.text('Terjadi Kesalahan'), findsOneWidget);
+    expect(find.text('Terjadi kesalahan'), findsOneWidget);
     expect(find.text('Fetch failed'), findsOneWidget);
     expect(find.text('Coba Lagi'), findsOneWidget);
   });

@@ -55,18 +55,10 @@ class LocalizationUtils {
   /// Get the locale name in its own language
   static String getLocaleName(Locale locale) {
     switch (locale.languageCode) {
+      case 'id':
+        return 'Bahasa Indonesia';
       case 'en':
         return 'English';
-      case 'es':
-        return 'Español';
-      case 'fr':
-        return 'Français';
-      case 'de':
-        return 'Deutsch';
-      case 'ja':
-        return '日本語';
-      case 'bn':
-        return 'বাংলা';
       default:
         return locale.languageCode;
     }

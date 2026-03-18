@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:patroli/core/extensions/result_string_extension.dart';
+import 'package:patroli/core/utils/screen_util.dart';
 
 String createInitial(String name) {
   String initialName = name.trim().split(RegExp(r'\s+')).map((l) => l[0]).take(2).join().toUpperCase();
@@ -20,14 +21,14 @@ class CircleImages extends StatelessWidget {
     return imageUrl.isNotEmpty ? CachedNetworkImage(
       // cacheManager: DefaultCacheManager(),
       imageUrl: imageUrl,
-      width: 100,
-      height: 100,
+      width: ScreenUtil.sw(100),
+      height: ScreenUtil.sw(100),
       fit: BoxFit.cover,
       placeholder: (_, _) {
         return Center(
           child: Text(name.initials,
             style: TextStyle(
-              fontSize: 18.0,
+              fontSize: ScreenUtil.sp(18),
               color: primaryColor,
               fontWeight: FontWeight.bold, 
             ),
@@ -38,7 +39,7 @@ class CircleImages extends StatelessWidget {
         return Center(
           child: Text(createInitial(name),
             style: TextStyle(
-              fontSize: 18.0,
+              fontSize: ScreenUtil.sp(18),
               color: primaryColor,
               fontWeight: FontWeight.bold, 
             ),
@@ -48,7 +49,7 @@ class CircleImages extends StatelessWidget {
     ) : Center(
       child: Text(createInitial(name),
         style: TextStyle(
-          fontSize: 18.0,
+          fontSize: ScreenUtil.sp(18),
           color: primaryColor,
           fontWeight: FontWeight.bold, 
         ),

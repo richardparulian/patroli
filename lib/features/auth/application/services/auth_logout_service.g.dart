@@ -26,7 +26,7 @@ final class AuthLogoutServiceProvider
         argument: null,
         retry: null,
         name: r'authLogoutServiceProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -54,4 +54,4 @@ final class AuthLogoutServiceProvider
   }
 }
 
-String _$authLogoutServiceHash() => r'cb9bd60b088863aeb1fdb5e0db3ca38f916258f8';
+String _$authLogoutServiceHash() => r'eb83897384ceec323f25f9e5aa39e27c0d6479b3';

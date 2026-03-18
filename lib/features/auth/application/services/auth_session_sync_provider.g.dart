@@ -26,7 +26,7 @@ final class AuthSessionSyncServiceProvider
         argument: null,
         retry: null,
         name: r'authSessionSyncServiceProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -55,4 +55,4 @@ final class AuthSessionSyncServiceProvider
 }
 
 String _$authSessionSyncServiceHash() =>
-    r'6aa9e679bdb82a32d5595679dbb9323d4805af40';
+    r'ce8339f3b3ca2e8c9be1b844b3d9df7dc37af86f';

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:patroli/core/storage/cache/cache_manager.dart';
 import 'package:patroli/core/utils/screen_util.dart';
+import 'package:patroli/l10n/l10n.dart';
 
 class ImagePreviewScreen extends ConsumerWidget {
   final String imageUrl;
@@ -21,7 +22,7 @@ class ImagePreviewScreen extends ConsumerWidget {
         titleSpacing: 0,
         backgroundColor: color.surface,
         surfaceTintColor: color.surface,
-        title: Text(title ?? 'Foto Detail'),
+        title: Text(title ?? context.tr('image_detail')),
         titleTextStyle: theme.textTheme.headlineSmall?.copyWith(
           fontSize: ScreenUtil.sp(18),
           color: color.onSurface,

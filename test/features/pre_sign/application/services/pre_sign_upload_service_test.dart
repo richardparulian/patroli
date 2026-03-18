@@ -70,7 +70,7 @@ void main() {
   });
 
   test('createAndUpload returns error when create use case fails', () async {
-    const failure = InputFailure(message: 'Filename tidak boleh kosong');
+    const failure = InputFailure(message: 'Filename is required');
     when(() => mockPreSignCreateUseCase(any()))
         .thenAnswer((_) async => const Left(failure));
 
@@ -95,7 +95,7 @@ void main() {
         );
 
     expect(result, isA<Error<PreSignCreateEntity>>());
-    expect((result as Error<PreSignCreateEntity>).message, 'Presigned URL tidak ditemukan');
+    expect((result as Error<PreSignCreateEntity>).message, 'Presigned URL not found');
     verify(() => mockPreSignCreateUseCase(any())).called(1);
     verifyNever(() => mockPreSignUpdateUseCase(any()));
   });

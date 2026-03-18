@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:patroli/core/utils/screen_util.dart';
 
 class ReportCardShimmer extends ConsumerWidget {
   const ReportCardShimmer({super.key});
@@ -14,18 +15,18 @@ class ReportCardShimmer extends ConsumerWidget {
 
     return Card(
       elevation: 2,
-      margin: const EdgeInsets.symmetric(
-        horizontal: 16,
-        vertical: 8,
+      margin: EdgeInsets.symmetric(
+        horizontal: ScreenUtil.sw(16),
+        vertical: ScreenUtil.sh(8),
       ),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(ScreenUtil.radius(16)),
       ),
       child: Shimmer.fromColors(
         baseColor: color.surfaceContainerHighest,
         highlightColor: color.surface,
         child: Padding(
-          padding: const EdgeInsets.all(14),
+          padding: ScreenUtil.paddingFromDesign(all: 14),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -34,55 +35,55 @@ class ReportCardShimmer extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    width: 36,
-                    height: 36,
+                    width: ScreenUtil.sw(36),
+                    height: ScreenUtil.sw(36),
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(ScreenUtil.radius(10)),
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  SizedBox(width: ScreenUtil.sw(12)),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
-                          height: 14,
-                          width: 100,
+                          height: ScreenUtil.sh(14),
+                          width: ScreenUtil.sw(100),
                           decoration: BoxDecoration(
                             color: Colors.white,
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: BorderRadius.circular(ScreenUtil.radius(10)),
                           ),
                         ),
-                        const SizedBox(height: 6),
+                        SizedBox(height: ScreenUtil.sh(6)),
                         Container(
-                          height: 12,
-                          width: 140,
+                          height: ScreenUtil.sh(12),
+                          width: ScreenUtil.sw(140),
                           decoration: BoxDecoration(
                             color: Colors.white,
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: BorderRadius.circular(ScreenUtil.radius(10)),
                           ),
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(width: 10),
+                  SizedBox(width: ScreenUtil.sw(10)),
                   Container(
-                    width: 70,
-                    height: 24,
+                    width: ScreenUtil.sw(70),
+                    height: ScreenUtil.sh(24),
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(ScreenUtil.radius(20)),
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: ScreenUtil.sh(12)),
               Container(
-                padding: const EdgeInsets.all(10),
+                padding: ScreenUtil.paddingFromDesign(all: 10),
                 decoration: BoxDecoration(
                   color: color.surfaceContainerHighest.withValues(alpha: 0.5),
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(ScreenUtil.radius(10)),
                 ),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -94,32 +95,32 @@ class ReportCardShimmer extends ConsumerWidget {
                           Row(
                             children: [
                               Container(
-                                width: 25,
-                                height: 25,
+                                width: ScreenUtil.sw(25),
+                                height: ScreenUtil.sw(25),
                                 decoration: const BoxDecoration(
                                   color: Colors.white,
                                   shape: BoxShape.circle,
                                 ),
                               ),
-                              const SizedBox(width: 10),
+                              SizedBox(width: ScreenUtil.sw(10)),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Container(
-                                    height: 12,
-                                    width: 80,
+                                    height: ScreenUtil.sh(12),
+                                    width: ScreenUtil.sw(80),
                                     decoration: BoxDecoration(
                                       color: Colors.white,
-                                      borderRadius: BorderRadius.circular(10),
+                                      borderRadius: BorderRadius.circular(ScreenUtil.radius(10)),
                                     ),
                                   ),
-                                  const SizedBox(height: 8),
+                                  SizedBox(height: ScreenUtil.sh(8)),
                                   Container(
-                                    height: 12,
-                                    width: 100,
+                                    height: ScreenUtil.sh(12),
+                                    width: ScreenUtil.sw(100),
                                     decoration: BoxDecoration(
                                       color: Colors.white,
-                                      borderRadius: BorderRadius.circular(10),
+                                      borderRadius: BorderRadius.circular(ScreenUtil.radius(10)),
                                     ),
                                   ),
                                 ],
@@ -130,32 +131,32 @@ class ReportCardShimmer extends ConsumerWidget {
                           Row(
                             children: [
                               Container(
-                                width: 25,
-                                height: 25,
+                                width: ScreenUtil.sw(25),
+                                height: ScreenUtil.sw(25),
                                 decoration: const BoxDecoration(
                                   color: Colors.white,
                                   shape: BoxShape.circle,
                                 ),
                               ),
-                              const SizedBox(width: 10),
+                              SizedBox(width: ScreenUtil.sw(10)),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Container(
-                                    height: 12,
-                                    width: 80,
+                                    height: ScreenUtil.sh(12),
+                                    width: ScreenUtil.sw(80),
                                     decoration: BoxDecoration(
                                       color: Colors.white,
-                                      borderRadius: BorderRadius.circular(10),
+                                      borderRadius: BorderRadius.circular(ScreenUtil.radius(10)),
                                     ),
                                   ),
-                                  const SizedBox(height: 8),
+                                  SizedBox(height: ScreenUtil.sh(8)),
                                   Container(
-                                    height: 12,
-                                    width: 100,
+                                    height: ScreenUtil.sh(12),
+                                    width: ScreenUtil.sw(100),
                                     decoration: BoxDecoration(
                                       color: Colors.white,
-                                      borderRadius: BorderRadius.circular(10),
+                                      borderRadius: BorderRadius.circular(ScreenUtil.radius(10)),
                                     ),
                                   ),
                                 ],
@@ -165,13 +166,13 @@ class ReportCardShimmer extends ConsumerWidget {
                         ],
                       )
                     ),
-                    const SizedBox(width: 12),
+                    SizedBox(width: ScreenUtil.sw(12)),
                     Container(
                       height: size.width > 600 ? size.width * 0.1 : size.width * 0.15,
                       width: size.width > 600 ? size.width * 0.1 : size.width * 0.15,
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(ScreenUtil.radius(10)),
                       ),
                     ),
                   ],

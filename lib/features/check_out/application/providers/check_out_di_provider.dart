@@ -1,4 +1,4 @@
-import 'package:patroli/features/check_out/data/repositories/check_out_repository_impl.dart';
+import 'package:patroli/features/check_out/application/providers/check_out_data_providers.dart';
 import 'package:patroli/features/check_out/domain/usecases/check_out_use_case.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

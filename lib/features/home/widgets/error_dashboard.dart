@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:patroli/core/ui/buttons/app_icon_button.dart';
 import 'package:patroli/features/reports/presentation/providers/reports_count_provider.dart';
+import 'package:patroli/l10n/l10n.dart';
+import 'package:patroli/core/utils/screen_util.dart';
 
 class ErrorDashboard extends ConsumerWidget {
   final String errorMessage;
@@ -23,19 +25,19 @@ class ErrorDashboard extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
-              padding: const EdgeInsets.all(10),
+              padding: ScreenUtil.paddingFromDesign(all: 10),
               decoration: BoxDecoration(
                 color: color.error.withValues(alpha: 0.4),
                 shape: BoxShape.circle,
               ),
-              child: Icon(Iconsax.info_circle5, size: 24, color: color.error),
+              child: Icon(Iconsax.info_circle5, size: ScreenUtil.icon(24), color: color.error),
             ),
-            const SizedBox(width: 10),
+            SizedBox(width: ScreenUtil.sw(10)),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Gagal Memuat Data',
+                  Text(context.tr('data_load_failed'),
                     style: theme.textTheme.titleMedium?.copyWith(
                       color: color.onSurface,
                     ),
@@ -50,13 +52,13 @@ class ErrorDashboard extends ConsumerWidget {
             ),
             AppIconButton(
               height: 30,
-              label: 'Coba Lagi',
+              label: context.tr('try_again'),
               fontSize: 12,
               borderColor: color.onSurface,
               foregroundColor: color.surface,
               backgroundColor: color.onSurface,
-              padding: const EdgeInsets.fromLTRB(10, 5, 12, 5),
-              icon: const Icon(Iconsax.refresh, size: 15),
+              padding: EdgeInsets.fromLTRB(ScreenUtil.sw(10), ScreenUtil.sh(5), ScreenUtil.sw(12), ScreenUtil.sh(5)),
+              icon: Icon(Iconsax.refresh, size: ScreenUtil.icon(15)),
               onPressed: () {
                 ref.read(countReportsProvider.notifier).fetchCount();
               },

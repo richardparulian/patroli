@@ -1,4 +1,5 @@
 import 'package:patroli/core/extensions/result_state_extension.dart';
+import 'package:patroli/app/localization/localized_message.dart';
 import 'package:patroli/features/check_in/application/providers/check_in_di_provider.dart';
 import 'package:patroli/features/check_in/data/dtos/request/check_in_request.dart';
 import 'package:patroli/features/check_in/domain/entities/check_in_entity.dart';
@@ -28,11 +29,11 @@ class CheckInSubmissionService {
       );
 
       return result.fold(
-        (failure) => Error(failure.message),
+        (failure) => Error(localizeMessage(ref, failure.message)),
         (checkInData) => Success(checkInData),
       );
     } catch (e) {
-      return Error(e.toString().replaceFirst('Exception: ', ''));
+      return Error(localizeMessage(ref, e.toString().replaceFirst('Exception: ', '')));
     }
   }
 }

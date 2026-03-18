@@ -1,4 +1,3 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:patroli/core/error/exceptions.dart';
 import 'package:patroli/core/error/failures.dart';
@@ -26,9 +25,3 @@ class VisitRepositoryImpl implements VisitRepository {
     }
   }
 }
-
-// Provider
-final visitRepositoryProvider = Provider<VisitRepository>((ref) {
-  final remoteDataSource = ref.watch(visitRemoteDataSourceProvider);
-  return VisitRepositoryImpl(remoteDataSource);
-});

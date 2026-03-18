@@ -55,4 +55,4 @@ final class PreSignUploadServiceProvider
 }
 
 String _$preSignUploadServiceHash() =>
-    r'c797f23796f7c061087950a98fb33c8762328f7a';
+    r'4b8871e4a7facdd431cc4a189b04d6b5c59b20f1';

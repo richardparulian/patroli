@@ -1,12 +1,8 @@
-import 'package:patroli/app/network/network_providers.dart';
 import 'package:patroli/core/error/exceptions.dart';
 import 'package:patroli/core/network/api_client.dart';
 import 'package:patroli/core/network/api_endpoints.dart';
 import 'package:patroli/features/reports/data/dtos/response/reports_response.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../models/reports_model.dart';
-
-part 'reports_remote_data_source.g.dart';
 
 abstract class ReportsRemoteDataSource {
   // :: Fetch all reportss
@@ -34,16 +30,4 @@ class ReportsRemoteDataSourceImpl implements ReportsRemoteDataSource {
       },
     );
   }
-}
-
-@riverpod
-ApiClient apiClient(Ref ref) {
-  final dio = ref.watch(dioWithAuthProvider);
-  return ApiClient(dio);
-}
-
-@riverpod
-ReportsRemoteDataSource reportsRemoteDataSource(Ref ref) {
-  final apiClient = ref.watch(apiClientProvider);
-  return ReportsRemoteDataSourceImpl(apiClient);
 }

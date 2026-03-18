@@ -4,6 +4,7 @@ import 'package:in_app_review/in_app_review.dart';
 import 'package:patroli/app/constants/app_review_constants.dart';
 import 'package:patroli/core/providers/storage_providers.dart';
 import 'package:patroli/core/utils/app_review_service.dart';
+import 'package:patroli/l10n/l10n.dart';
 
 final inAppReviewProvider = Provider<InAppReview>((ref) {
   return InAppReview.instance;
@@ -55,16 +56,16 @@ class SmartReviewPrompt extends ConsumerWidget {
         await showDialog<bool>(
           context: context,
           builder: (context) => AlertDialog(
-            title: const Text('Enjoying the app?'),
-            content: const Text('Would you like to share your feedback with us?'),
+            title: Text(context.tr('enjoying_app')),
+            content: Text(context.tr('share_feedback_prompt')),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(false),
-                child: const Text('No thanks'),
+                child: Text(context.tr('no_thanks')),
               ),
               ElevatedButton(
                 onPressed: () => Navigator.of(context).pop(true),
-                child: const Text('Sure!'),
+                child: Text(context.tr('sure')),
               ),
             ],
           ),
@@ -75,8 +76,8 @@ class SmartReviewPrompt extends ConsumerWidget {
 
     final hasFeedback = await reviewService.showFeedbackForm(
       context: context,
-      title: 'Your Feedback Matters',
-      message: 'Please share your thoughts about the app. If you\'re enjoying it, a review on the app store would be greatly appreciated!',
+      title: context.tr('feedback_matters'),
+      message: context.tr('feedback_request_message'),
     );
 
     if (!hasFeedback) {

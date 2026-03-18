@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:patroli/core/utils/screen_util.dart';
 
 class AppBottomSheet {
   AppBottomSheet._();
@@ -26,17 +27,17 @@ class AppBottomSheet {
       enableDrag: enableDrag,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
-          top: Radius.circular(borderRadius ?? 25),
+          top: Radius.circular(borderRadius ?? ScreenUtil.radius(25)),
         ),
       ),
       builder: (context) => BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
         child: Container(
-          padding: padding ?? const EdgeInsets.all(20),
+          padding: padding ?? ScreenUtil.paddingFromDesign(all: 20),
           decoration: BoxDecoration(
             color: backgroundColor ?? Theme.of(context).colorScheme.surface,
             borderRadius: BorderRadius.vertical(
-              top: Radius.circular(borderRadius ?? 25),
+              top: Radius.circular(borderRadius ?? ScreenUtil.radius(25)),
             ),
           ),
           child: builder(context),
@@ -66,7 +67,7 @@ class AppBottomSheet {
       enableDrag: enableDrag,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
-          top: Radius.circular(borderRadius ?? 25),
+          top: Radius.circular(borderRadius ?? ScreenUtil.radius(25)),
         ),
       ),
       builder: (context) => BackdropFilter(
@@ -78,11 +79,11 @@ class AppBottomSheet {
           decoration: BoxDecoration(
             color: backgroundColor ?? Theme.of(context).colorScheme.surface,
             borderRadius: BorderRadius.vertical(
-              top: Radius.circular(borderRadius ?? 25),
+              top: Radius.circular(borderRadius ?? ScreenUtil.radius(25)),
             ),
           ),
           child: Padding(
-            padding: padding ?? const EdgeInsets.all(20),
+            padding: padding ?? ScreenUtil.paddingFromDesign(all: 20),
             child: builder(context),
           ),
         ),
@@ -101,11 +102,11 @@ class AppBottomSheet {
             ),
           ),
         ),
-        if (trailing != null) ...[ trailing, const SizedBox(width: 8) ],
-        const SizedBox(width: 8),
+        if (trailing != null) ...[ trailing, SizedBox(width: ScreenUtil.sw(8)) ],
+        SizedBox(width: ScreenUtil.sw(8)),
         IconButton(
           onPressed: onClose ?? () => Navigator.of(context).pop(),
-          icon: const Icon(Icons.close),
+          icon: Icon(Icons.close, size: ScreenUtil.icon(20)),
         ),
       ],
     );

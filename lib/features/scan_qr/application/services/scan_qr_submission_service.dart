@@ -1,4 +1,5 @@
 import 'package:patroli/core/extensions/result_state_extension.dart';
+import 'package:patroli/app/localization/localized_message.dart';
 import 'package:patroli/features/scan_qr/application/providers/scan_qr_di_provider.dart';
 import 'package:patroli/features/scan_qr/data/dtos/request/scan_qr_request.dart';
 import 'package:patroli/features/scan_qr/domain/entities/scan_qr_entity.dart';
@@ -18,7 +19,7 @@ class ScanQrSubmissionService {
 
       final isValid = useCase.isValidQrCode(qrCode);
       if (!isValid) {
-        return const Error('Kode QR tidak valid');
+        return Error(localizeKey(ref, 'qr_code_invalid'));
       }
 
       final result = await useCase(
@@ -28,11 +29,11 @@ class ScanQrSubmissionService {
       );
 
       return result.fold(
-        (failure) => Error(failure.message),
+        (failure) => Error(localizeMessage(ref, failure.message)),
         (entity) => Success(entity),
       );
     } catch (e) {
-      return Error(e.toString().replaceFirst('Exception: ', ''));
+      return Error(localizeMessage(ref, e.toString().replaceFirst('Exception: ', '')));
     }
   }
 }

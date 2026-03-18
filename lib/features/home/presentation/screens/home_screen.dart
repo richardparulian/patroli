@@ -14,9 +14,9 @@ import 'package:patroli/features/auth/presentation/providers/auth_logout_provide
 import 'package:patroli/features/home/widgets/error_dashboard.dart';
 import 'package:patroli/features/home/widgets/shimmer_dashboard.dart';
 import 'package:patroli/features/home/widgets/summary_dashboard.dart';
-import 'package:patroli/features/home/widgets/theme_toggle_switch.dart';
 import 'package:patroli/features/reports/presentation/providers/reports_count_provider.dart';
 import 'package:patroli/gen/assets.gen.dart';
+import 'package:patroli/l10n/l10n.dart';
 
 class HomeScreen extends ConsumerStatefulWidget { 
   const HomeScreen({super.key});
@@ -43,144 +43,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final userSession = ref.watch(authSessionProvider);
     final countReports = ref.watch(countReportsProvider);
 
-    final isLoading = ref.watch(authLogoutProvider.select((s) => s.isLoading));  
+    final isLoading = ref.watch(authLogoutProvider.select((s) => s.isLoading));
+
 
     return Scaffold(
-      // backgroundColor: color.primary,
-      // body: Container(
-      //   decoration: BoxDecoration(
-      //     gradient: LinearGradient(
-      //       begin: Alignment.topLeft,
-      //       end: Alignment.bottomRight,
-      //       colors: [color.primary, color.primaryContainer],
-      //     ),
-      //   ),
-      //   child: Column(
-      //     crossAxisAlignment: CrossAxisAlignment.start,
-      //     children: [
-      //       SafeArea(
-      //         bottom: false,
-      //         child: Padding(
-      //           padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-      //           child: Column(
-      //             crossAxisAlignment: CrossAxisAlignment.start,
-      //             children: [
-      //               Row(
-      //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //                 children: [
-      //                   Image.asset('assets/images/logos/pgi-horizontal-white.webp', width: 120),
-      //                   CircleAvatar(
-      //                     radius: 20,
-      //                     backgroundColor: Colors.grey.shade200,
-      //                     child: ClipOval(
-      //                       child: CircleImages(
-      //                         name: userSession?.name ?? 'Security Patrol',
-      //                       ),
-      //                     ),
-      //                   ),
-      //                 ],
-      //               ),
-      //             ],
-      //           ),
-      //         ),
-      //       ),
-      //       Padding(
-      //         padding: const EdgeInsets.fromLTRB(20, 0, 20, 15),
-      //         child: Column(
-      //           mainAxisSize: MainAxisSize.min,
-      //           crossAxisAlignment: CrossAxisAlignment.start,
-      //           children: [
-      //             Text('Sistem Patroli Keamanan',
-      //               style: theme.textTheme.titleMedium?.copyWith(
-      //                 color: color.onPrimary,
-      //                 fontWeight: FontWeight.bold,
-      //               ),
-      //             ),
-      //             Text('Kontrol dan pelaporan kondisi cabang',
-      //               style: theme.textTheme.bodyMedium?.copyWith(
-      //                 color: color.onPrimary.withValues(alpha: 0.8),
-      //               ),
-      //             ),
-      //           ],
-      //         ),
-      //       ),
-      //       Expanded(
-      //         child: RefreshIndicator(
-      //         onRefresh: () => Future.sync(() => ref.read(countReportsProvider.notifier).fetchCount()), 
-      //           child: CustomScrollView(
-      //             physics: const AlwaysScrollableScrollPhysics(),
-      //             slivers: [
-      //               SliverFillRemaining(
-      //                 hasScrollBody: true,
-      //                 child: Container(
-      //                   width: double.infinity,
-      //                   padding: const EdgeInsets.all(20),
-      //                   decoration: BoxDecoration(
-      //                     color: color.surface,
-      //                     borderRadius: const BorderRadius.vertical(
-      //                       top: Radius.circular(30),
-      //                     ),
-      //                   ),
-      //                   child: Column(
-      //                     crossAxisAlignment: CrossAxisAlignment.start,
-      //                     children: [
-      //                       Row(
-      //                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //                         children: [
-      //                           Expanded(
-      //                             child: Text('Halo, ${(userSession?.name.firstNameSecondName) ?? '---'}',
-      //                               style: theme.textTheme.titleMedium?.copyWith(
-      //                                 color: color.onSurface,
-      //                                 fontWeight: FontWeight.bold,
-      //                               ),
-      //                             ),
-      //                           ),
-      //                           const ThemeToggleSwitch(),
-      //                         ],
-      //                       ),
-      //                       const SizedBox(height: 15),
-      //                       Container(
-      //                         padding: const EdgeInsets.all(16),
-      //                         decoration: BoxDecoration(
-      //                           color: countReports.isError ? color.error.withValues(alpha: 0.5) : color.primaryContainer,
-      //                           borderRadius: BorderRadius.circular(20),
-      //                         ),
-      //                         child: countReports.when(
-      //                           idle: () => const SizedBox(),
-      //                           loading: () => const ShimmerDashboard(),
-      //                           success: (data) => SummaryDashboard(
-      //                             totalReports: data.total,
-      //                             byStatus: data.byStatus,
-      //                           ),
-      //                           error: (message) => ErrorDashboard(errorMessage: message),
-      //                         ),
-      //                       ),
-      //                       const SizedBox(height: 25),
-      //                       _buildMenuCard(context,
-      //                         title: 'Tambah Laporan',
-      //                         subtitle: 'Buat laporan patroli',
-      //                         icon: Iconsax.scan,
-      //                         onTap: () => context.push(AppRoutes.scanQr),
-      //                       ),
-      //                       const SizedBox(height: 10),
-      //                       _buildMenuCard(
-      //                         context,
-      //                         title: 'Daftar Laporan',
-      //                         subtitle: 'Lihat laporan yang telah dibuat',
-      //                         icon: Iconsax.document_text_1,
-      //                         onTap: () => context.goNamed('history_report'),
-      //                       ),
-      //                     ],
-      //                   ),
-      //                 ),
-      //               ),
-      //             ],
-      //           ),
-      //         ),
-      //       ),
-      //     ],
-      //   ),
-      // ),
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -200,21 +66,35 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               SliverAppBar(
                 pinned: true,
                 elevation: 0,
-                expandedHeight: 120,
+                expandedHeight: ScreenUtil.sh(120),
                 scrolledUnderElevation: 2,
                 backgroundColor: theme.colorScheme.primary,
                 title: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Image.asset(Assets.images.logos.pgiHorizontalWhite.path, width: 120),
-                    CircleAvatar(
-                      radius: 18,
-                      backgroundColor: Colors.grey.shade200,
-                      child: ClipOval(
-                        child: CircleImages(
-                          name: userSession?.name ?? 'Security Patrol',
+                    Image.asset(Assets.images.logos.pgiHorizontalWhite.path, width: ScreenUtil.sw(120)),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          onPressed: () => context.push(AppRoutes.settings),
+                          tooltip: context.tr('settings'),
+                          icon: Icon(
+                            Iconsax.setting_2,
+                            color: color.onPrimary,
+                          ),
                         ),
-                      ),
+                        SizedBox(width: ScreenUtil.sw(4)),
+                        CircleAvatar(
+                          radius: ScreenUtil.radius(18),
+                          backgroundColor: Colors.grey.shade200,
+                          child: ClipOval(
+                            child: CircleImages(
+                              name: userSession?.name ?? context.tr('security_patrol'),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -228,23 +108,34 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         ],
                       ),
                     ),
-                    padding: const EdgeInsets.fromLTRB(20, kToolbarHeight + 35, 20, 20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text('Sistem Patroli Keamanan',
-                          style: theme.textTheme.titleMedium?.copyWith(
-                            color: color.onPrimary,
-                            fontWeight: FontWeight.bold,
-                          ),
+                    child: SafeArea(
+                      bottom: false,
+                      child: Padding(
+                        padding: EdgeInsets.fromLTRB(
+                          ScreenUtil.sw(20),
+                          ScreenUtil.sh(20),
+                          ScreenUtil.sw(20),
+                          ScreenUtil.sh(20),
                         ),
-                        Text('Kontrol dan pelaporan kondisi cabang',
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: color.onPrimary.withValues(alpha: 0.8),
-                          ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text(context.tr('security_patrol_system'),
+                              style: theme.textTheme.titleMedium?.copyWith(
+                                color: color.onPrimary,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(height: ScreenUtil.sh(4)),
+                            Text(context.tr('branch_control_reporting'),
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                color: color.onPrimary.withValues(alpha: 0.8),
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
                   ),
                 ),
@@ -252,38 +143,30 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               SliverFillRemaining(
                 hasScrollBody: true,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20, 
-                    vertical: 10,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: ScreenUtil.sw(20),
+                    vertical: ScreenUtil.sh(10),
                   ),
                   decoration: BoxDecoration(
                     color: color.surface,
-                    borderRadius: const BorderRadius.vertical(
-                      top: Radius.circular(30),
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(ScreenUtil.radius(30)),
                     ),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Text('Halo, ${(userSession?.name.firstNameSecondName) ?? '---'}',
-                              style: theme.textTheme.titleMedium?.copyWith(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          const ThemeToggleSwitch(),
-                        ],
+                      Text(context.trParams('hello_user', {'name': (userSession?.name.firstNameSecondName) ?? '---'}),
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                      const SizedBox(height: 15),
+                      SizedBox(height: ScreenUtil.sh(15)),
                       Container(
-                        padding: const EdgeInsets.all(16),
+                        padding: ScreenUtil.paddingFromDesign(all: 16),
                         decoration: BoxDecoration(
                           color: countReports.isError ? color.error.withValues(alpha: 0.5) : color.primaryContainer,
-                          borderRadius: BorderRadius.circular(20),
+                          borderRadius: BorderRadius.circular(ScreenUtil.radius(20)),
                         ),
                         child: countReports.when(
                           idle: () => const SizedBox(),
@@ -295,19 +178,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           error: (message) => ErrorDashboard(errorMessage: message),
                         ),
                       ),
-                      const SizedBox(height: 25),
+                      SizedBox(height: ScreenUtil.sh(25)),
                       _buildMenuCard(
                         context,
-                        title: 'Tambah Laporan',
-                        subtitle: 'Buat laporan patroli',
+                        title: context.tr('add_report'),
+                        subtitle: context.tr('create_patrol_report'),
                         icon: Iconsax.scan,
                         onTap: () => context.push(AppRoutes.scanQr),
                       ),
-                      const SizedBox(height: 10),
+                      SizedBox(height: ScreenUtil.sh(10)),
                       _buildMenuCard(
                         context,
-                        title: 'Daftar Laporan',
-                        subtitle: 'Lihat laporan yang telah dibuat',
+                        title: context.tr('report_list'),
+                        subtitle: context.tr('view_created_reports'),
                         icon: Iconsax.document_text_1,
                         onTap: () => context.goNamed('history_report'),
                       ),
@@ -320,14 +203,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         ),
       ),
       bottomNavigationBar: Container(
-        padding: const EdgeInsets.all(20),
+        padding: ScreenUtil.paddingFromDesign(all: 20),
         color: Theme.of(context).colorScheme.surface,
         child: AppIconButton(
           onPressed: isLoading ? null : () async {
             await AppDialog.showLogoutConfirm(
               context: context,
               onConfirm: () async {
-                await ref.read(authLogoutProvider.notifier).runLogout();
+                final result = await ref.read(authLogoutProvider.notifier).runLogout();
+                if (!context.mounted) return;
+
+                result.when(
+                  idle: () => null,
+                  loading: () => null,
+                  success: (_) => context.go(AppRoutes.login),
+                  error: (_) => null,
+                );
               },
             );
           },
@@ -339,8 +230,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               strokeCap: StrokeCap.round,
               color: Colors.white,
             ),
-          ) : const Icon(Iconsax.logout),
-          label: 'Keluar',
+          ) : Icon(Iconsax.logout, size: ScreenUtil.icon(18)),
+          label: context.tr('logout'),
         ),
       ),
     );
@@ -353,21 +244,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return Card(
       elevation: 3,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(ScreenUtil.radius(20)),
       ),
       child: ListTile(
         onTap: onTap,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(ScreenUtil.radius(20)),
         ),
-        leading: Icon(icon, color: color.primary),
+        leading: Icon(icon, color: color.primary, size: ScreenUtil.icon(22)),
         title: Text(title,
           style: theme.textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.bold,
           ),
         ),
         subtitle: Text(subtitle),
-        trailing: Icon(Iconsax.arrow_right_3, size: 16, color: color.outline),
+        trailing: Icon(Iconsax.arrow_right_3, size: ScreenUtil.icon(16), color: color.outline),
       ),
     );
   }

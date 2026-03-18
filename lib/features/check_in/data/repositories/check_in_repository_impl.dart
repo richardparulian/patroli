@@ -5,9 +5,6 @@ import 'package:patroli/features/check_in/data/datasources/check_in_remote_data_
 import 'package:patroli/features/check_in/data/dtos/request/check_in_request.dart';
 import 'package:patroli/features/check_in/domain/entities/check_in_entity.dart';
 import 'package:patroli/features/check_in/domain/repositories/check_in_repository.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-part 'check_in_repository_impl.g.dart';
 
 class CheckInRepositoryImpl implements CheckInRepository {
   final CheckInRemoteDataSource _remoteDataSource;
@@ -27,10 +24,4 @@ class CheckInRepositoryImpl implements CheckInRepository {
       return Left(ServerFailure(message: e.toString()));
     }
   }
-}
-
-@riverpod
-CheckInRepository checkInRepository(Ref ref) {
-  final remoteDataSource = ref.watch(checkInRemoteDataSourceProvider);
-  return CheckInRepositoryImpl(remoteDataSource);
 }

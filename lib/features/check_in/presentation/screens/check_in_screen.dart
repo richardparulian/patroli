@@ -23,6 +23,8 @@ import 'package:patroli/features/check_in/presentation/providers/upload_file_pro
 import 'package:patroli/features/reports/application/coordinators/reports_refresh_coordinator_provider.dart';
 import 'package:patroli/features/scan_qr/domain/entities/scan_qr_entity.dart';
 import 'package:uuid/uuid.dart';
+import 'package:patroli/l10n/l10n.dart';
+import 'package:patroli/core/utils/screen_util.dart';
 
 class CheckInScreen extends ConsumerStatefulWidget {
   final ScanQrEntity? scanQrData;
@@ -109,9 +111,9 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> with SingleTicker
       if (!mounted) return;
       AppDialog.showError(
         context: context,
-        title: 'Gagal',
+        title: context.tr('failed'),
         message: e.toString(),
-        buttonText: 'Coba Lagi',
+        buttonText: context.tr('try_again'),
         onButtonPressed: () async => await _initCamera(),
       );
     }
@@ -179,7 +181,7 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> with SingleTicker
 
           AppDialog.showError(
             context: context,
-            title: 'Gagal',
+            title: context.tr('failed'),
             message: msg,
           );
         },
@@ -194,9 +196,9 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> with SingleTicker
           if (!mounted) return;
           AppDialog.showSuccess(
             context: context,
-            title: 'Berhasil',
-            message: 'Konfirmasi kunjungan berhasil, silahkan lanjut ke proses berikutnya',
-            buttonText: 'Lanjut',
+            title: context.tr('success'),
+            message: context.tr('check_in_success_message'),
+            buttonText: context.tr('continue'),
             barrierDismissible: false,
             onButtonPressed: () async {
               await ref.read(reportsRefreshCoordinatorProvider).refreshReportsAndDashboard();
@@ -214,7 +216,7 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> with SingleTicker
           if (!mounted) return;
           AppDialog.showError(
             context: context,
-            title: 'Gagal',
+            title: context.tr('failed'),
             message: msg,
           );
         },
@@ -236,8 +238,8 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> with SingleTicker
 
           AppDialog.showConfirm(
             context: context,
-            title: 'Konfirmasi',
-            message: 'Apakah Anda yakin ingin keluar dari halaman ini?',
+            title: context.tr('confirmation'),
+            message: context.tr('leave_page_confirmation'),
             onConfirm: () => context.go(AppRoutes.home),
           );
         }
@@ -250,16 +252,16 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> with SingleTicker
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Konfirmasi Masuk',
+              Text(context.tr('check_in_confirmation_title'),
                 style: theme.textTheme.headlineSmall?.copyWith(
-                  fontSize: 18,
+                  fontSize: ScreenUtil.sp(18),
                   color: color.onSurface,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              Text('Silakan melakukan foto selfie untuk konfirmasi kunjungan',
+              Text(context.tr('check_in_confirmation_subtitle'),
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  fontSize: 12,
+                  fontSize: ScreenUtil.sp(12),
                   color: color.onSurface.withValues(alpha: 0.7),
                 ),
               ),
@@ -273,22 +275,22 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> with SingleTicker
 
               AppDialog.showConfirm(
                 context: context,
-                title: 'Konfirmasi',
-                message: 'Apakah Anda yakin ingin meninggalkan halaman ini?',
+                title: context.tr('confirmation'),
+                message: context.tr('leave_page_confirmation'),
                 onConfirm: () => context.go(AppRoutes.home),
               );
             },
           ),
           bottom: PreferredSize(
-            preferredSize: Size.fromHeight(90),
+            preferredSize: Size.fromHeight(ScreenUtil.sh(90)),
             child: Container(
               color: color.surface,
-              margin: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 10,
+              margin: EdgeInsets.symmetric(
+                horizontal: ScreenUtil.sw(16),
+                vertical: ScreenUtil.sh(10),
               ),
               child: AppAlertCard(
-                title: 'Cabang',
+                title: context.tr('branch'),
                 message: widget.scanQrData?.name ?? '---',
                 type: AlertType.custom,
                 customIcon: Icons.store,
@@ -299,7 +301,7 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> with SingleTicker
         body: Stack(
           children: [
             Positioned.fill(
-              bottom: isInitialized ? 140 * 2 : 0,
+              bottom: isInitialized ? ScreenUtil.sh(280) : 0,
               child: _buildSelfieSection(),
             ),
 
@@ -314,7 +316,7 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> with SingleTicker
 
             // // Loading overlay
             if (isLoadingUploadFile || isLoadingCheckIn) ...[
-              AppLoading(message: isLoadingUploadFile ? 'Memproses foto selfie...' : 'Memproses kunjungan...'),
+              AppLoading(message: isLoadingUploadFile ? context.tr('processing_selfie') : context.tr('processing_visit')),
             ],
           ],
         ),
@@ -332,27 +334,27 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> with SingleTicker
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Container(
-          padding: const EdgeInsets.all(16),
+          padding: ScreenUtil.paddingFromDesign(all: 16),
           decoration: BoxDecoration(
             color: color.surface,
-            borderRadius: BorderRadius.circular(25),
+            borderRadius: BorderRadius.circular(ScreenUtil.radius(25)),
             border: Border.all(
               color: color.outline.withValues(alpha: 0.2),
             ),
           ),
-          child: Icon(Iconsax.shop, size: 48, color: color.primary),
+          child: Icon(Iconsax.shop, size: ScreenUtil.icon(48), color: color.primary),
         ),
-        const SizedBox(height: 16),
-        Text('Data cabang tidak ditemukan',
+        SizedBox(height: ScreenUtil.sh(16)),
+        Text(context.tr('branch_data_not_found'),
           style: theme.textTheme.titleMedium?.copyWith(
             color: color.onSurface,
             fontWeight: FontWeight.w600,
           ),
         ),
-        const SizedBox(height: 16),
+        SizedBox(height: ScreenUtil.sh(16)),
         AppIconButton(
           onPressed: () => context.go(AppRoutes.home),
-          label: 'Kembali ke Beranda',
+          label: context.tr('back_to_home'),
           icon: Icon(Iconsax.home),
           type: IconButtonType.primary,
         )
@@ -365,10 +367,10 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> with SingleTicker
     final isInitialized = _cameraController?.value.isInitialized ?? false;
 
     if (isCameraReady) {
-      return AppLoading(message: 'Mempersiapkan kamera...');
+      return AppLoading(message: context.tr('camera_preparing'));
     }
 
-    if (!isInitialized) const SizedBox.shrink();
+    if (!isInitialized) return const SizedBox.shrink();
 
     final previewSize = _cameraController?.value.previewSize;
 
@@ -423,20 +425,20 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> with SingleTicker
           );
         },
         child: Container(
-          width: 80,
-          height: 80,
-          margin: const EdgeInsets.all(16),
+          width: ScreenUtil.sw(80),
+          height: ScreenUtil.sw(80),
+          margin: ScreenUtil.paddingFromDesign(all: 16),
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             border: Border.all(
-              width: 4,
+              width: ScreenUtil.sw(4),
               color: color.onSurface,
             ),
           ),
           child: Center(
             child: Container(
-              width: 60,
-              height: 60,
+              width: ScreenUtil.sw(60),
+              height: ScreenUtil.sw(60),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: color.onSurface,
@@ -446,9 +448,9 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> with SingleTicker
         ),
       ),
     ) : Padding(
-      padding: const EdgeInsets.symmetric(
-        vertical: 30,
-        horizontal: 16,
+      padding: EdgeInsets.symmetric(
+        vertical: ScreenUtil.sh(30),
+        horizontal: ScreenUtil.sw(16),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -457,12 +459,12 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> with SingleTicker
           Expanded(
             child: AppIconButton(
               onPressed: () => setState(() => _selfieImage = null),
-              label: 'Foto Ulang',
+              label: context.tr('retake_photo'),
               type: IconButtonType.outlined,
               icon: const Icon(Iconsax.camera5),
             ),
           ),
-          const SizedBox(width: 16),
+          SizedBox(width: ScreenUtil.sw(16)),
           Expanded(
             child: AppIconButton(
               onPressed: () {
@@ -471,7 +473,7 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> with SingleTicker
                   imageUrl: presignUrl ?? '',
                 );
               },
-              label: 'Lanjutkan',
+              label: context.tr('continue_action'),
               icon: const Icon(Iconsax.next),
               type: IconButtonType.primary,
             ),

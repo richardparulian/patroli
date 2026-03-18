@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
-import 'package:patroli/app/network/network_providers.dart';
 import 'package:patroli/core/error/exceptions.dart';
 import 'package:patroli/core/network/api_client.dart';
 import 'package:patroli/core/network/api_endpoints.dart';
@@ -10,9 +9,6 @@ import 'package:patroli/features/pre_sign/data/dtos/request/pre_sign_create_requ
 import 'package:patroli/features/pre_sign/data/dtos/response/pre_sign_create_response.dart';
 import 'package:patroli/features/pre_sign/data/models/pre_sign_create_model.dart';
 import 'package:patroli/features/pre_sign/data/models/pre_sign_update_model.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-part 'pre_sign_remote_data_source.g.dart';
 
 abstract class PreSignRemoteDataSource {
   Future<PreSignCreateModel> postPreSign(PreSignCreateRequest request);
@@ -80,16 +76,4 @@ class PreSignRemoteDataSourceImpl implements PreSignRemoteDataSource {
       },
     );
   }
-}
-
-@riverpod
-PreSignRemoteDataSource preSignRemoteDataSource(Ref ref) {
-  final apiClient = ref.watch(apiClientProvider);
-  return PreSignRemoteDataSourceImpl(apiClient);
-}
-
-@riverpod
-ApiClient apiClient(Ref ref) {
-  final dio = ref.watch(dioWithAuthProvider);
-  return ApiClient(dio);
 }

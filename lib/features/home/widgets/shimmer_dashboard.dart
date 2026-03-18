@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:patroli/core/utils/screen_util.dart';
 
 class ShimmerDashboard extends ConsumerWidget {
   const ShimmerDashboard({super.key});
@@ -18,16 +19,16 @@ class ShimmerDashboard extends ConsumerWidget {
           Expanded(
             child: _column(context),
           ),
-          const SizedBox(width: 20),
+          SizedBox(width: ScreenUtil.sw(20)),
           Expanded(
             child: _column(context),
           ),
           Container(
-            width: 36,
-            height: 36,
+            width: ScreenUtil.sw(36),
+            height: ScreenUtil.sw(36),
             decoration: BoxDecoration(
               color: color.onPrimaryContainer,
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(ScreenUtil.radius(8)),
             ),
           ),
         ],
@@ -45,30 +46,30 @@ class ShimmerDashboard extends ConsumerWidget {
         Row(
           children: [
             Container(
-              width: 8,
-              height: 8,
+              width: ScreenUtil.sw(8),
+              height: ScreenUtil.sw(8),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: color.onPrimaryContainer,
               ),
             ),
-            const SizedBox(width: 8),
+            SizedBox(width: ScreenUtil.sw(8)),
             Container(
-              width: 110,
-              height: 14,
+              width: ScreenUtil.sw(110),
+              height: ScreenUtil.sh(14),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(5),
+                borderRadius: BorderRadius.circular(ScreenUtil.radius(5)),
                 color: color.onPrimaryContainer,
               ),
             ),
           ],
         ),
-        const SizedBox(height: 15),
+        SizedBox(height: ScreenUtil.sh(15)),
         Container(
-          width: 60,
-          height: 34,
+          width: ScreenUtil.sw(60),
+          height: ScreenUtil.sh(34),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(5),
+            borderRadius: BorderRadius.circular(ScreenUtil.radius(5)),
             color: color.onPrimaryContainer,
           ),
         ),

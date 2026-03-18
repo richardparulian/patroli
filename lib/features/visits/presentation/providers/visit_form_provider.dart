@@ -1,4 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:patroli/app/localization/localization_providers.dart';
+import 'package:patroli/l10n/l10n.dart';
 
 class VisitFormState {
   final String? lampuBanner;
@@ -45,38 +47,42 @@ class VisitFormNotifier extends Notifier<VisitFormState> {
   }
 
   bool validate() {
+    final locale = ref.read(persistentLocaleProvider);
+    final translations = localizedValues[locale.languageCode] ?? localizedValues['en'] ?? {};
+    String tr(String key) => translations[key] ?? localizedValues['en']?[key] ?? key;
+
     final errors = <String, String>{};
 
     if (state.lampuBanner == null || state.lampuBanner!.isEmpty) {
-      errors['lightsStatus'] = 'Lampu banner wajib dipilih';
+      errors['lightsStatus'] = tr('visit_error_lights_required');
     }
 
     if (state.bannerUtama == null || state.bannerUtama!.isEmpty) {
-      errors['bannerStatus'] = 'Banner utama wajib dipilih';
+      errors['bannerStatus'] = tr('visit_error_banner_required');
     }
 
     if (state.rollingDoor == null || state.rollingDoor!.isEmpty) {
-      errors['rollingDoorStatus'] = 'Rolling door wajib dipilih';
+      errors['rollingDoorStatus'] = tr('visit_error_rolling_door_required');
     }
 
     if (state.rollingDoorChecklist.length != 2) {
-      errors['rollingDoorChecklist'] = 'Semua checklist harus dicentang';
+      errors['rollingDoorChecklist'] = tr('visit_error_checklist_required');
     }
 
     if (state.conditionRight == null || state.conditionRight!.isEmpty) {
-      errors['conditionRight'] = 'Kondisi kanan wajib dipilih';
+      errors['conditionRight'] = tr('visit_error_right_required');
     }
 
     if (state.conditionLeft == null || state.conditionLeft!.isEmpty) {
-      errors['conditionLeft'] = 'Kondisi kiri wajib dipilih';
+      errors['conditionLeft'] = tr('visit_error_left_required');
     }
 
     if (state.conditionBack == null || state.conditionBack!.isEmpty) {
-      errors['conditionBack'] = 'Kondisi belakang wajib dipilih';
+      errors['conditionBack'] = tr('visit_error_back_required');
     }
 
     if (state.conditionAround == null || state.conditionAround!.isEmpty) {
-      errors['conditionAround'] = 'Kondisi sekitar wajib dipilih';
+      errors['conditionAround'] = tr('visit_error_around_required');
     }
 
     state = state.copyWith(errors: errors);

@@ -1,5 +1,3 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:patroli/app/network/network_providers.dart';
 import 'package:patroli/core/error/exceptions.dart';
 import 'package:patroli/core/network/api_client.dart';
 import 'package:patroli/core/network/api_endpoints.dart';
@@ -32,13 +30,3 @@ class CheckOutRemoteDataSourceImpl implements CheckOutRemoteDataSource {
     );
   }
 }
-
-final checkOutRemoteDataSourceProvider = Provider<CheckOutRemoteDataSource>((ref) {
-  final apiClient = ref.watch(apiClientProvider);
-  return CheckOutRemoteDataSourceImpl(apiClient);
-});
-
-final apiClientProvider = Provider.autoDispose<ApiClient>((ref) {
-  final dio = ref.watch(dioWithAuthProvider);
-  return ApiClient(dio);
-});

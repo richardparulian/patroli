@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:patroli/l10n/l10n.dart';
+import 'package:patroli/core/utils/screen_util.dart';
 
 class SummaryDashboard extends ConsumerWidget {
   final int totalReports;
@@ -14,75 +16,80 @@ class SummaryDashboard extends ConsumerWidget {
     final color = theme.colorScheme;
     
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        // ← Column untuk Laporan Tertunda
         Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Container(
-                    width: 8,
-                    height: 8,
-                    decoration: const BoxDecoration(
-                      color: Colors.orange,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Text('Laporan Tertunda',
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: color.onPrimaryContainer,
-                    ),
-                  ),
-                ],
+          child: _buildStatItem(
+            context: context,
+            color: color,
+            dotColor: Colors.orange,
+            label: context.tr('pending_reports'),
+            value: '$byStatus',
+          ),
+        ),
+        SizedBox(width: ScreenUtil.sw(12)),
+        Expanded(
+          child: _buildStatItem(
+            context: context,
+            color: color,
+            dotColor: Colors.green,
+            label: context.tr('total_reports'),
+            value: '$totalReports',
+          ),
+        ),
+        SizedBox(width: ScreenUtil.sw(8)),
+        Icon(
+          Iconsax.chart_square5,
+          color: color.onPrimaryContainer,
+          size: ScreenUtil.icon(28),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStatItem({
+    required BuildContext context,
+    required ColorScheme color,
+    required Color dotColor,
+    required String label,
+    required String value,
+  }) {
+    final theme = Theme.of(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Container(
+              width: ScreenUtil.sw(8),
+              height: ScreenUtil.sw(8),
+              decoration: BoxDecoration(
+                color: dotColor,
+                shape: BoxShape.circle,
               ),
-              const SizedBox(height: 6),
-              Text('$byStatus',
-                style: theme.textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
+            ),
+            SizedBox(width: ScreenUtil.sw(8)),
+            Expanded(
+              child: Text(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  fontSize: ScreenUtil.sp(11),
                   color: color.onPrimaryContainer,
                 ),
               ),
-            ],
+            ),
+          ],
+        ),
+        SizedBox(height: ScreenUtil.sh(6)),
+        Text(
+          value,
+          style: theme.textTheme.headlineSmall?.copyWith(
+            fontWeight: FontWeight.bold,
+            color: color.onPrimaryContainer,
           ),
         ),
-        const SizedBox(width: 20),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Container(
-                    width: 8,
-                    height: 8,
-                    decoration: const BoxDecoration(
-                      color: Colors.green,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Text('Total Laporan',
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: color.onPrimaryContainer,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 6),
-              Text('$totalReports',
-                style: theme.textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: color.onPrimaryContainer,
-                ),
-              ),
-            ],
-          ),
-        ),
-        Icon(Iconsax.chart_square5, color: color.onPrimaryContainer, size: 36),
       ],
     );
   }

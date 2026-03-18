@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:patroli/core/enums/alert_type.dart';
+import 'package:patroli/core/utils/screen_util.dart';
 
 class AppAlertCard extends StatelessWidget {
   final String title;
@@ -60,30 +61,30 @@ class AppAlertCard extends StatelessWidget {
         elevation: 0,
         margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(ScreenUtil.radius(14)),
         ),
         color: color.withValues(alpha: 0.1),
         child: Container(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(ScreenUtil.radius(14)),
             border: Border.all(
               color: color.withValues(alpha: 0.4),
             ),
           ),
-          padding: const EdgeInsets.all(10),
+          padding: ScreenUtil.paddingFromDesign(all: 10),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                padding: const EdgeInsets.all(12),
+                padding: ScreenUtil.paddingFromDesign(all: 12),
                 decoration: BoxDecoration(
                   color: color.withValues(alpha: 0.2),
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(ScreenUtil.radius(10)),
                 ),
-                child: Icon(icon, color: color, size: 25), 
+                child: Icon(icon, color: color, size: ScreenUtil.icon(25)), 
               ),
-              const SizedBox(width: 12),
+              SizedBox(width: ScreenUtil.sw(12)),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -94,7 +95,7 @@ class AppAlertCard extends StatelessWidget {
                         fontWeight: FontWeight.w700,
                       ),
                     ),
-                    const SizedBox(height: 2),
+                    SizedBox(height: ScreenUtil.sh(2)),
                     Text(message,
                       style: textTheme.bodySmall?.copyWith(
                         color: colorScheme.onSurface.withValues(alpha: 0.75),
@@ -105,7 +106,7 @@ class AppAlertCard extends StatelessWidget {
               ),
 
               if (onClose != null) ...[
-                const SizedBox(width: 12),
+                SizedBox(width: ScreenUtil.sw(12)),
                 IconButton(
                   onPressed: onClose,
                   icon: const Icon(Icons.close, size: 18),

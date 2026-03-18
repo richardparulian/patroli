@@ -217,6 +217,18 @@ test-verbose: ## Run tests with verbose output
 	@echo "$(BLUE)Running tests with verbose output...$(NC)"
 	$(FLUTTER) test --verbose
 
+.PHONY: test-generators
+test-generators: ## Run smoke tests for feature generators
+	@echo "$(BLUE)Running generator smoke tests...$(NC)"
+	$(FLUTTER) test test/core/cli/feature_generators_smoke_test.dart
+	@echo "$(GREEN)✓ Generator smoke tests passed$(NC)"
+
+.PHONY: test-localization
+test-localization: ## Run localization guardrail tests
+	@echo "$(BLUE)Running localization tests...$(NC)"
+	$(FLUTTER) test test/app/localization
+	@echo "$(GREEN)✓ Localization tests passed$(NC)"
+
 # =============================================================================
 # CODE QUALITY
 # =============================================================================
@@ -633,11 +645,11 @@ screenshot: ## Take a screenshot from connected device
 # =============================================================================
 
 .PHONY: ci-build
-ci-build: install generate-code analyze test ## CI build pipeline
+ci-build: install generate-code analyze test test-generators test-localization ## CI build pipeline
 	@echo "$(GREEN)✓ CI build successful$(NC)"
 
 .PHONY: ci-test
-ci-test: install generate-code test ## CI test pipeline
+ci-test: install generate-code test test-generators test-localization ## CI test pipeline
 	@echo "$(GREEN)✓ CI tests successful$(NC)"
 
 .PHONY: ci-quality

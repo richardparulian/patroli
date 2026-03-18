@@ -7,9 +7,6 @@ import 'package:patroli/features/pre_sign/data/dtos/request/pre_sign_create_requ
 import 'package:patroli/features/pre_sign/domain/entities/pre_sign_create_entity.dart';
 import 'package:patroli/features/pre_sign/domain/entities/pre_sign_update_entity.dart';
 import 'package:patroli/features/pre_sign/domain/repositories/pre_sign_repository.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-part 'pre_sign_repository_impl.g.dart';
 
 class PreSignRepositoryImpl implements PreSignRepository {
   final PreSignRemoteDataSource _remoteDataSource;
@@ -49,10 +46,4 @@ class PreSignRepositoryImpl implements PreSignRepository {
       return Left(ServerFailure(message: e.toString()));
     }
   }
-}
-
-@riverpod
-PreSignRepository preSignRepository(Ref ref) {
-  final remoteDataSource = ref.watch(preSignRemoteDataSourceProvider);
-  return PreSignRepositoryImpl(remoteDataSource);
 }

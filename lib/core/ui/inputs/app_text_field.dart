@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:patroli/core/utils/screen_util.dart';
 
 class AppTextField extends StatelessWidget {
   final GlobalKey<FormFieldState>? fieldKey;
@@ -106,35 +107,35 @@ class AppTextField extends StatelessWidget {
               color: colorScheme.onSurface.withValues(alpha: 0.7),
             ),
             floatingLabelStyle: textTheme.bodyMedium?.copyWith(
-              fontSize: 14,
+              fontSize: ScreenUtil.sp(14),
               color: colorScheme.onSurface,
               fontWeight: FontWeight.bold,
             ),
             floatingLabelBehavior: FloatingLabelBehavior.auto,
-            contentPadding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
+            contentPadding: EdgeInsets.fromLTRB(ScreenUtil.sw(12), ScreenUtil.sh(12), ScreenUtil.sw(12), ScreenUtil.sh(12)),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(radius),
+              borderRadius: BorderRadius.circular(ScreenUtil.radius(radius)),
               borderSide: BorderSide(
                 color: colorScheme.outline.withValues(alpha: 0.3),
               ),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(radius),
+              borderRadius: BorderRadius.circular(ScreenUtil.radius(radius)),
               borderSide: BorderSide(
                 color: colorScheme.primary,
-                width: 1.2,
+                width: ScreenUtil.sw(1.2),
               ),
             ),
             errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(radius),
+              borderRadius: BorderRadius.circular(ScreenUtil.radius(radius)),
               borderSide: BorderSide(
                 color: colorScheme.error,
               ),
             ),
             focusedErrorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(radius),
+              borderRadius: BorderRadius.circular(ScreenUtil.radius(radius)),
               borderSide: BorderSide(
-                width: 1.2,
+                width: ScreenUtil.sw(1.2),
                 color: colorScheme.error,
               ),
             ),
@@ -144,7 +145,7 @@ class AppTextField extends StatelessWidget {
         /// 🔢 Counter multiline (AMAN saat rebuild)
         if (isMultiline && controller != null)
           Padding(
-            padding: const EdgeInsets.only(top: 8, right: 8),
+            padding: EdgeInsets.only(top: ScreenUtil.sh(8), right: ScreenUtil.sw(8)),
             child: Align(
               alignment: Alignment.centerRight,
               child: ValueListenableBuilder<TextEditingValue>(
@@ -152,7 +153,7 @@ class AppTextField extends StatelessWidget {
                 builder: (_, value, _) {
                   return Text('${value.text.length}/200',
                     style: textTheme.bodySmall?.copyWith(
-                      fontSize: 12,
+                      fontSize: ScreenUtil.sp(12),
                       color: colorScheme.onSurface.withValues(alpha: 0.5),
                     ),
                   );

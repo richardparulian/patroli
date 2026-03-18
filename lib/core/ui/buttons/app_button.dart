@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:patroli/core/utils/screen_util.dart';
 
 enum ButtonType { primary, outlined, text }
 
@@ -17,10 +18,10 @@ class AppButton extends StatefulWidget {
   final Color? disabledForegroundColor;
   final Color? borderColor;
   final ButtonType type;
-  final OutlinedBorder shape;
+  final OutlinedBorder? shape;
   final EdgeInsetsGeometry? padding;
 
-  AppButton({
+  const AppButton({
     super.key,
     this.onPressed,
     this.label,
@@ -36,11 +37,9 @@ class AppButton extends StatefulWidget {
     this.disabledForegroundColor,
     this.borderColor,
     this.type = ButtonType.primary,
-    OutlinedBorder? shape,
+    this.shape,
     this.padding,
-  }) : shape = shape ?? RoundedRectangleBorder(
-    borderRadius: BorderRadius.circular(borderRadius),
-  );
+  });
 
   @override
   State<AppButton> createState() => _AppButtonState();
@@ -104,6 +103,10 @@ class _AppButtonState extends State<AppButton> with SingleTickerProviderStateMix
     final bg = widget.backgroundColor ?? (widget.type == ButtonType.primary ? color.primary : Colors.transparent);
     final br = widget.borderColor ?? color.primary;
 
+    final resolvedShape = widget.shape ?? RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(ScreenUtil.radius(widget.borderRadius)),
+    );
+
     ButtonStyle style;
 
     switch (widget.type) {
@@ -112,11 +115,11 @@ class _AppButtonState extends State<AppButton> with SingleTickerProviderStateMix
           padding: widget.padding,
           backgroundColor: bg,
           foregroundColor: color.onPrimary,
-          textStyle: TextStyle(fontSize: widget.fontSize),
+          textStyle: TextStyle(fontSize: ScreenUtil.sp(widget.fontSize)),
           disabledBackgroundColor: widget.disabledBackgroundColor ?? color.surfaceContainerHighest,
           disabledForegroundColor: widget.disabledForegroundColor ?? color.onSurface.withValues(alpha: 0.5),
-          fixedSize: Size(double.infinity, widget.height),
-          shape: widget.shape,
+          fixedSize: Size(double.infinity, ScreenUtil.sh(widget.height)),
+          shape: resolvedShape,
           elevation: _isPressed ? 2 : 4,
         );
         break;
@@ -124,10 +127,10 @@ class _AppButtonState extends State<AppButton> with SingleTickerProviderStateMix
       case ButtonType.outlined:
         style = OutlinedButton.styleFrom(
           foregroundColor: color.onSurface,
-          textStyle: TextStyle(fontSize: widget.fontSize),
-          side: BorderSide(color: br, width: 1.2),
-          fixedSize: Size(double.infinity, widget.height),
-          shape: widget.shape,
+          textStyle: TextStyle(fontSize: ScreenUtil.sp(widget.fontSize)),
+          side: BorderSide(color: br, width: ScreenUtil.sw(1.2)),
+          fixedSize: Size(double.infinity, ScreenUtil.sh(widget.height)),
+          shape: resolvedShape,
           elevation: _isPressed ? 0 : 2,
         );
         break;
@@ -147,11 +150,11 @@ class _AppButtonState extends State<AppButton> with SingleTickerProviderStateMix
       children: [
         if (widget.icon != null) ...[
           widget.icon!,
-          if (widget.label != null) const SizedBox(width: 8),
+          if (widget.label != null) SizedBox(width: ScreenUtil.sw(8)),
         ],
         if (widget.indicator != null) ...[
           widget.indicator!,
-          if (widget.label != null) const SizedBox(width: 8),
+          if (widget.label != null) SizedBox(width: ScreenUtil.sw(8)),
         ],
         if (widget.label != null) ...[
           Text(widget.label ?? '---'),

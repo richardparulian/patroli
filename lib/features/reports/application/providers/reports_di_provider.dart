@@ -1,4 +1,4 @@
-import 'package:patroli/features/reports/data/repositories/reports_repository_impl.dart';
+import 'package:patroli/features/reports/application/providers/reports_data_providers.dart';
 import 'package:patroli/features/reports/domain/usecases/reports_use_case.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

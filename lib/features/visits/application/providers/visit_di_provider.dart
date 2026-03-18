@@ -1,4 +1,4 @@
-import 'package:patroli/features/visits/data/repositories/visit_repository_impl.dart';
+import 'package:patroli/features/visits/application/providers/visit_data_providers.dart';
 import 'package:patroli/features/visits/domain/usecases/visit_use_case.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

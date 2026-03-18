@@ -9,6 +9,8 @@ import 'package:patroli/features/reports/domain/entities/reports_entity.dart';
 import 'package:patroli/core/ui/animation/animated_card.dart';
 import 'package:patroli/features/reports/presentation/providers/reports_carousel_provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:patroli/l10n/l10n.dart';
+import 'package:patroli/core/utils/screen_util.dart';
 
 class ReportCard extends ConsumerStatefulWidget {
   final ReportsEntity report;
@@ -49,14 +51,14 @@ class _ReportCardState extends ConsumerState<ReportCard> {
       child: Card(
         elevation: 2,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(ScreenUtil.radius(16)),
         ),
-        margin: const EdgeInsets.symmetric(
-          horizontal: 16, 
-          vertical: 8,
+        margin: EdgeInsets.symmetric(
+          horizontal: ScreenUtil.sw(16),
+          vertical: ScreenUtil.sh(8),
         ),
         child: Padding(
-          padding: const EdgeInsets.all(14),
+          padding: ScreenUtil.paddingFromDesign(all: 14),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -69,14 +71,14 @@ class _ReportCardState extends ConsumerState<ReportCard> {
                     child: Row(
                       children: [
                         Container(
-                          padding: const EdgeInsets.all(8),
+                          padding: ScreenUtil.paddingFromDesign(all: 8),
                           decoration: BoxDecoration(
                             color: color.primary.withValues(alpha: 0.2),
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: BorderRadius.circular(ScreenUtil.radius(10)),
                           ),
-                          child: Icon(Iconsax.shop, size: 20, color: color.primary),
+                          child: Icon(Iconsax.shop, size: ScreenUtil.icon(20), color: color.primary),
                         ),
-                        const SizedBox(width: 12),
+                        SizedBox(width: ScreenUtil.sw(12)),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -102,12 +104,12 @@ class _ReportCardState extends ConsumerState<ReportCard> {
                   _buildStatusBadge(theme, isCompleted),
                 ],
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: ScreenUtil.sh(12)),
               Container(
-                padding: const EdgeInsets.all(12),
+                padding: ScreenUtil.paddingFromDesign(all: 12),
                 decoration: BoxDecoration(
                   color: color.surfaceContainerHighest.withValues(alpha: 0.5),
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(ScreenUtil.radius(16)),
                 ),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -119,19 +121,19 @@ class _ReportCardState extends ConsumerState<ReportCard> {
                         children: [
                           Row(
                             children: [
-                              Icon(Iconsax.login, size: 20, color: color.onSurfaceVariant),
-                              const SizedBox(width: 12),
+                              Icon(Iconsax.login, size: ScreenUtil.icon(20), color: color.onSurfaceVariant),
+                              SizedBox(width: ScreenUtil.sw(12)),
                               Column(
                                 mainAxisSize: MainAxisSize.min,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text('Masuk',
+                                  Text(context.tr('check_in_label'),
                                     style: theme.textTheme.bodySmall?.copyWith(
                                       color: color.onSurfaceVariant,
                                       fontWeight: FontWeight.w500,
                                     ),
                                   ),
-                                  const SizedBox(height: 4),
+                                  SizedBox(height: ScreenUtil.sh(4)),
                                   Text(widget.report.checkIn?.toTimeWithZone() ?? '---',
                                     style: theme.textTheme.bodySmall?.copyWith(
                                       color: color.onSurfaceVariant,
@@ -142,22 +144,22 @@ class _ReportCardState extends ConsumerState<ReportCard> {
                               ),
                             ],
                           ),
-                          const SizedBox(height: 10),
+                          SizedBox(height: ScreenUtil.sh(10)),
                           Row(
                             children: [
-                              Icon(Iconsax.logout, size: 20, color: color.onSurfaceVariant),
-                              const SizedBox(width: 10),
+                              Icon(Iconsax.logout, size: ScreenUtil.icon(20), color: color.onSurfaceVariant),
+                              SizedBox(width: ScreenUtil.sw(10)),
                               Column(
                                 mainAxisSize: MainAxisSize.min,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text('Keluar',
+                                  Text(context.tr('check_out_label'),
                                     style: theme.textTheme.bodySmall?.copyWith(
                                       color: color.onSurfaceVariant,
                                       fontWeight: FontWeight.w500,
                                     ),
                                   ),
-                                  const SizedBox(height: 4),
+                                  SizedBox(height: ScreenUtil.sh(4)),
                                   Text(widget.report.checkOut?.toTimeWithZone() ?? '---',
                                     style: theme.textTheme.bodySmall?.copyWith(
                                       color: color.onSurfaceVariant,
@@ -176,10 +178,10 @@ class _ReportCardState extends ConsumerState<ReportCard> {
                       height: size.width > 600 ? size.width * 0.1 : size.width * 0.2,
                       decoration: BoxDecoration(
                         color: color.onSurface,
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(ScreenUtil.radius(10)),
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    SizedBox(width: ScreenUtil.sw(12)),
                     Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -200,7 +202,7 @@ class _ReportCardState extends ConsumerState<ReportCard> {
                               return Builder(
                                 builder: (BuildContext context) {
                                   return ClipRRect(
-                                    borderRadius: BorderRadius.circular(10),
+                                    borderRadius: BorderRadius.circular(ScreenUtil.radius(10)),
                                     child: GestureDetector(
                                       onTap: null,
                                       child: CachedNetworkImage(
@@ -227,14 +229,14 @@ class _ReportCardState extends ConsumerState<ReportCard> {
                             ],
                           ),
                         ),
-                        const SizedBox(height: 6),
+                        SizedBox(height: ScreenUtil.sh(6)),
                         if (imageUrls.length > 1) ...[
                           AnimatedSmoothIndicator(
                             activeIndex: currentIndex,
                             count: imageUrls.length,
                             effect: WormEffect(
-                              dotHeight: 6,
-                              dotWidth: 6,
+                              dotHeight: ScreenUtil.sh(6),
+                              dotWidth: ScreenUtil.sw(6),
                               activeDotColor: color.primary,
                               dotColor: Colors.grey,
                             ),
@@ -256,10 +258,10 @@ class _ReportCardState extends ConsumerState<ReportCard> {
     final color = isCompleted ? Colors.green : Colors.orange;
     
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      padding: EdgeInsets.symmetric(horizontal: ScreenUtil.sw(10), vertical: ScreenUtil.sh(5)),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(ScreenUtil.radius(20)),
         border: Border.all(
           width: 1,
           color: color, 
@@ -268,9 +270,9 @@ class _ReportCardState extends ConsumerState<ReportCard> {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(isCompleted ? Iconsax.tick_circle : Iconsax.clock, size: 14, color: color),
+          Icon(isCompleted ? Iconsax.tick_circle : Iconsax.clock, size: ScreenUtil.icon(14), color: color),
           const SizedBox(width: 4),
-          Text(isCompleted ? 'Selesai' : 'Tertunda', 
+          Text(isCompleted ? context.tr('completed') : context.tr('pending'), 
             style: theme.textTheme.labelSmall?.copyWith(
               color: color, fontWeight: FontWeight.bold,
             ),

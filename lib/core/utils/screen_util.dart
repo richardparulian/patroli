@@ -7,14 +7,15 @@ class ScreenUtil {
   ScreenUtil._internal();
 
   // Screen dimensions
-  static late double _screenWidth;
-  static late double _screenHeight;
-  static late double _pixelRatio;
-  static late double _bottomBarHeight;
-  static late double _topBarHeight;
-  static late double _statusBarHeight;
-  static late EdgeInsets _padding;
-  static late EdgeInsets _viewInsets;
+  static double _screenWidth = _designWidth;
+  static double _screenHeight = _designHeight;
+  static double _pixelRatio = 1.0;
+  static double _bottomBarHeight = 0.0;
+  static double _topBarHeight = 0.0;
+  static double _statusBarHeight = 0.0;
+  static EdgeInsets _padding = EdgeInsets.zero;
+  static EdgeInsets _viewInsets = EdgeInsets.zero;
+  static bool _isInitialized = false;
 
   // Base design size (iPhone 12/13/14 Pro as reference)
   static const double _designWidth = 390.0;
@@ -32,6 +33,7 @@ class ScreenUtil {
     _statusBarHeight = mediaQuery.padding.top;
     _padding = mediaQuery.padding;
     _viewInsets = mediaQuery.viewInsets;
+    _isInitialized = true;
   }
 
   // ==================== WIDTH METHODS ====================
@@ -155,7 +157,7 @@ class ScreenUtil {
 
   // ==================== GETTERS ====================
 
-  static bool get _initialized => _screenWidth > 0;
+  static bool get _initialized => _isInitialized;
 
   static double get screenWidth => _screenWidth;
   static double get screenHeight => _screenHeight;

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:patroli/core/utils/screen_util.dart';
 
 class FormSection extends ConsumerWidget {
   final String title;
@@ -12,21 +13,21 @@ class FormSection extends ConsumerWidget {
     return Card(
       elevation: 0,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(ScreenUtil.radius(14)),
         side: BorderSide(color: Colors.grey.shade200),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: ScreenUtil.paddingFromDesign(all: 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(title,
-              style: const TextStyle(
+              style: TextStyle(
                 fontWeight: FontWeight.bold,
-                fontSize: 16,
+                fontSize: ScreenUtil.sp(16),
               ),
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: ScreenUtil.sh(12)),
             ...children
           ],
         ),

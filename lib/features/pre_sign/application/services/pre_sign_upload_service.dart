@@ -1,4 +1,5 @@
 import 'package:image_picker/image_picker.dart';
+import 'package:patroli/app/localization/localized_message.dart';
 import 'package:patroli/core/extensions/result_state_extension.dart';
 import 'package:patroli/features/pre_sign/application/providers/pre_sign_di_provider.dart';
 import 'package:patroli/features/pre_sign/data/dtos/request/pre_sign_create_request.dart';
@@ -10,8 +11,9 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'pre_sign_upload_service.g.dart';
 
 class PreSignUploadService {
-  PreSignUploadService(this._createUseCase, this._updateUseCase);
+  PreSignUploadService(this.ref, this._createUseCase, this._updateUseCase);
 
+  final Ref ref;
   final PreSignCreateUseCase _createUseCase;
   final PreSignUpdateUseCase _updateUseCase;
 
@@ -27,17 +29,17 @@ class PreSignUploadService {
       );
 
       final presign = createResult.fold<PreSignCreateEntity?>(
-        (failure) => throw Exception(failure.message),
+        (failure) => throw Exception(localizeMessage(ref, failure.message)),
         (entity) => entity,
       );
 
       if (presign == null) {
-        return const Error('Presigned URL tidak ditemukan');
+        return Error(localizeKey(ref, 'presigned_url_not_found'));
       }
 
       final url = presign.url;
       if (url == null || url.isEmpty) {
-        return const Error('Presigned URL tidak ditemukan');
+        return Error(localizeKey(ref, 'presigned_url_not_found'));
       }
 
       final uploadResult = await _updateUseCase(
@@ -45,11 +47,11 @@ class PreSignUploadService {
       );
 
       return uploadResult.fold(
-        (failure) => Error(failure.message),
+        (failure) => Error(localizeMessage(ref, failure.message)),
         (_) => Success(presign),
       );
     } catch (e) {
-      return Error(e.toString().replaceFirst('Exception: ', ''));
+      return Error(localizeMessage(ref, e.toString().replaceFirst('Exception: ', '')));
     }
   }
 }
@@ -57,6 +59,7 @@ class PreSignUploadService {
 @Riverpod(keepAlive: true)
 PreSignUploadService preSignUploadService(Ref ref) {
   return PreSignUploadService(
+    ref,
     ref.read(preSignCreateUseCaseProvider),
     ref.read(preSignUpdateUseCaseProvider),
   );

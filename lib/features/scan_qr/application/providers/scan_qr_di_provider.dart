@@ -1,4 +1,4 @@
-import 'package:patroli/features/scan_qr/data/repositories/scan_qr_repository_impl.dart';
+import 'package:patroli/features/scan_qr/application/providers/scan_qr_data_providers.dart';
 import 'package:patroli/features/scan_qr/domain/usecases/scan_qr_use_case.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

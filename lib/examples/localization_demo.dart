@@ -36,7 +36,7 @@ class LocalizationDemo extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        context.tr('welcomeMessage'),
+                        context.tr('welcome_message_label'),
                         style: Theme.of(context).textTheme.headlineMedium,
                       ),
                       const SizedBox(height: 16),
@@ -108,21 +108,21 @@ class LocalizationDemo extends ConsumerWidget {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        context.tr('itemCount').replaceAll('{count}', '0'),
+                        context.tr('item_count_label').replaceAll('{count}', '0'),
                         style: Theme.of(context).textTheme.bodyLarge,
                       ),
                       Text(
-                        context.tr('itemCount').replaceAll('{count}', '1'),
+                        context.tr('item_count_label').replaceAll('{count}', '1'),
                         style: Theme.of(context).textTheme.bodyLarge,
                       ),
                       Text(
-                        context.tr('itemCount').replaceAll('{count}', '5'),
+                        context.tr('item_count_label').replaceAll('{count}', '5'),
                         style: Theme.of(context).textTheme.bodyLarge,
                       ),
                       const SizedBox(height: 8),
                       Text(
                         context
-                            .tr('lastUpdated')
+                            .tr('last_updated')
                             .replaceAll('{date}', l10n.formatDate(now)),
                         style: Theme.of(context).textTheme.bodyLarge,
                       ),

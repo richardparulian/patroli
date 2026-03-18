@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:patroli/core/utils/screen_util.dart';
 
 class AppCheckboxGroup extends ConsumerWidget {
   final String? title;
@@ -36,21 +37,21 @@ class AppCheckboxGroup extends ConsumerWidget {
 
     return Card(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(ScreenUtil.radius(14)),
       ),
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 0, 16, 6),
+        padding: ScreenUtil.paddingFromDesign(left: 16, top: 0, right: 16, bottom: 6),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (title != null) ...[
               Text(title ?? '---',
-                style: const TextStyle(
+                style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize: 16,
+                  fontSize: ScreenUtil.sp(16),
                 ),
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: ScreenUtil.sh(12)),
             ],
             ...options.map(
               (option) {
@@ -59,24 +60,24 @@ class AppCheckboxGroup extends ConsumerWidget {
                 return GestureDetector(
                   onTap: () => _toggle(option),
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    padding: ScreenUtil.paddingFromDesign(vertical: 10),
                     child: Row(
                       children: [
                         AnimatedContainer(
                           duration: const Duration(milliseconds: 200),
-                          width: 22,
-                          height: 22,
+                          width: ScreenUtil.sw(22),
+                          height: ScreenUtil.sw(22),
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(6),
+                            borderRadius: BorderRadius.circular(ScreenUtil.radius(6)),
                             border: Border.all(
                               color: selected ? colorScheme.primary : colorScheme.outline,
-                              width: 2,
+                              width: ScreenUtil.sw(2),
                             ),
                             color: selected ? colorScheme.primary : Colors.transparent,
                           ),
-                          child: selected ? const Icon(Icons.check, size: 16, color: Colors.white) : null,
+                          child: selected ? Icon(Icons.check, size: ScreenUtil.icon(16), color: Colors.white) : null,
                         ),
-                        const SizedBox(width: 12),
+                        SizedBox(width: ScreenUtil.sw(12)),
                         Expanded(child: Text(option)),
                       ],
                     ),
@@ -85,14 +86,14 @@ class AppCheckboxGroup extends ConsumerWidget {
               },
             ),
             if (errorText != null) ...[
-              const SizedBox(height: 6),
+              SizedBox(height: ScreenUtil.sh(6)),
               Text(errorText ?? '---',
                 style: TextStyle(
                   color: colorScheme.error,
-                  fontSize: 12,
+                  fontSize: ScreenUtil.sp(12),
                 ),
               ),
-              const SizedBox(height: 6),
+              SizedBox(height: ScreenUtil.sh(6)),
             ],
           ],
         ),

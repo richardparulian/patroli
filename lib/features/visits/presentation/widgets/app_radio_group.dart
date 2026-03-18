@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:patroli/app/constants/visit_constants.dart';
 import 'package:patroli/core/enums/alert_type.dart';
 import 'package:patroli/core/ui/cards/app_card_alert.dart';
+import 'package:patroli/core/utils/screen_util.dart';
+import 'package:patroli/l10n/l10n.dart';
 
 class AppRadioGroup<T> extends ConsumerWidget {
   final String? title;
@@ -33,10 +35,10 @@ class AppRadioGroup<T> extends ConsumerWidget {
 
     return Card(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(ScreenUtil.radius(14)),
       ),
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 6),
+        padding: ScreenUtil.paddingFromDesign(left: 16, top: 16, right: 16, bottom: 6),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -45,33 +47,33 @@ class AppRadioGroup<T> extends ConsumerWidget {
                 children: [
                   if (icon != null) ...[
                     Container(
-                      padding: const EdgeInsets.all(8),
+                      padding: ScreenUtil.paddingFromDesign(all: 8),
                       decoration: BoxDecoration(
                         color: color.primary.withValues(alpha: 0.3),
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(ScreenUtil.radius(10)),
                       ),
-                      child: Icon(icon, size: 18, color: color.primary),
+                      child: Icon(icon, size: ScreenUtil.icon(18), color: color.primary),
                     ),
-                    const SizedBox(width: 10),
+                    SizedBox(width: ScreenUtil.sw(10)),
                   ],
                   Text(
                     title ?? '---',
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      fontSize: 16,
+                      fontSize: ScreenUtil.sp(16),
                       fontWeight: FontWeight.w700,
                     ),
                   ),
                 ],
               ),
             ],
-            const SizedBox(height: 15),
+            SizedBox(height: ScreenUtil.sh(15)),
             if (condition > VisitConstants.available) ...[
-              const AppAlertCard(
-                title: 'Informasi',
-                message: 'Ruko/Lahan Kosong',
+              AppAlertCard(
+                title: context.tr('information'),
+                message: context.tr('empty_shop_land'),
                 type: AlertType.error,
               ),
-              const SizedBox(height: 10),
+              SizedBox(height: ScreenUtil.sh(10)),
             ],
             ...options.map(
               (option) => _RadioItem(
@@ -83,16 +85,16 @@ class AppRadioGroup<T> extends ConsumerWidget {
               ),
             ),
             if (errorText != null) ...[
-              const SizedBox(height: 6),
+              SizedBox(height: ScreenUtil.sh(6)),
               Text(
                 errorText ?? '---',
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: theme.colorScheme.error,
-                  fontSize: 12,
+                  fontSize: ScreenUtil.sp(12),
                   fontWeight: FontWeight.w500,
                 ),
               ),
-              const SizedBox(height: 6),
+              SizedBox(height: ScreenUtil.sh(6)),
             ],
           ],
         ),
@@ -120,25 +122,25 @@ class _RadioItem extends ConsumerWidget {
     return GestureDetector(
       onTap: onTap,
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10),
+        padding: ScreenUtil.paddingFromDesign(vertical: 10),
         child: Row(
           children: [
             AnimatedContainer(
               duration: const Duration(milliseconds: 200),
-              width: 22,
-              height: 22,
+              width: ScreenUtil.sw(22),
+              height: ScreenUtil.sw(22),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  width: 2,
+                  width: ScreenUtil.sw(2),
                   color: selected ? color.primary : color.outline,
                 ),
               ),
               child: selected
                   ? Center(
                       child: Container(
-                        width: 10,
-                        height: 10,
+                        width: ScreenUtil.sw(10),
+                        height: ScreenUtil.sw(10),
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: color.primary,
@@ -147,7 +149,7 @@ class _RadioItem extends ConsumerWidget {
                     )
                   : null,
             ),
-            const SizedBox(width: 12),
+            SizedBox(width: ScreenUtil.sw(12)),
             Expanded(child: Text(label)),
           ],
         ),

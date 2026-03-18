@@ -12,6 +12,8 @@ import 'package:patroli/core/ui/buttons/app_icon_button.dart';
 import 'package:patroli/core/utils/extensions/date_time_extensions.dart';
 import 'package:patroli/features/reports/domain/entities/reports_entity.dart';
 import 'package:patroli/features/reports/domain/extensions/extensions.dart';
+import 'package:patroli/l10n/l10n.dart';
+import 'package:patroli/core/utils/screen_util.dart';
 
 class ReportsDetailScreen extends ConsumerStatefulWidget {
   final ReportsEntity reportData;
@@ -36,29 +38,29 @@ class _ReportsDetailScreenState extends ConsumerState<ReportsDetailScreen> {
         titleSpacing: 0,
         surfaceTintColor: color.surface,
         backgroundColor: color.surface,
-        title: Text(report.branch?.name ?? 'Detail Laporan'),
+        title: Text(report.branch?.name ?? context.tr('report_detail')),
         titleTextStyle: theme.textTheme.titleMedium?.copyWith(
-          fontSize: 18,
+          fontSize: ScreenUtil.sp(18),
           fontWeight: FontWeight.w700,
         ),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
+        padding: ScreenUtil.paddingFromDesign(all: 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildHeaderCard(theme: theme, report: report, isCompleted: isCompleted),
-            const SizedBox(height: 16),
+            SizedBox(height: ScreenUtil.sh(16)),
             _buildInformationCard(theme: theme, report: report),
-            const SizedBox(height: 12),
+            SizedBox(height: ScreenUtil.sh(12)),
             _buildPhotosCard(context: context, report: report),
-            const SizedBox(height: 20),
+            SizedBox(height: ScreenUtil.sh(20)),
             if (!isCompleted) ...[
               AppIconButton(
-                label: 'Lanjutan',
+                label: context.tr('continue'),
                 icon: const Icon(Iconsax.next),
                 type: IconButtonType.primary,
-                minimumSize: const Size(double.infinity, 45),
+                minimumSize: Size(double.infinity, ScreenUtil.sh(45)),
                 onPressed: () {
                   if (report.isEmptyReport) {
                     context.push(AppRoutes.visit, extra: VisitRouteArgs(report: report));
@@ -89,21 +91,21 @@ class _ReportsDetailScreenState extends ConsumerState<ReportsDetailScreen> {
 
     return Card(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(ScreenUtil.radius(16)),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: ScreenUtil.paddingFromDesign(all: 16),
         child: Row(
           children: [
             Container(
-              padding: const EdgeInsets.all(10),
+              padding: ScreenUtil.paddingFromDesign(all: 10),
               decoration: BoxDecoration(
                 color: color.primary.withValues(alpha: .2),
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(ScreenUtil.radius(10)),
               ),
               child: Icon(Iconsax.shop, color: color.primary),
             ),
-            const SizedBox(width: 12),
+            SizedBox(width: ScreenUtil.sw(12)),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -134,10 +136,10 @@ class _ReportsDetailScreenState extends ConsumerState<ReportsDetailScreen> {
 
     return Card(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(ScreenUtil.radius(16)),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: ScreenUtil.paddingFromDesign(all: 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -148,7 +150,7 @@ class _ReportsDetailScreenState extends ConsumerState<ReportsDetailScreen> {
                 Expanded(
                   child: _infoItem(
                     icon: Iconsax.login,
-                    title: 'Masuk',
+                    title: context.tr('check_in_label'),
                     value: report.checkIn?.toTimeWithZone(),
                     theme: theme,
                   ),
@@ -156,20 +158,20 @@ class _ReportsDetailScreenState extends ConsumerState<ReportsDetailScreen> {
                 Expanded(
                   child: _infoItem(
                     icon: Iconsax.logout,
-                    title: 'Keluar',
+                    title: context.tr('check_out_label'),
                     value: report.checkOut?.toTimeWithZone(),
                     theme: theme,
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 15),
+            SizedBox(height: ScreenUtil.sh(15)),
             Row(
               children: [
                 Expanded(
                   child: _infoItem(
                     icon: Iconsax.lamp_charge,
-                    title: 'Status Lampu',
+                    title: context.tr('lights_status'),
                     value: report.lightsStatus?.trim() ?? '---',
                     theme: theme,
                   ),
@@ -177,20 +179,20 @@ class _ReportsDetailScreenState extends ConsumerState<ReportsDetailScreen> {
                 Expanded(
                   child: _infoItem(
                     icon: Iconsax.image,
-                    title: 'Status Banner',
+                    title: context.tr('banner_status'),
                     value: report.bannerStatus?.trim() ?? '---',
                     theme: theme,
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 15),
+            SizedBox(height: ScreenUtil.sh(15)),
             Row(
               children: [
                 Expanded(
                   child: _infoItem(
                     icon: Iconsax.sidebar_right,
-                    title: 'Kondisi Kanan',
+                    title: context.tr('right_condition'),
                     value: report.conditionRight?.trim() ?? '---',
                     theme: theme,
                   ),
@@ -198,20 +200,20 @@ class _ReportsDetailScreenState extends ConsumerState<ReportsDetailScreen> {
                 Expanded(
                   child: _infoItem(
                     icon: Iconsax.sidebar_left,
-                    title: 'Kondisi Kiri',
+                    title: context.tr('left_condition'),
                     value: report.conditionLeft?.trim() ?? '---',
                     theme: theme,
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 15),
+            SizedBox(height: ScreenUtil.sh(15)),
             Row(
               children: [
                 Expanded(
                   child: _infoItem(
                     icon: Iconsax.undo,
-                    title: 'Kondisi Belakang',
+                    title: context.tr('back_condition'),
                     value: report.conditionBack?.trim() ?? '---',
                     theme: theme,
                   ),
@@ -219,33 +221,33 @@ class _ReportsDetailScreenState extends ConsumerState<ReportsDetailScreen> {
                 Expanded(
                   child: _infoItem(
                     icon: Iconsax.story,
-                    title: 'Kondisi Sekitar',
+                    title: context.tr('surrounding_condition'),
                     value: report.conditionAround?.trim() ?? '---',
                     theme: theme,
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 15),
+            SizedBox(height: ScreenUtil.sh(15)),
             _infoItem(
               icon: Icons.door_front_door,
-              title: 'Status Rolling Door',
+              title: context.tr('rolling_door_status'),
               value: report.rollingDoorStatus?.trim() ?? '---',
               theme: theme,
             ),
-            const SizedBox(height: 10),
+            SizedBox(height: ScreenUtil.sh(10)),
             Divider(
               thickness: 0.5,
               color: color.onSurface.withValues(alpha: .2),
             ),
-            const SizedBox(height: 5),
-            Text('Catatan',
+            SizedBox(height: ScreenUtil.sh(5)),
+            Text(context.tr('notes'),
               style: theme.textTheme.titleMedium?.copyWith(
                 color: color.onSurfaceVariant,
                 fontWeight: FontWeight.w500,
               ),
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: ScreenUtil.sh(8)),
             Text(report.notes?.trim() ?? '---',
               style: theme.textTheme.bodySmall?.copyWith(
                 color: color.onSurfaceVariant,
@@ -264,24 +266,24 @@ class _ReportsDetailScreenState extends ConsumerState<ReportsDetailScreen> {
   }) {
     return Card(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(ScreenUtil.radius(16)),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: ScreenUtil.paddingFromDesign(all: 16),
         child: Column(
           children: [
             if (report.checkInPhoto?.trim().isNotEmpty ?? false) ...[
               _photoItem(
                 context: context,
-                title: 'Foto Masuk',
+                title: context.tr('check_in_photo'),
                 url: report.checkInPhoto?.trim() ?? '',
               ),
             ],
             if (report.checkOutPhoto?.trim().isNotEmpty ?? false) ...[
-              const SizedBox(height: 16),
+              SizedBox(height: ScreenUtil.sh(16)),
               _photoItem(
                 context: context,
-                title: 'Foto Keluar',
+                title: context.tr('check_out_photo'),
                 url: report.checkOutPhoto?.trim() ?? '',
               ),
             ],
@@ -297,32 +299,40 @@ class _ReportsDetailScreenState extends ConsumerState<ReportsDetailScreen> {
     return Row(
       children: [
         Container(
-          padding: const EdgeInsets.all(10),
+          padding: ScreenUtil.paddingFromDesign(all: 10),
           decoration: BoxDecoration(
             color: color.primary.withValues(alpha: .2),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(ScreenUtil.radius(12)),
           ),
           child: Icon(icon, color: color.primary),
         ),
-        const SizedBox(width: 10),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(title,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: color.onSurfaceVariant,
-                fontWeight: FontWeight.w500,
+        SizedBox(width: ScreenUtil.sw(10)),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: color.onSurfaceVariant,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
-            ),
-            const SizedBox(height: 4),
-            Text(value ?? '---',
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: color.onSurfaceVariant,
-                fontWeight: FontWeight.w300,
+              SizedBox(height: ScreenUtil.sh(4)),
+              Text(
+                value ?? '---',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: color.onSurfaceVariant,
+                  fontWeight: FontWeight.w300,
+                ),
               ),
-            ),
-          ],
-        )
+            ],
+          ),
+        ),
       ],
     );
   }
@@ -338,7 +348,7 @@ class _ReportsDetailScreenState extends ConsumerState<ReportsDetailScreen> {
             fontWeight: FontWeight.w600,
           ),
         ),
-        const SizedBox(height: 6),
+        SizedBox(height: ScreenUtil.sh(6)),
         GestureDetector(
           onTap: () {
             debugPrint('urls: $url');
@@ -349,9 +359,9 @@ class _ReportsDetailScreenState extends ConsumerState<ReportsDetailScreen> {
           );
           },
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(ScreenUtil.radius(14)),
             child: CachedNetworkImage(
-              height: 220,
+              height: ScreenUtil.sh(220),
               imageUrl: url,
               fit: BoxFit.cover,
               width: double.infinity,
@@ -367,17 +377,17 @@ class _ReportsDetailScreenState extends ConsumerState<ReportsDetailScreen> {
     final color = completed ? Colors.green : Colors.orange;
 
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 10, 
-        vertical: 6,
+      padding: EdgeInsets.symmetric(
+        horizontal: ScreenUtil.sw(10),
+        vertical: ScreenUtil.sh(6),
       ),
       decoration: BoxDecoration(
         color: color.withValues(alpha: .1),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(ScreenUtil.radius(20)),
         border: Border.all(color: color),
       ),
       child: Text(
-        completed ? 'Selesai' : 'Tertunda',
+        completed ? context.tr('completed') : context.tr('pending'),
         style: theme.textTheme.labelSmall?.copyWith(
           color: color,
           fontWeight: FontWeight.bold,

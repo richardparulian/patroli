@@ -10,6 +10,8 @@ import 'package:patroli/features/reports/presentation/providers/reports_fetch_pr
 import 'package:patroli/features/reports/presentation/providers/reports_paging_provider.dart';
 import 'package:patroli/features/reports/widgets/reports_card.dart';
 import 'package:patroli/features/reports/widgets/reports_shimmer.dart';
+import 'package:patroli/l10n/l10n.dart';
+import 'package:patroli/core/utils/screen_util.dart';
 
 class ReportsScreen extends ConsumerStatefulWidget {
   const ReportsScreen({super.key});
@@ -43,9 +45,9 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
         titleSpacing: 0,
         backgroundColor: color.surface,
         surfaceTintColor: color.surface,
-        title: const Text('Daftar Laporan'),
+        title: Text(context.tr('reports_title')),
         titleTextStyle: theme.textTheme.titleMedium?.copyWith(
-          fontSize: 20,
+          fontSize: ScreenUtil.sp(20),
           fontWeight: FontWeight.w700,
         ),
       ),
@@ -77,26 +79,26 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           ReportCardShimmer(),
-                          const SizedBox(height: 10),
+                          SizedBox(height: ScreenUtil.sh(10)),
                         ],
                       );
                     },
                     noItemsFoundIndicatorBuilder: (_) {
                       return Center(
                         child: Padding(
-                          padding: const EdgeInsets.all(32),
+                          padding: ScreenUtil.paddingFromDesign(all: 32),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Iconsax.folder_open, size: 64, color: color.outline),
-                              const SizedBox(height: 16),
-                              Text('Belum ada laporan',
+                              Icon(Iconsax.folder_open, size: ScreenUtil.icon(64), color: color.outline),
+                              SizedBox(height: ScreenUtil.sh(16)),
+                              Text(context.tr('no_reports'),
                                 style: theme.textTheme.titleMedium?.copyWith(
                                   color: color.onSurfaceVariant,
                                 ),
                               ),
-                              const SizedBox(height: 8),
-                              Text('Mulai patroli dan buat laporan pertama Anda',
+                              SizedBox(height: ScreenUtil.sh(8)),
+                              Text(context.tr('start_first_report'),
                                 style: theme.textTheme.bodyMedium?.copyWith(
                                   color: color.onSurfaceVariant,
                                 ),
@@ -109,18 +111,18 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                     },
                     firstPageErrorIndicatorBuilder: (_) => Center(
                       child: Padding(
-                        padding: const EdgeInsets.all(32),
+                        padding: ScreenUtil.paddingFromDesign(all: 32),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Iconsax.danger, size: 64, color: color.error),
-                            const SizedBox(height: 16),
-                            Text('Terjadi Kesalahan',
+                            Icon(Iconsax.danger, size: ScreenUtil.icon(64), color: color.error),
+                            SizedBox(height: ScreenUtil.sh(16)),
+                            Text(context.tr('error_occurred'),
                               style: theme.textTheme.titleMedium?.copyWith(
                                 color: color.error,
                               ),
                             ),
-                            const SizedBox(height: 8),
+                            SizedBox(height: ScreenUtil.sh(8)),
                             if (reportController.errorMessage != null) ...[
                               Text(reportController.errorMessage!,
                                 style: theme.textTheme.bodyMedium?.copyWith(
@@ -129,11 +131,11 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                                 textAlign: TextAlign.center,
                               ),
                             ],
-                            const SizedBox(height: 16),
+                            SizedBox(height: ScreenUtil.sh(16)),
                             AppIconButton(
                               onPressed: () => ref.read(reportPagingProvider).refresh(),
                               icon: const Icon(Iconsax.refresh),
-                              label: 'Coba Lagi',
+                              label: context.tr('try_again'),
                             ),
                           ],
                         ),
@@ -148,7 +150,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                             report: report,
                             onTap: () => context.push(AppRoutes.reportDetail, extra: report),
                           ),
-                          if (isLast) const SizedBox(height: 10),
+                          if (isLast) SizedBox(height: ScreenUtil.sh(10)),
                         ],
                       );
                     },

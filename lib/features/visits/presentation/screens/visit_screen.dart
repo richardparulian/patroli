@@ -11,6 +11,7 @@ import 'package:patroli/core/ui/cards/app_card_alert.dart';
 import 'package:patroli/core/ui/dialogs/app_dialog.dart';
 import 'package:patroli/core/ui/inputs/app_checkbox_group.dart';
 import 'package:patroli/features/visits/presentation/widgets/app_radio_group.dart';
+import 'package:patroli/l10n/l10n.dart';
 import 'package:patroli/core/ui/inputs/app_text_field.dart';
 import 'package:patroli/core/ui/widgets/app_loading.dart';
 import 'package:patroli/core/utils/screen_util.dart';
@@ -74,9 +75,9 @@ class _VisitScreenState extends ConsumerState<VisitScreen> {
           if (!mounted) return;
           AppDialog.showSuccess(
             context: context,
-            title: 'Berhasil',
-            message: 'Laporan berhasil dikirim, silahkan lanjut ke proses berikutnya',
-            buttonText: 'Lanjut',
+            title: context.tr('success'),
+            message: context.tr('visit_success_message'),
+            buttonText: context.tr('continue'),
             barrierDismissible: false,
             onButtonPressed: () {
               ref.read(visitFormProvider.notifier).reset();
@@ -102,8 +103,8 @@ class _VisitScreenState extends ConsumerState<VisitScreen> {
 
           AppDialog.showConfirm(
             context: context,
-            title: 'Konfirmasi',
-            message: 'Apakah Anda yakin ingin keluar dari halaman ini?',
+            title: context.tr('confirmation'),
+            message: context.tr('leave_page_confirmation'),
             onConfirm: () => context.goNamed('history_report'),
           );
         }
@@ -117,16 +118,16 @@ class _VisitScreenState extends ConsumerState<VisitScreen> {
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Buat Laporan',
+              Text(context.tr('create_report'),
                 style: theme.textTheme.headlineSmall?.copyWith(
-                  fontSize: 18,
+                  fontSize: ScreenUtil.sp(18),
                   color: color.onSurface,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              Text('Silakan isi form dibawah ini untuk membuat laporan',
+              Text(context.tr('create_report_subtitle'),
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  fontSize: 12,
+                  fontSize: ScreenUtil.sp(12),
                   color: color.onSurface.withValues(alpha: 0.7),
                 ),
               ),
@@ -139,18 +140,18 @@ class _VisitScreenState extends ConsumerState<VisitScreen> {
 
               AppDialog.showConfirm(
                 context: context,
-                title: 'Konfirmasi',
-                message: 'Apakah Anda yakin ingin keluar dari halaman ini?',
+                title: context.tr('confirmation'),
+                message: context.tr('leave_page_confirmation'),
                 onConfirm: () => context.goNamed('history_report'),
               );
             },
           ),
           bottom: PreferredSize(
-            preferredSize: Size.fromHeight(90),
+            preferredSize: Size.fromHeight(ScreenUtil.sh(90)),
             child: Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16, 
-                vertical: 10,
+              padding: EdgeInsets.symmetric(
+                horizontal: ScreenUtil.sw(16),
+                vertical: ScreenUtil.sh(10),
               ),
               decoration: BoxDecoration(
                 color: color.surface,
@@ -161,7 +162,7 @@ class _VisitScreenState extends ConsumerState<VisitScreen> {
                 )
               ),
               child: AppAlertCard(
-                title: 'Cabang',
+                title: context.tr('branch'),
                 message: widget.scanQrData?.name ?? widget.reportData?.branch?.name ?? '---',
                 type: AlertType.custom,
                 customIcon: Icons.store,
@@ -176,7 +177,7 @@ class _VisitScreenState extends ConsumerState<VisitScreen> {
             ),
 
             if (isLoadingVisitAttention) ...[
-              AppLoading(message: 'Memproses pengambilan data...'),
+              AppLoading(message: context.tr('processing_fetch_data')),
             ],
           ],
         ),
@@ -191,8 +192,8 @@ class _VisitScreenState extends ConsumerState<VisitScreen> {
     final isLoadingVisitCreate = ref.watch(visitCreateProvider.select((s) => s.isLoading));
 
     return ref.watch(visitAttentionProvider).when(
-      idle: () => AppLoading(message: 'Menunggu data...'),
-      loading: () => AppLoading(message: 'Memproses pengambilan data...'),
+      idle: () => AppLoading(message: context.tr('waiting_data')),
+      loading: () => AppLoading(message: context.tr('processing_fetch_data')),
       success: (visitData) {
         return RefreshIndicator(
           onRefresh: () => Future.sync(() => ref.read(visitAttentionProvider.notifier).runVisitAttention(
@@ -200,108 +201,108 @@ class _VisitScreenState extends ConsumerState<VisitScreen> {
           ),
           child: SingleChildScrollView(
             padding: EdgeInsets.symmetric(
-              horizontal: 16,
+              horizontal: ScreenUtil.sw(16),
             ),
             child: Column(
               children: [
                 if (visitData.visitAttention?.requireAttentions == 1) ...[
-                  const SizedBox(height: 10),
+                  SizedBox(height: ScreenUtil.sh(10)),
                   AppAlertCard(
-                    title: 'Perhatian!',
+                    title: context.tr('attention'),
                     message: visitData.visitAttention?.notes ?? '--',
                     type: AlertType.warning,
                   ),
                 ],
-                const SizedBox(height: 10),
+                SizedBox(height: ScreenUtil.sh(10)),
                 AppRadioGroup<String>(
-                  title: 'Lampu Banner',
+                  title: context.tr('banner_lights'),
                   icon: Iconsax.lamp_charge,
                   value: form.lampuBanner,
                   errorText: form.errors['lightsStatus'],
-                  options: const ['Menyala', 'Mati'],
+                  options: [context.tr('on'), context.tr('off')],
                   onChanged: notifier.setLampuBanner,
                 ),
-                const SizedBox(height: 10),
+                SizedBox(height: ScreenUtil.sh(10)),
                 AppRadioGroup<String>(
-                  title: 'Banner Utama',
+                  title: context.tr('main_banner'),
                   icon: Iconsax.image,
                   value: form.bannerUtama,
                   errorText: form.errors['bannerStatus'],
-                  options: const ['Bagus', 'Rusak'],
+                  options: [context.tr('good'), context.tr('damaged')],
                   onChanged: notifier.setBannerUtama,
                 ),
-                const SizedBox(height: 10),
+                SizedBox(height: ScreenUtil.sh(10)),
                 AppRadioGroup<String>(
-                  title: 'Rolling Door',
+                  title: context.tr('rolling_door_status'),
                   icon: Icons.door_front_door,
                   value: form.rollingDoor,
                   errorText: form.errors['rollingDoorStatus'],
-                  options: const ['Tertutup Rapat', 'Terbuka/Renggang'],
+                  options: [context.tr('closed_tightly'), context.tr('open_loose')],
                   onChanged: notifier.setRollingDoor,
                 ),
-                const SizedBox(height: 10),
+                SizedBox(height: ScreenUtil.sh(10)),
                 AppCheckboxGroup(
                   errorText: form.errors['rollingDoorChecklist'],
-                  options: const [
-                    'Saya sudah menyinari rolling door menggunakan senter',
-                    'Saya sudah melakukan tahap gedor rolling door',
+                  options: [
+                    context.tr('flashlight_checked'),
+                    context.tr('knock_checked'),
                   ],
                   values: form.rollingDoorChecklist,
                   onChanged: notifier.setRollingDoorChecklist,
                 ),
-                const SizedBox(height: 10),
+                SizedBox(height: ScreenUtil.sh(10)),
                 AppRadioGroup<String>(
-                  title: 'Kondisi Cabang (Kanan)',
+                  title: context.tr('branch_condition_right'),
                   icon: Iconsax.sidebar_right,
                   value: form.conditionRight,
                   condition: visitData.visitAttention?.conditionRightType ?? 0,
                   errorText: form.errors['conditionRight'],
-                  options: const ['Aman', 'Taruna'],
+                  options: [context.tr('safe'), context.tr('taruna')],
                   onChanged: notifier.setConditionRight,
                 ),
-                const SizedBox(height: 10),
+                SizedBox(height: ScreenUtil.sh(10)),
                 AppRadioGroup<String>(
-                  title: 'Kondisi Cabang (Kiri)',
+                  title: context.tr('branch_condition_left'),
                   icon: Iconsax.sidebar_left,
                   value: form.conditionLeft,
                   condition: visitData.visitAttention?.conditionLeftType ?? 0,
                   errorText: form.errors['conditionLeft'],
-                  options: const ['Aman', 'Taruna'],
+                  options: [context.tr('safe'), context.tr('taruna')],
                   onChanged: notifier.setConditionLeft,
                 ),
-                const SizedBox(height: 10),
+                SizedBox(height: ScreenUtil.sh(10)),
                 AppRadioGroup<String>(
-                  title: 'Kondisi Cabang (Belakang)',
+                  title: context.tr('branch_condition_back'),
                   icon: Iconsax.undo,
                   value: form.conditionBack,
                   condition: visitData.visitAttention?.conditionBackType ?? 0,
                   errorText: form.errors['conditionBack'],
-                  options: const ['Aman', 'Taruna'],
+                  options: [context.tr('safe'), context.tr('taruna')],
                   onChanged: notifier.setConditionBack,
                 ),
-                const SizedBox(height: 10),
+                SizedBox(height: ScreenUtil.sh(10)),
                 AppRadioGroup<String>(
-                  title: 'Kondisi Cabang (Sekitar)',
+                  title: context.tr('branch_condition_around'),
                   icon: Iconsax.story,
                   value: form.conditionAround,
                   errorText: form.errors['conditionAround'],
-                  options: const ['Ruko Kosong', 'Sepi', 'Ramai'],
+                  options: [context.tr('empty_shop'), context.tr('quiet'), context.tr('crowded')],
                   onChanged: notifier.setConditionAround,
                 ),
-                const SizedBox(height: 15),
+                SizedBox(height: ScreenUtil.sh(15)),
                 AppTextField(
-                  radius: 16,
+                  radius: ScreenUtil.radius(16),
                   cursor: true,
                   isDense: false,
-                  label: 'Catatan (Opsional)',
-                  hint: 'Masukkan catatan',
+                  label: context.tr('optional_notes'),
+                  hint: context.tr('notes'),
                   focusNode: noteFocusNode,
                   controller: noteController,
                   isMultiline: true,
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: ScreenUtil.sh(20)),
                 AppIconButton(
-                  label: 'Kirim',
+                  label: context.tr('send'),
                   icon: isLoadingVisitCreate ? SizedBox(
                     height: ScreenUtil.sw(14),
                     width: ScreenUtil.sw(14),
@@ -310,9 +311,9 @@ class _VisitScreenState extends ConsumerState<VisitScreen> {
                       strokeCap: StrokeCap.round,
                       color: Colors.white,
                     ),
-                  ) : Icon(Iconsax.send_1),
+                  ) : Icon(Iconsax.send_1, size: ScreenUtil.icon(18)),
                   type: IconButtonType.primary,
-                  minimumSize: const Size(double.infinity, 45),
+                  minimumSize: Size(double.infinity, ScreenUtil.sh(45)),
                   onPressed: isLoadingVisitCreate ? null : () async {
                     noteFocusNode.unfocus();
 
@@ -322,8 +323,8 @@ class _VisitScreenState extends ConsumerState<VisitScreen> {
 
                     AppDialog.showConfirm(
                       context: context,
-                      title: 'Konfirmasi',
-                      message: 'Apakah Anda yakin ingin mengirim laporan ini?',
+                      title: context.tr('confirmation'),
+                      message: context.tr('submit_report_confirmation'),
                       onConfirm: () async {
                         await ref.read(visitCreateProvider.notifier).runVisitCreate(
                           request: VisitRequest(
@@ -342,13 +343,13 @@ class _VisitScreenState extends ConsumerState<VisitScreen> {
                     );
                   },
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: ScreenUtil.sh(20)),
               ],
             ),
           ),
         );
       },
-      error: (msg) => Center(child: Text('Error: $msg')),
+      error: (msg) => Center(child: Text('${context.tr('error_occurred')}: $msg')),
     );
   }
 }

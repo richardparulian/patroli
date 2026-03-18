@@ -14,6 +14,7 @@ class AuthSessionSyncService {
   Future<void> forceLogout() async {
     final localStorageService = ref.read(localStorageServiceProvider);
     final secureStorageService = ref.read(secureStorageServiceProvider);
+    final authSessionNotifier = ref.read(authSessionProvider.notifier);
 
     try {
       await localStorageService.remove(StorageKeys.userData);
@@ -23,12 +24,15 @@ class AuthSessionSyncService {
       await secureStorageService.delete(key: StorageKeys.token);
     } catch (_) {}
 
-    ref.read(authSessionProvider.notifier).clear();
-    ref.invalidate(authBootstrapProvider);
+    authSessionNotifier.clear();
+
+    if (ref.mounted) {
+      ref.invalidate(authBootstrapProvider);
+    }
   }
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 AuthSessionSyncService authSessionSyncService(Ref ref) {
   return AuthSessionSyncService(ref);
 }

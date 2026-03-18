@@ -41,7 +41,7 @@ final class CountReportsProvider
   }
 }
 
-String _$countReportsHash() => r'e8663aed502eb2e45878625d7a7c0e11965f7ec5';
+String _$countReportsHash() => r'dbc37a4f76f2738c8285b2e8faaba63f1a4bc58f';
 
 abstract class _$CountReports extends $Notifier<ResultState<ReportsCount>> {
   ResultState<ReportsCount> build();

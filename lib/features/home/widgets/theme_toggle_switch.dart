@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:patroli/app/theme/theme_providers.dart';
+import 'package:patroli/core/utils/screen_util.dart';
 
 class ThemeToggleSwitch extends ConsumerWidget {
   const ThemeToggleSwitch({super.key});
@@ -18,16 +19,16 @@ class ThemeToggleSwitch extends ConsumerWidget {
       first: false,     // Light mode
       second: true,    // Dark mode
       spacing: -5,
-      height: 30,
-      borderWidth: 1,
-      padding: EdgeInsets.all(1),
+      height: ScreenUtil.sh(30),
+      borderWidth: ScreenUtil.sw(1),
+      padding: EdgeInsets.all(ScreenUtil.sw(1)),
       style: ToggleStyle(
         backgroundColor: color.onSurface,
         borderColor: color.onSurface.withValues(alpha: 0.3),
-        borderRadius: BorderRadius.circular(50),
+        borderRadius: BorderRadius.circular(ScreenUtil.radius(50)),
         indicatorColor: color.surface,
       ),
-      indicatorSize: const Size(28, 28),
+      indicatorSize: Size(ScreenUtil.sw(28), ScreenUtil.sw(28)),
       animationDuration: const Duration(milliseconds: 300),
       onChanged: (isDark) {
         ref.read(themeModeProvider.notifier).set(
@@ -35,7 +36,7 @@ class ThemeToggleSwitch extends ConsumerWidget {
         );
       },
       iconBuilder: (value) {
-        return Icon(value ? Iconsax.moon : Iconsax.sun_1, color: theme.colorScheme.primary, size: 15);
+        return Icon(value ? Iconsax.moon : Iconsax.sun_1, color: theme.colorScheme.primary, size: ScreenUtil.icon(15));
       },
     );
   }

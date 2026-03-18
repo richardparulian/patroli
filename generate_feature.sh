@@ -67,13 +67,10 @@ mkdir -p "$BASE_DIR/data/repositories"
 mkdir -p "$BASE_DIR/domain/entities"
 mkdir -p "$BASE_DIR/domain/repositories"
 mkdir -p "$BASE_DIR/domain/usecases"
-mkdir -p "$BASE_DIR/presentation/controllers"
+mkdir -p "$BASE_DIR/application/providers"
+mkdir -p "$BASE_DIR/application/services"
 mkdir -p "$BASE_DIR/presentation/providers"
 mkdir -p "$BASE_DIR/presentation/screens"
-
-if [[ "$WITH_UI" == "yes" ]]; then
-  mkdir -p "$BASE_DIR/presentation/widgets"
-fi
 
 # ==========================================
 # Domain Layer
@@ -83,7 +80,6 @@ fi
 write_entity() {
   local file="$1"
   cat > "$file" << 'ENTITYEOF'
-import 'package:equatable/equatable.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part '@FEATURE_NAME@_entity.freezed.dart';
@@ -112,11 +108,11 @@ write_repository_interface() {
   cat > "$file" << 'REPOEOF'
 import 'package:fpdart/fpdart.dart';
 import 'package:patroli/core/error/failures.dart';
+import 'package:patroli/features/@FEATURE_NAME@/data/dtos/request/@FEATURE_NAME@_request.dart';
 import '../entities/@FEATURE_NAME@_entity.dart';
 
 abstract class @PASCAL_CASE@Repository {
-  Future<Either<Failure, List<@PASCAL_CASE@Entity>>> get@PASCAL_CASE@s();
-  Future<Either<Failure, @PASCAL_CASE@Entity>> get@PASCAL_CASE@(int id);
+  Future<Either<Failure, @PASCAL_CASE@Entity>> submit(@PASCAL_CASE@Request request);
 }
 REPOEOF
   sed -i '' "s/@FEATURE_NAME@/$FEATURE_NAME/g" "$file"
@@ -125,62 +121,37 @@ REPOEOF
 
 write_repository_interface "$BASE_DIR/domain/repositories/${FEATURE_NAME}_repository.dart"
 
-# UseCase - Get All
-write_usecase_getall() {
+# UseCase - Submit
+write_usecase_submit() {
   local file="$1"
   cat > "$file" << 'USECASEEOF'
 import 'package:fpdart/fpdart.dart';
 import 'package:patroli/core/error/failures.dart';
+import 'package:patroli/features/@FEATURE_NAME@/data/dtos/request/@FEATURE_NAME@_request.dart';
 import 'package:patroli/core/usecases/usecase.dart';
 import 'package:patroli/features/@FEATURE_NAME@/domain/entities/@FEATURE_NAME@_entity.dart';
 import 'package:patroli/features/@FEATURE_NAME@/domain/repositories/@FEATURE_NAME@_repository.dart';
-
-class Get@PASCAL_CASE@sUseCase implements UseCase<List<@PASCAL_CASE@Entity>, NoParams> {
-  final @PASCAL_CASE@Repository _repository;
-
-  Get@PASCAL_CASE@sUseCase(this._repository);
-
-  @override
-  Future<Either<Failure, List<@PASCAL_CASE@Entity>>> call(NoParams params) {
-    return _repository.get@PASCAL_CASE@s();
-  }
-}
-USECASEEOF
-  sed -i '' "s/@FEATURE_NAME@/$FEATURE_NAME/g" "$file"
-  sed -i '' "s/@PASCAL_CASE@/$PASCAL_CASE/g" "$file"
-}
-
-write_usecase_getall "$BASE_DIR/domain/usecases/get_${FEATURE_NAME}s_use_case.dart"
-
-# UseCase - Get By ID
-write_usecase_getbyid() {
-  local file="$1"
-  cat > "$file" << 'USECASEEOF'
 import 'package:equatable/equatable.dart';
-import 'package:fpdart/fpdart.dart';
-import 'package:patroli/core/error/failures.dart';
-import 'package:patroli/core/usecases/usecase.dart';
-import 'package:patroli/features/@FEATURE_NAME@/domain/entities/@FEATURE_NAME@_entity.dart';
-import 'package:patroli/features/@FEATURE_NAME@/domain/repositories/@FEATURE_NAME@_repository.dart';
 
-// :: Parameters for get @FEATURE_NAME@ by id use case
-class Get@PASCAL_CASE@ByIdParams extends Equatable {
-  final int id;
+class Create@PASCAL_CASE@Params extends Equatable {
+  final @PASCAL_CASE@Request request;
 
-  const Get@PASCAL_CASE@ByIdParams({required this.id});
+  const Create@PASCAL_CASE@Params({
+    required this.request,
+  });
 
   @override
-  List<Object?> get props => [id];
+  List<Object?> get props => [request];
 }
 
-class Get@PASCAL_CASE@ByIdUseCase implements UseCase<@PASCAL_CASE@Entity, Get@PASCAL_CASE@ByIdParams> {
+class Create@PASCAL_CASE@UseCase implements UseCase<@PASCAL_CASE@Entity, Create@PASCAL_CASE@Params> {
   final @PASCAL_CASE@Repository _repository;
 
-  Get@PASCAL_CASE@ByIdUseCase(this._repository);
+  Create@PASCAL_CASE@UseCase(this._repository);
 
   @override
-  Future<Either<Failure, @PASCAL_CASE@Entity>> call(Get@PASCAL_CASE@ByIdParams params) {
-    return _repository.get@PASCAL_CASE@(params.id);
+  Future<Either<Failure, @PASCAL_CASE@Entity>> call(Create@PASCAL_CASE@Params params) {
+    return _repository.submit(params.request);
   }
 }
 USECASEEOF
@@ -188,7 +159,7 @@ USECASEEOF
   sed -i '' "s/@PASCAL_CASE@/$PASCAL_CASE/g" "$file"
 }
 
-write_usecase_getbyid "$BASE_DIR/domain/usecases/get_${FEATURE_NAME}_by_id_use_case.dart"
+write_usecase_submit "$BASE_DIR/domain/usecases/${FEATURE_NAME}_use_case.dart"
 
 # ==========================================
 # Data Layer
@@ -199,7 +170,6 @@ write_model() {
   local file="$1"
   cat > "$file" << 'MODELEOF'
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:json_annotation/json_annotation.dart';
 import '../../domain/entities/@FEATURE_NAME@_entity.dart';
 
 part '@FEATURE_NAME@_model.freezed.dart';
@@ -277,10 +247,10 @@ part '@FEATURE_NAME@_response.g.dart';
 
 @JsonSerializable(fieldRename: FieldRename.snake)
 class @PASCAL_CASE@Response {
-  final @PASCAL_CASE@Model @FEATURE_NAME@;
+  final @PASCAL_CASE@Model @CAMEL_CASE@;
 
   @PASCAL_CASE@Response({
-    required this.@FEATURE_NAME@,
+    required this.@CAMEL_CASE@,
   });
 
   factory @PASCAL_CASE@Response.fromJson(Map<String, dynamic> json) =>
@@ -289,20 +259,21 @@ class @PASCAL_CASE@Response {
   Map<String, dynamic> toJson() => _$@PASCAL_CASE@ResponseToJson(this);
 
   @override
-  String toString() => '@PASCAL_CASE@(@FEATURE_NAME@: $@FEATURE_NAME@)';
+  String toString() => '@PASCAL_CASE@(@CAMEL_CASE@: $@CAMEL_CASE@)';
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-    return other is @PASCAL_CASE@Response && other.@FEATURE_NAME@ == @FEATURE_NAME@;
+    return other is @PASCAL_CASE@Response && other.@CAMEL_CASE@ == @CAMEL_CASE@;
   }
 
   @override
-  int get hashCode => Object.hash(@FEATURE_NAME@, runtimeType);
+  int get hashCode => Object.hash(@CAMEL_CASE@, runtimeType);
 }
 RESPDTOEOF
   sed -i '' "s/@FEATURE_NAME@/$FEATURE_NAME/g" "$file"
   sed -i '' "s/@PASCAL_CASE@/$PASCAL_CASE/g" "$file"
+  sed -i '' "s/@CAMEL_CASE@/$CAMEL_CASE/g" "$file"
 }
 
 write_response_dto "$BASE_DIR/data/dtos/response/${FEATURE_NAME}_response.dart"
@@ -324,16 +295,13 @@ write_dtos_export "$BASE_DIR/data/dtos/dtos.dart"
 write_datasource() {
   local file="$1"
   cat > "$file" << 'DSOEOF'
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:patroli/core/network/api_client.dart';
-import 'package:patroli/core/network/api_endpoints.dart';
-import 'package:patroli/core/providers/network_providers.dart';
+import 'package:patroli/features/@FEATURE_NAME@/data/dtos/request/@FEATURE_NAME@_request.dart';
+import 'package:patroli/features/@FEATURE_NAME@/data/dtos/response/@FEATURE_NAME@_response.dart';
 import '../models/@FEATURE_NAME@_model.dart';
 
 abstract class @PASCAL_CASE@RemoteDataSource {
-  // :: Fetch all @FEATURE_NAME@s
-  Future<List<@PASCAL_CASE@Model>> fetch@PASCAL_CASE@s();
-  Future<@PASCAL_CASE@Model> fetch@PASCAL_CASE@(int id);
+  Future<@PASCAL_CASE@Model> submit@PASCAL_CASE@(@PASCAL_CASE@Request request);
 }
 
 class @PASCAL_CASE@RemoteDataSourceImpl implements @PASCAL_CASE@RemoteDataSource {
@@ -342,37 +310,15 @@ class @PASCAL_CASE@RemoteDataSourceImpl implements @PASCAL_CASE@RemoteDataSource
   @PASCAL_CASE@RemoteDataSourceImpl(this._apiClient);
 
   @override
-  Future<List<@PASCAL_CASE@Model>> fetch@PASCAL_CASE@s() async {
-    final result = await _apiClient.get('/@FEATURE_NAME@s');
+  Future<@PASCAL_CASE@Model> submit@PASCAL_CASE@(@PASCAL_CASE@Request request) async {
+    final result = await _apiClient.post('/@FEATURE_NAME@', data: request.toJson());
 
     return result.fold(
       (failure) => throw Exception(failure.message),
-      (response) {
-        final List<dynamic> data = response;
-        return data
-            .map((json) => @PASCAL_CASE@Model.fromJson(json))
-            .toList();
-      },
-    );
-  }
-
-  @override
-  Future<@PASCAL_CASE@Model> fetch@PASCAL_CASE@(int id) async {
-    final result = await _apiClient.get('/@FEATURE_NAME@s/$id');
-
-    return result.fold(
-      (failure) => throw Exception(failure.message),
-      (response) => @PASCAL_CASE@Model.fromJson(response),
+      (response) => @PASCAL_CASE@Response.fromJson(response).@CAMEL_CASE@,
     );
   }
 }
-
-// Provider
-final @CAMEL_CASE@RemoteDataSourceProvider =
-    Provider<@PASCAL_CASE@RemoteDataSource>((ref) {
-  final apiClient = ref.watch(apiClientProvider);
-  return @PASCAL_CASE@RemoteDataSourceImpl(apiClient);
-});
 DSOEOF
   sed -i '' "s/@FEATURE_NAME@/$FEATURE_NAME/g" "$file"
   sed -i '' "s/@PASCAL_CASE@/$PASCAL_CASE/g" "$file"
@@ -385,12 +331,11 @@ write_datasource "$BASE_DIR/data/datasources/${FEATURE_NAME}_remote_data_source.
 write_repository_impl() {
   local file="$1"
   cat > "$file" << 'REPOIMPLEOF'
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:patroli/core/error/exceptions.dart';
 import 'package:patroli/core/error/failures.dart';
+import 'package:patroli/features/@FEATURE_NAME@/data/dtos/request/@FEATURE_NAME@_request.dart';
 import 'package:patroli/features/@FEATURE_NAME@/data/datasources/@FEATURE_NAME@_remote_data_source.dart';
-import 'package:patroli/features/@FEATURE_NAME@/data/models/@FEATURE_NAME@_model.dart';
 import 'package:patroli/features/@FEATURE_NAME@/domain/entities/@FEATURE_NAME@_entity.dart';
 import 'package:patroli/features/@FEATURE_NAME@/domain/repositories/@FEATURE_NAME@_repository.dart';
 
@@ -400,26 +345,12 @@ class @PASCAL_CASE@RepositoryImpl implements @PASCAL_CASE@Repository {
   @PASCAL_CASE@RepositoryImpl(this._remoteDataSource);
 
   @override
-  Future<Either<Failure, List<@PASCAL_CASE@Entity>>> get@PASCAL_CASE@s() async {
+  Future<Either<Failure, @PASCAL_CASE@Entity>> submit(@PASCAL_CASE@Request request) async {
     try {
-      final models = await _remoteDataSource.fetch@PASCAL_CASE@s();
-      return Right(models.map((model) => model.toEntity()).toList());
-    } on ServerException {
-      return Left(ServerFailure(message: 'Failed to fetch @FEATURE_NAME@s'));
-    } on NetworkException {
-      return Left(NetworkFailure(message: 'No internet connection'));
-    } on Exception catch (e) {
-      return Left(ServerFailure(message: e.toString()));
-    }
-  }
-
-  @override
-  Future<Either<Failure, @PASCAL_CASE@Entity>> get@PASCAL_CASE@(int id) async {
-    try {
-      final model = await _remoteDataSource.fetch@PASCAL_CASE@(id);
+      final model = await _remoteDataSource.submit@PASCAL_CASE@(request);
       return Right(model.toEntity());
     } on ServerException {
-      return Left(ServerFailure(message: 'Failed to fetch @FEATURE_NAME@'));
+      return Left(ServerFailure(message: 'Failed to submit @FEATURE_NAME@'));
     } on NetworkException {
       return Left(NetworkFailure(message: 'No internet connection'));
     } on Exception catch (e) {
@@ -427,13 +358,6 @@ class @PASCAL_CASE@RepositoryImpl implements @PASCAL_CASE@Repository {
     }
   }
 }
-
-// Provider
-final @CAMEL_CASE@RepositoryProvider =
-    Provider<@PASCAL_CASE@Repository>((ref) {
-  final remoteDataSource = ref.watch(@CAMEL_CASE@RemoteDataSourceProvider);
-  return @PASCAL_CASE@RepositoryImpl(remoteDataSource);
-});
 REPOIMPLEOF
   sed -i '' "s/@FEATURE_NAME@/$FEATURE_NAME/g" "$file"
   sed -i '' "s/@PASCAL_CASE@/$PASCAL_CASE/g" "$file"
@@ -443,137 +367,158 @@ REPOIMPLEOF
 write_repository_impl "$BASE_DIR/data/repositories/${FEATURE_NAME}_repository_impl.dart"
 
 # ==========================================
-# Presentation Layer - Providers (DI)
+# Application Layer - Providers (Data)
+# ==========================================
+
+write_data_provider() {
+  local file="$1"
+  cat > "$file" << 'DATAPROVEOF'
+import 'package:patroli/core/network/api_client.dart';
+import 'package:patroli/app/network/network_providers.dart';
+import 'package:patroli/features/@FEATURE_NAME@/data/datasources/@FEATURE_NAME@_remote_data_source.dart';
+import 'package:patroli/features/@FEATURE_NAME@/data/repositories/@FEATURE_NAME@_repository_impl.dart';
+import 'package:patroli/features/@FEATURE_NAME@/domain/repositories/@FEATURE_NAME@_repository.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part '@FEATURE_NAME@_data_providers.g.dart';
+
+@riverpod
+ApiClient @CAMEL_CASE@ApiClient(Ref ref) {
+  final dio = ref.watch(dioWithAuthProvider);
+  return ApiClient(dio);
+}
+
+@riverpod
+@PASCAL_CASE@RemoteDataSource @CAMEL_CASE@RemoteDataSource(Ref ref) {
+  final apiClient = ref.watch(@CAMEL_CASE@ApiClientProvider);
+  return @PASCAL_CASE@RemoteDataSourceImpl(apiClient);
+}
+
+@riverpod
+@PASCAL_CASE@Repository @CAMEL_CASE@Repository(Ref ref) {
+  final remoteDataSource = ref.watch(@CAMEL_CASE@RemoteDataSourceProvider);
+  return @PASCAL_CASE@RepositoryImpl(remoteDataSource);
+}
+DATAPROVEOF
+  sed -i '' "s/@FEATURE_NAME@/$FEATURE_NAME/g" "$file"
+  sed -i '' "s/@PASCAL_CASE@/$PASCAL_CASE/g" "$file"
+  sed -i '' "s/@CAMEL_CASE@/$CAMEL_CASE/g" "$file"
+}
+
+write_data_provider "$BASE_DIR/application/providers/${FEATURE_NAME}_data_providers.dart"
+
+# ==========================================
+# Application Layer - Providers (DI)
 # ==========================================
 
 write_di_provider() {
   local file="$1"
   cat > "$file" << 'DIPROVEOF'
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:patroli/features/@FEATURE_NAME@/data/repositories/@FEATURE_NAME@_repository_impl.dart';
-import 'package:patroli/features/@FEATURE_NAME@/domain/usecases/get_@FEATURE_NAME@s_use_case.dart';
-import 'package:patroli/features/@FEATURE_NAME@/domain/usecases/get_@FEATURE_NAME@_by_id_use_case.dart';
+import 'package:patroli/features/@FEATURE_NAME@/application/providers/@FEATURE_NAME@_data_providers.dart';
+import 'package:patroli/features/@FEATURE_NAME@/domain/usecases/@FEATURE_NAME@_use_case.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-final get@PASCAL_CASE@sUseCaseProvider = Provider<Get@PASCAL_CASE@sUseCase>((ref) {
-  return Get@PASCAL_CASE@sUseCase(ref.watch(@CAMEL_CASE@RepositoryProvider));
-});
+part '@FEATURE_NAME@_di_provider.g.dart';
 
-final get@PASCAL_CASE@ByIdUseCaseProvider = Provider<Get@PASCAL_CASE@ByIdUseCase>((ref) {
-  return Get@PASCAL_CASE@ByIdUseCase(ref.watch(@CAMEL_CASE@RepositoryProvider));
-});
+@riverpod
+Create@PASCAL_CASE@UseCase @CAMEL_CASE@UseCase(Ref ref) {
+  return Create@PASCAL_CASE@UseCase(ref.watch(@CAMEL_CASE@RepositoryProvider));
+}
 DIPROVEOF
   sed -i '' "s/@FEATURE_NAME@/$FEATURE_NAME/g" "$file"
   sed -i '' "s/@PASCAL_CASE@/$PASCAL_CASE/g" "$file"
   sed -i '' "s/@CAMEL_CASE@/$CAMEL_CASE/g" "$file"
 }
 
-write_di_provider "$BASE_DIR/presentation/providers/${FEATURE_NAME}_di_provider.dart"
+write_di_provider "$BASE_DIR/application/providers/${FEATURE_NAME}_di_provider.dart"
 
 # ==========================================
-# Presentation Layer - Controllers
+# Application Layer - Services
 # ==========================================
 
-write_controller() {
+write_service() {
   local file="$1"
-  cat > "$file" << 'CONTROLEOF'
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:patroli/core/usecases/usecase.dart';
+  cat > "$file" << 'SERVICEEOF'
+import 'package:patroli/core/extensions/result_state_extension.dart';
+import 'package:patroli/features/@FEATURE_NAME@/application/providers/@FEATURE_NAME@_di_provider.dart';
+import 'package:patroli/features/@FEATURE_NAME@/data/dtos/request/@FEATURE_NAME@_request.dart';
 import 'package:patroli/features/@FEATURE_NAME@/domain/entities/@FEATURE_NAME@_entity.dart';
-import 'package:patroli/features/@FEATURE_NAME@/domain/usecases/get_@FEATURE_NAME@s_use_case.dart';
-import 'package:patroli/features/@FEATURE_NAME@/domain/usecases/get_@FEATURE_NAME@_by_id_use_case.dart';
-import 'package:patroli/features/@FEATURE_NAME@/presentation/providers/@FEATURE_NAME@_di_provider.dart';
+import 'package:patroli/features/@FEATURE_NAME@/domain/usecases/@FEATURE_NAME@_use_case.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-class @PASCAL_CASE@Controller extends AsyncNotifier<void> {
-  @override
-  Future<void> build() async {}
+part '@FEATURE_NAME@_service.g.dart';
 
-  // :: Fetch all @FEATURE_NAME@s
-  Future<Either<String, List<@PASCAL_CASE@Entity>>> fetch@PASCAL_CASE@s() async {
-    final useCase = ref.read(get@PASCAL_CASE@sUseCaseProvider);
+class @PASCAL_CASE@Service {
+  @PASCAL_CASE@Service(this.ref);
 
-    final result = await useCase(NoParams());
+  final Ref ref;
 
-    return result.fold(
-      (failure) => Left(failure.message),
-      (entities) => Right(entities),
-    );
-  }
+  Future<ResultState<@PASCAL_CASE@Entity>> submit({
+    required String name,
+  }) async {
+    try {
+      final useCase = ref.read(@CAMEL_CASE@UseCaseProvider);
+      final result = await useCase(
+        Create@PASCAL_CASE@Params(
+          request: @PASCAL_CASE@Request(name: name),
+        ),
+      );
 
-  // :: Fetch @FEATURE_NAME@ by ID
-  Future<Either<String, @PASCAL_CASE@Entity>> fetch@PASCAL_CASE@ById(int id) async {
-    final useCase = ref.read(get@PASCAL_CASE@ByIdUseCaseProvider);
-
-    final result = await useCase(Get@PASCAL_CASE@ByIdParams(id: id));
-
-    return result.fold(
-      (failure) => Left(failure.message),
-      (entity) => Right(entity),
-    );
+      return result.fold(
+        (failure) => Error(failure.message),
+        (entity) => Success(entity),
+      );
+    } catch (e) {
+      return Error(e.toString().replaceFirst('Exception: ', ''));
+    }
   }
 }
 
-final @CAMEL_CASE@ControllerProvider =
-    AsyncNotifierProvider<@PASCAL_CASE@Controller, void>(
-        @PASCAL_CASE@Controller.new);
-CONTROLEOF
+@riverpod
+@PASCAL_CASE@Service @CAMEL_CASE@Service(Ref ref) {
+  return @PASCAL_CASE@Service(ref);
+}
+SERVICEEOF
   sed -i '' "s/@FEATURE_NAME@/$FEATURE_NAME/g" "$file"
   sed -i '' "s/@PASCAL_CASE@/$PASCAL_CASE/g" "$file"
   sed -i '' "s/@CAMEL_CASE@/$CAMEL_CASE/g" "$file"
 }
 
-write_controller "$BASE_DIR/presentation/controllers/${FEATURE_NAME}_controller.dart"
+write_service "$BASE_DIR/application/services/${FEATURE_NAME}_service.dart"
 
 # ==========================================
-# Presentation Layer - Providers (State)
+# Presentation Layer - Providers
 # ==========================================
 
-write_state_provider() {
+write_provider() {
   local file="$1"
-  cat > "$file" << 'STATEPROVEOF'
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+  cat > "$file" << 'PROVIDEREOF'
+import 'package:patroli/core/extensions/result_state_extension.dart';
+import 'package:patroli/features/@FEATURE_NAME@/application/services/@FEATURE_NAME@_service.dart';
 import 'package:patroli/features/@FEATURE_NAME@/domain/entities/@FEATURE_NAME@_entity.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-class @PASCAL_CASE@ListNotifier extends Notifier<AsyncValue<List<@PASCAL_CASE@Entity>>> {
+part '@FEATURE_NAME@_provider.g.dart';
+
+@riverpod
+class @PASCAL_CASE@ extends _$@PASCAL_CASE@ {
   @override
-  AsyncValue<List<@PASCAL_CASE@Entity>> build() {
-    return const AsyncValue.loading();
+  ResultState<@PASCAL_CASE@Entity> build() {
+    return const Idle();
   }
 
-  Future<void> load@PASCAL_CASE@s() async {
-    final controller = ref.read(@CAMEL_CASE@ControllerProvider.notifier);
-
-    final result = await controller.fetch@PASCAL_CASE@s();
-
-    result.fold(
-      (error) {
-        state = AsyncValue.error(error, StackTrace.current);
-      },
-      (entities) {
-        state = AsyncValue.data(entities);
-      },
-    );
-  }
-
-  Future<void> refresh() async {
-    state = const AsyncValue.loading();
-    await load@PASCAL_CASE@s();
-  }
-
-  void clear() {
-    state = const AsyncValue.data([]);
+  Future<void> run({required String name}) async {
+    state = const Loading();
+    state = await ref.read(@CAMEL_CASE@ServiceProvider).submit(name: name);
   }
 }
-
-final @CAMEL_CASE@ListProvider =
-    NotifierProvider<@PASCAL_CASE@ListNotifier, AsyncValue<List<@PASCAL_CASE@Entity>>>(
-        @PASCAL_CASE@ListNotifier.new);
-STATEPROVEOF
+PROVIDEREOF
   sed -i '' "s/@FEATURE_NAME@/$FEATURE_NAME/g" "$file"
   sed -i '' "s/@PASCAL_CASE@/$PASCAL_CASE/g" "$file"
   sed -i '' "s/@CAMEL_CASE@/$CAMEL_CASE/g" "$file"
 }
 
-write_state_provider "$BASE_DIR/presentation/providers/${FEATURE_NAME}_state_provider.dart"
+write_provider "$BASE_DIR/presentation/providers/${FEATURE_NAME}_provider.dart"
 
 # ==========================================
 # Presentation Layer - Screens
@@ -585,98 +530,90 @@ if [[ "$WITH_UI" == "yes" ]]; then
     cat > "$file" << 'SCREENDOF'
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:patroli/features/@FEATURE_NAME@/domain/entities/@FEATURE_NAME@_entity.dart';
-import 'package:patroli/features/@FEATURE_NAME@/presentation/providers/@FEATURE_NAME@_state_provider.dart';
+import 'package:patroli/core/extensions/helper_state_extension.dart';
+import 'package:patroli/features/@FEATURE_NAME@/presentation/providers/@FEATURE_NAME@_provider.dart';
 
 class @PASCAL_CASE@Screen extends ConsumerStatefulWidget {
   const @PASCAL_CASE@Screen({super.key});
 
   @override
-  ConsumerState<@PASCAL_CASE@Screen> createState() =>
-      _@PASCAL_CASE@ScreenState();
+  ConsumerState<@PASCAL_CASE@Screen> createState() => _@PASCAL_CASE@ScreenState();
 }
 
 class _@PASCAL_CASE@ScreenState extends ConsumerState<@PASCAL_CASE@Screen> {
+  late final TextEditingController _nameController;
+
   @override
   void initState() {
     super.initState();
-    // Load @FEATURE_NAME@s when screen initializes
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(@CAMEL_CASE@ListProvider.notifier).load@PASCAL_CASE@s();
-    });
+    _nameController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final @CAMEL_CASE@ListState = ref.watch(@CAMEL_CASE@ListProvider);
+    final state = ref.watch(@CAMEL_CASE@Provider);
+    final data = state.dataOrNull;
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('@PASCAL_CASE@'),
       ),
-      body: @CAMEL_CASE@ListState.when(
-        data: (items) {
-          if (items.isEmpty) {
-            return const Center(
-              child: Text('No @FEATURE_NAME@s found'),
-            );
-          }
-
-          return ListView.builder(
-            itemCount: items.length,
-            itemBuilder: (context, index) {
-              final item = items[index];
-              return ListTile(
-                title: Text(item.name),
-                subtitle: Text('ID: \${item.id}'),
-                leading: const CircleAvatar(
-                  child: Icon(Icons.list),
-                ),
-              );
-            },
-          );
-        },
-        loading: () => const Center(
-          child: CircularProgressIndicator(),
-        ),
-        error: (error, stack) => Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.error_outline, size: 48, color: Colors.red),
-              const SizedBox(height: 16),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            TextField(
+              controller: _nameController,
+              decoration: const InputDecoration(
+                labelText: 'Name',
+                hintText: 'Enter a value',
+              ),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: state.isLoading
+                  ? null
+                  : () {
+                      ref.read(@CAMEL_CASE@Provider.notifier).run(
+                            name: _nameController.text.trim(),
+                          );
+                    },
+              child: state.isLoading
+                  ? const SizedBox(
+                      height: 16,
+                      width: 16,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Text('Submit'),
+            ),
+            const SizedBox(height: 24),
+            if (state.isError)
               Text(
-                'Error: \$error',
+                state.errorMessage ?? 'Unknown error',
                 style: const TextStyle(color: Colors.red),
-                textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () {
-                  ref
-                      .read(@CAMEL_CASE@ListProvider.notifier)
-                      .load@PASCAL_CASE@s();
-                },
-                child: const Text('Retry'),
-              ),
+            if (data != null) ...[
+              Text('Saved ID: \${data.id}'),
+              Text('Saved Name: \${data.name}'),
             ],
-          ),
+          ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          ref.read(@CAMEL_CASE@ListProvider.notifier).refresh();
-        },
-        child: const Icon(Icons.refresh),
       ),
     );
   }
 }
 SCREENDOF
-    sed -i '' "s/@FEATURE_NAME@/$FEATURE_NAME/g" "$file"
-    sed -i '' "s/@PASCAL_CASE@/$PASCAL_CASE/g" "$file"
-    sed -i '' "s/@CAMEL_CASE@/$CAMEL_CASE/g" "$file"
-  }
+  sed -i '' "s/@FEATURE_NAME@/$FEATURE_NAME/g" "$file"
+  sed -i '' "s/@PASCAL_CASE@/$PASCAL_CASE/g" "$file"
+  sed -i '' "s/@CAMEL_CASE@/$CAMEL_CASE/g" "$file"
+}
 
   write_screen "$BASE_DIR/presentation/screens/${FEATURE_NAME}_screen.dart"
 fi
@@ -704,13 +641,16 @@ echo -e "    │   │   └── ${FEATURE_NAME}_entity.dart"
 echo -e "    │   ├── repositories/"
 echo -e "    │   │   └── ${FEATURE_NAME}_repository.dart"
 echo -e "    │   └── usecases/"
-echo -e "    │       ├── get_${FEATURE_NAME}s_use_case.dart"
-echo -e "    │       └── get_${FEATURE_NAME}_by_id_use_case.dart"
+echo -e "    │       └── ${FEATURE_NAME}_use_case.dart"
+echo -e "    ├── application/"
+echo -e "    │   ├── providers/"
+echo -e "    │   │   ├── ${FEATURE_NAME}_data_providers.dart"
+echo -e "    │   │   └── ${FEATURE_NAME}_di_provider.dart"
+echo -e "    │   └── services/"
+echo -e "    │       └── ${FEATURE_NAME}_service.dart"
 echo -e "    └── presentation/"
 echo -e "        ├── providers/"
-echo -e "        │   ├── ${FEATURE_NAME}_di_provider.dart"
-echo -e "        ├── controllers/"
-echo -e "        │   └── ${FEATURE_NAME}_controller.dart"
+echo -e "        │   └── ${FEATURE_NAME}_provider.dart"
 if [[ "$WITH_UI" == "yes" ]]; then
 echo -e "        └── screens/"
 echo -e "            └── ${FEATURE_NAME}_screen.dart"
