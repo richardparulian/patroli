@@ -1,98 +1,120 @@
----
-title: Utility Tools & Scripts
----
+# Tools
 
-# Utility Tools & Scripts
+Dokumen ini merangkum script dan helper yang relevan untuk repo ini.
 
-The Flutter Riverpod Clean Architecture template includes several utility scripts that help streamline development workflows.
+## Script Root
 
-## App Renaming
+Script yang tersedia di root repo:
+- `generate_feature.sh`
+- `generate_icons.sh`
+- `generate_language.sh`
+- `rename_app.sh`
+- `test_generator.sh`
 
-Easily rebrand your app across all platforms with a single command:
+## Feature Generator
 
-```bash
-./rename_app.sh --app-name "Your App Name" --package-name com.yourcompany.appname
-```
-
-This script updates:
-
-- App display name in Android, iOS, macOS, Windows, Linux, and Web
-- Package/bundle identifiers in all platforms
-- File structures and import references
-- Build configurations for all supported platforms
-
-## Icon Generation
-
-Generate native app icons for all platforms in one command:
-
-1. Place your icon file (1024x1024) at `assets/icon/app_icon.png`.
-2. Run the generator script:
+Gunakan:
 
 ```bash
-./generate_icons.sh
+./generate_feature.sh --name my_feature
 ```
 
-This updates:
-- Android `mipmap` resources
-- iOS `Assets.xcassets`
-- Web `manifest.json` and icons
-- Windows/macOS/Linux icon files
+Opsi yang didukung:
+- `--name <feature_name>`
+- `--no-ui`
 
-## Language Generation
-
-Add new languages or update translations with the localization helper:
+Alternatif via `Makefile`:
 
 ```bash
-./generate_language.sh --add fr,es,de  # Add French, Spanish, and German
-./generate_language.sh --sync           # Synchronize all ARB files with the base English file
-./generate_language.sh --gen            # Generate Dart code from ARB files
+make generate-feature FEATURE_NAME=my_feature
 ```
 
-## Feature Generation
+Generator sekarang mengikuti pola repo:
+- data layer tetap bersih dari provider
+- provider wiring ada di `application/providers/`
+- orchestration async ada di `application/services/`
+- UI state ada di `presentation/providers/`
 
-Quickly scaffold new features with all the necessary files:
+Guardrail generator:
 
 ```bash
-./generate_feature.sh --name feature_name        # Create a new feature structure
+make test-generators
 ```
 
-This creates a new feature folder with data, domain, and presentation layers according to Clean Architecture principles.
+## Localization Helper
 
-## Test File Generator
-
-Generate test files for a feature:
+Script bahasa yang tersedia:
 
 ```bash
-./test_generator.sh feature_name
+./generate_language.sh list
+./generate_language.sh add id
+./generate_language.sh check
+./generate_language.sh generate
 ```
 
-This script creates the necessary test files with appropriate boilerplate for the specified feature.
-
-## Documentation Builder
-
-Build the documentation website:
+Alternatif via `Makefile` untuk penambahan bahasa:
 
 ```bash
-cd docs && ./build_docs.sh
+make generate-language LANGUAGE_CODE=id
 ```
 
-This script converts the Markdown documentation files to HTML and generates a beautiful documentation website.
+Catatan penting:
+- script ini bekerja di layer ARB / helper, bukan source of truth akhir untuk locale produk
+- locale aktif aplikasi tetap ditentukan oleh codebase, terutama `lib/l10n/l10n.dart`
 
-## Advanced Usage Examples
+## App Utilities
 
-### Creating a New Feature and Tests
+- rename app: `./rename_app.sh`
+- generate icons: `./generate_icons.sh`
+- generate test scaffolding: `./test_generator.sh feature_name`
 
-```bash
-# Create a new feature called "user_profile"
-./generate_feature.sh --name user_profile
+## Makefile Targets Penting
 
-# Generate test files for the user_profile feature
-./test_generator.sh user_profile
-```
+### Setup
 
-### Renaming Your App for Production
+- `make install`
+- `make setup`
+- `make setup-dev`
+- `make generate-code`
 
-```bash
-# Rename your app for production release
-./rename_app.sh --app-name "My Awesome App" --package-name com.mycompany.awesomeapp
-```
+### Run
+
+- `make run-android`
+- `make run-ios`
+- `make run-mac`
+- `make run-web`
+
+### Test
+
+- `make test`
+- `make test-core-features`
+- `make test-auth`
+- `make test-home`
+- `make test-home-logout`
+- `make test-settings`
+- `make test-language-switcher`
+- `make test-check-in`
+- `make test-check-out`
+- `make test-visits`
+- `make test-scan-qr`
+- `make test-reports`
+- `make test-generators`
+- `make test-localization`
+
+### CI / Hooks
+
+- `make ci-test`
+- `make ci-build`
+- `make ci-validate`
+- `make hooks-install`
+- `make hooks-status`
+- `make hooks-uninstall`
+
+## Dokumentasi Site
+
+Folder `docs/` masih menyimpan helper static-site:
+- `build_docs.sh`
+- `build_site.py`
+- `_config.yml`
+
+Tapi docs aktif tetap diprioritaskan dalam bentuk Markdown biasa di root `docs/`.

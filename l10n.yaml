@@ -4,6 +4,6 @@ output-localization-file: app_localizations.dart
 output-class: AppLocalizations
 output-dir: lib/gen/l10n
 nullable-getter: false
-preferred-supported-locales: ["en", "es", "fr", "de", "ja", "bn"]
+preferred-supported-locales: ["en", "id"]
 use-deferred-loading: false
 untranslated-messages-file: untranslated.json

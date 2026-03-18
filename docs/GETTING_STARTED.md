@@ -1,50 +1,103 @@
-# Getting Started with Flutter Riverpod Clean Architecture
+# Getting Started
 
-This guide will help you get up and running with the Flutter Riverpod Clean Architecture template.
+Panduan ini ditulis untuk proyek `patroli_v2` yang ada di repo ini.
 
-## Prerequisites
+## Prasyarat
 
-- Flutter SDK (version 3.7.0 or higher)
-- Dart SDK (version 3.0.0 or higher)
-- An IDE with Flutter support (VS Code, Android Studio, or IntelliJ)
+- Flutter SDK terpasang dan `flutter doctor` bersih secukupnya
+- Dart SDK mengikuti versi Flutter aktif
+- Xcode/Android Studio bila ingin build mobile native
 
-## Installation Options
-
-### Option 1: Clone the Repository
+## Setup Awal
 
 ```bash
-git clone https://github.com/ssoad/flutter_riverpod_clean_architecture.git
-cd flutter_riverpod_clean_architecture
-flutter pub get
+make install
+make setup-dev
+make generate-code
 ```
 
-### Option 2: Use as Template
-
-1. Go to [the GitHub repository](https://github.com/ssoad/flutter_riverpod_clean_architecture)
-2. Click on "Use this template" button
-3. Follow the GitHub instructions to create your repository
-4. Clone your new repository locally
-
-### Option 3: Create a New Project Based on the Template
+Alternatif manual:
 
 ```bash
-flutter create --template https://github.com/ssoad/flutter_riverpod_clean_architecture my_new_app
-cd my_new_app
 flutter pub get
+cp lib/config/environment/.env.dev lib/config/environment/.env
+dart run build_runner build --delete-conflicting-outputs
 ```
 
-## Running the Project
+## Menjalankan App
 
-Once you have installed the project, you can run it using:
+Target yang paling umum:
+
+```bash
+make run-android
+make run-ios
+make run-mac
+make run-web
+```
+
+Atau langsung:
 
 ```bash
 flutter run
 ```
 
-This will launch the application on your connected device or emulator.
+## Command Harian
 
-## Next Steps
+- Install dependency: `make install`
+- Generate code: `make generate-code`
+- Analyze: `make analyze`
+- Full test: `make test`
+- Core feature tests: `make test-core-features`
+- Localization tests: `make test-localization`
+- Generator smoke tests: `make test-generators`
 
-- Explore the project structure to understand the architecture
-- Check out the examples in `lib/examples` folder
-- Read the [Architecture Guide](https://ssoad.github.io/flutter_riverpod_clean_architecture/architecture.html) to learn more about the project's architecture
+## Environment
+
+File environment aktif ada di:
+- `lib/config/environment/.env`
+
+Helper yang tersedia:
+- `make setup-dev`
+- `make setup-staging`
+- `make setup-prod`
+
+## Feature Generator
+
+Untuk generate feature baru:
+
+```bash
+./generate_feature.sh --name my_feature
+```
+
+Atau via `Makefile`:
+
+```bash
+make generate-feature FEATURE_NAME=my_feature
+```
+
+Generator saat ini mengikuti pola repo:
+- `application/providers/*_data_providers.dart`
+- `application/providers/*_di_provider.dart`
+- `application/services/*_service.dart`
+- `presentation/providers/*_provider.dart`
+- `presentation/screens/*_screen.dart`
+
+## Git Hooks Lokal
+
+Repo ini sudah mendukung hook lokal via `.githooks`.
+
+Install:
+
+```bash
+make hooks-install
+```
+
+Cek status:
+
+```bash
+make hooks-status
+```
+
+Hook aktif saat ini:
+- `pre-commit`: format check + analyze untuk file Dart yang di-stage
+- `pre-push`: validasi workflow CI

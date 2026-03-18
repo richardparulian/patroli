@@ -1,85 +1,50 @@
----
-title: Coding Standards
----
-
 # Coding Standards
- & Best Practices
 
-To maintain the high quality of this codebase, strict adherence to the following standards is required.
+Dokumen ini merangkum aturan praktis yang dipakai di repo ini.
 
----
+## Architecture Rules
 
-## 1. Architecture Rules
+- Domain harus pure Dart.
+- Data layer tidak menaruh provider Riverpod.
+- Localization adalah concern `application/presentation`, bukan `domain/data`.
+- Jangan pass `BuildContext` ke use case, repository, atau data source.
 
-### ❌ Never Import Flutter in Domain
-The Domain layer must be pure Dart.
-- **Bad**: `import 'package:flutter/material.dart';`
-- **Good**: `import 'package:equatable/equatable.dart';`
+## Riverpod Rules
 
-### ❌ Never Import Flutter in Data (Except Models)
-Keep Data sources framework-agnostic.
-- **Bad**: `debugPrint('error')`
-- **Good**: `Logger.error('error')` (from `core/utils`)
+- Gunakan codegen `@riverpod` untuk provider baru kecuali ada alasan kuat.
+- Pisahkan wiring data ke `application/providers/*_data_providers.dart`.
+- Pisahkan wiring use case ke `application/providers/*_di_provider.dart`.
+- UI state ditempatkan di `presentation/providers/`.
+- Untuk operasi async yang rawan disposed, gunakan `ref.mounted`, cancellation, atau `keepAlive` bila memang lifecycle-nya harus tahan.
 
-### ✅ Always Use `fpdart` for Errors
-Do not throw exceptions in Use Cases or Repositories.
-- **Bad**: `Future<User>` (throws exception)
-- **Good**: `Future<Either<Failure, User>>`
+## Localization Rules
 
----
+- Semua string yang terlihat user harus lewat localization.
+- Custom key di `lib/l10n/l10n.dart` harus `snake_case`.
+- Error lama atau backend-facing message dimapping di `lib/app/localization/localized_message.dart`.
 
-## 2. Riverpod Patterns
+## UI Rules
 
-### ✅ Use `Notifier` / `AsyncNotifier`
-Avoid `StateProvider` or `ChangeNotifier` for complex state.
-- **Why**: Better testability and lifecycle management.
+- Untuk layout responsif, gunakan `ScreenUtil` untuk spacing/size yang memang perlu diskalakan.
+- Jangan pakai `ScreenUtil` untuk mengganti fungsi `SafeArea` atau `MediaQuery` yang berkaitan dengan notch/status bar.
+- Untuk menghindari overflow, prioritaskan `Expanded`, `Flexible`, `ellipsis`, dan constraint yang benar sebelum menambah ukuran parent.
 
-### ✅ Separate Data DI from UI State
-- **Data Providers**: Place in `features/[feature]/providers/`. Define Repositories/UseCases/DataSources.
-- **UI Providers**: Place in `features/[feature]/presentation/providers/`. Define `Notifier`s for screens.
+## Imports
 
-### ✅ Use `ref.watch` in build(), `ref.read` in callbacks
-- **Watch**: For values that trigger rebuilds.
-- **Read**: For one-time actions (button clicks).
+- Gunakan package import untuk crossing module boundary.
+- Gunakan relative import hanya jika tetap jelas dan terbatas dalam area yang sama.
+- Hindari import yang tidak dipakai.
 
----
+## Testing Rules
 
-## 3. Code Style
+- Tambah test saat memperbaiki regression yang nyata.
+- Gunakan target `Makefile` yang granular saat debug test per fitur.
+- Jalur penting yang sudah punya guardrail:
+  - generator smoke tests
+  - localization tests
+  - logout redirect regression test
 
-### ✅ Explicit Types
-Always explicitly type return values and arguments.
-```dart
-// Bad
-var x = 10;
-getUser() { ... }
+## Docs Rules
 
-// Good
-int x = 10;
-Future<User> getUser() { ... }
-```
-
-### ✅ Trailing Commas
-Always use trailing commas for better formatting.
-
-### ✅ Relative Imports for Feature-Internal
-Use relative imports for files inside the same feature.
-```dart
-import '../domain/entities/user.dart'; // Good
-```
-Use package imports for crossing feature boundaries or core.
-```dart
-import 'package:app/core/utils/logger.dart'; // Good
-```
-
----
-
-## 4. Testing
-
-### ✅ Mock Everything External
-Use `mocktail` to mock Repositories when testing Use Cases, and RemoteDataSources when testing Repositories.
-
-### ✅ 100% Domain Coverage
-Ideally, every Use Case should have unit tests covering Success and Failure paths.
-
-### ✅ Goldens for UI
-Use Golden tests for complex screens to prevent visual regression.
+- Dokumentasi di `docs/` harus menggambarkan repo saat ini, bukan template lama.
+- Guide baru yang masih eksploratif atau tidak lagi relevan pindahkan ke `docs/archive/`.

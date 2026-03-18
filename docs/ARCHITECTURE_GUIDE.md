@@ -4,187 +4,154 @@ title: Architecture Guide
 
 # Architecture Guide
 
-This project follows strict **Clean Architecture** principles, adapted for Flutter using **Riverpod** 2.0. The core goal is separation of concerns and testability.
+Dokumen ini adalah aturan arsitektur yang lebih ketat daripada `docs/ARCHITECTURE.md`.
 
----
+## 1. Dependency Rule
 
-## 1. The Dependency Rule
-
-The most important rule in this architecture: **Source code dependencies can only point inwards.**
-
-```mermaid
-graph TD
-    Presentation[Presentation Layer (Flutter)] --> Domain[Domain Layer (Pure Dart)]
-    Data[Data Layer (Impl)] --> Domain
-    Presentation --> Data -- DI only --> Domain
-```
-
-- **Domain Layer**: Knows NOTHING about Flutter, Data, or Presentation.
-- **Data Layer**: Knows about Domain. Implements interfaces defined in Domain.
-- **Presentation Layer**: Knows about Domain. Uses Data layer *only* for Dependency Injection.
-
----
+Rule utama:
+- dependency hanya boleh mengarah ke dalam
+- domain tidak tahu Flutter
+- data tahu domain, tapi tidak tahu UI
+- presentation boleh memakai application/domain, tapi tidak menaruh logic data access mentah di screen
 
 ## 2. Layer Breakdown
 
-### 🟡 Domain Layer (The Core)
-**Path:** `lib/features/[feature]/domain/`
+### Domain Layer
+**Path:** `lib/features/<feature>/domain/`
 
-This is the heart of your feature. It contains the business logic.
-- **Dependencies**: Pure Dart only. (Exception: `fpdart`, `equatable`).
-- **Entities**: Simple data classes extending `Equatable`.
-- **Repositories (Interfaces)**: Abstract definitions of what data operations are possible.
-- **Use Cases**: Encapsulate a single business action (e.g., `LoginUseCase`, `SendMessageUseCase`).
+Isi utama:
+- entities
+- repository contracts
+- use cases
 
-**Example Use Case:**
-```dart
-class LoginUseCase {
-  final AuthRepository _repository; // Depends on interface, not implementation
+Aturan:
+- pure Dart
+- tidak import Flutter
+- tidak bergantung pada data implementation
+- tidak melakukan localization lookup
 
-  LoginUseCase(this._repository);
+### Data Layer
+**Path:** `lib/features/<feature>/data/`
 
-  Future<Either<Failure, UserEntity>> execute(String email, String password) {
-    return _repository.login(email, password);
-  }
-}
-```
+Isi utama:
+- datasources
+- DTO / models
+- repository implementations
 
-### 🔵 Data Layer (The Infrastructure)
-**Path:** `lib/features/[feature]/data/`
+Aturan:
+- implement repository contract dari domain
+- mapping exception ke `Failure` dilakukan di sini atau pada boundary yang relevan
+- tidak menaruh provider Riverpod di data layer
+- sebaiknya tetap pure Dart dan menghindari import Flutter
 
-Handles data retrieval and storage.
-- **Dependencies**: Domain Layer, External Packages (Dio, Hive, etc.).
-- **Models**: Extensions of Entities with `fromJson`/`toJson` methods.
-- **Data Sources**: Low-level data access (API calls, DB queries).
-- **Repositories (Implementations)**: Implement Domain interfaces. Maps Exceptions to Failures.
+### Application Layer
+**Path:** `lib/features/<feature>/application/`
 
-**Example Repository Impl:**
-```dart
-class AuthRepositoryImpl implements AuthRepository {
-  final AuthRemoteDataSource _remoteDataSource;
+Isi utama:
+- `providers/*_data_providers.dart`
+- `providers/*_di_provider.dart`
+- `services/*_service.dart`
 
-  // Error handling happens here!
-  @override
-  Future<Either<Failure, UserEntity>> login(String email, String password) async {
-    try {
-      final model = await _remoteDataSource.login(email, password);
-      return Right(model.toEntity());
-    } on NetworkException {
-      return Left(NetworkFailure());
-    }
-  }
-}
-```
+Tanggung jawab:
+- wiring datasource, repository, dan use case
+- orchestration async yang terlalu berat jika ditaruh langsung di UI provider
+- boundary yang sah untuk message mapping ke localization
 
-### 🟢 Presentation Layer (The UI)
-**Path:** `lib/features/[feature]/presentation/`
+### Presentation Layer
+**Path:** `lib/features/<feature>/presentation/`
 
-Displays data and handles user events.
-- **Dependencies**: Domain Layer, Flutter, Riverpod.
-- **Providers**: Manage UI state (loading, success, error).
-- **Screens**: Stupid widgets that watch providers.
-- **Widgets**: Reusable components.
+Isi utama:
+- screens
+- widgets
+- UI providers
 
-**Example Notifier:**
-```dart
-class AuthNotifier extends Notifier<AuthState> {
-  @override
-  AuthState build() => const AuthState.initial();
+Aturan:
+- screen harus fokus ke rendering dan user interaction
+- visible string harus lewat localization
+- provider UI membaca use case/service dari application layer
 
-  Future<void> login(String email, String password) async {
-    state = const AuthState.loading();
-    
-    // Use Case injected via Riverpod
-    final loginUseCase = ref.read(loginUseCaseProvider);
-    final result = await loginUseCase.execute(email, password);
+## 3. Riverpod Organization
 
-    state = result.fold(
-      (failure) => AuthState.error(failure.message),
-      (user) => AuthState.authenticated(user),
-    );
-  }
-}
-```
+Pattern yang dipakai repo saat ini:
 
-### 🟣 DI Layer (The Glue)
-**Path:** `lib/features/[feature]/providers/`
+### Data DI
+File umum:
+- `application/providers/<feature>_data_providers.dart`
 
-Connects the layers using Riverpod.
-- **Dependencies**: Data, Domain, Presentation.
+Dipakai untuk:
+- data source provider
+- repository provider
 
-```dart
-// connect domain interface to data implementation
-final authRepositoryProvider = Provider<AuthRepository>((ref) {
-  return AuthRepositoryImpl(ref.watch(remoteDataSourceProvider));
-});
-```
+### Use Case DI
+File umum:
+- `application/providers/<feature>_di_provider.dart`
 
----
+Dipakai untuk:
+- use case provider
+- dependency wiring tambahan yang masih level feature
 
-## 3. Key Concepts & Patterns
+### UI State
+File umum:
+- `presentation/providers/<feature>_provider.dart`
 
-### Functional Error Handling (`fpdart`)
-We do NOT throw exceptions in the Domain layer. Instead, we return `Either<Failure, Success>`.
+Dipakai untuk:
+- async state UI
+- form state
+- screen-facing state transitions
 
-- **User**: "I want to login."
-- **Use Case**: Returns `Either<Failure, User>`.
-- **UI**: 
-  ```dart
-  result.fold(
-    (failure) => showError(failure),
-    (user) => navigateToHome(user),
-  );
-  ```
+### Services
+File umum:
+- `application/services/<feature>_service.dart`
 
-### Framework Independence
-To keep the Data layer testable, we avoid `flutter` imports.
-- **Logging**: Use `Logger` from `core/utils/logger.dart` instead of `debugPrint`.
-- **Context**: Never pass `BuildContext` to Use Cases or Repositories.
+Dipakai untuk:
+- orchestration multi-step async flow
+- operasi yang butuh koordinasi beberapa provider/use case
+- boundary mapping error/message ke bentuk yang siap dipakai UI
 
-### Provider Organization
-We separate Data DI from UI State:
-- **`[feature]_providers.dart`**: Provides Repositories, Use Cases, Data Sources.
-- **`[feature]_provider.dart`**: Provides `NotifierProvider` for UI state.
+## 4. Error Handling
 
-### Localization Boundary
-Localization is treated as a **presentation/application concern**, not a domain or data concern.
-- **Domain/Data**: May return stable error messages or failure messages, but must not depend on `BuildContext`, Flutter localization APIs, or translation lookups.
-- **Application/Presentation**: Responsible for converting known messages into localized UI text before rendering.
-- **Shared UI**: Must use `context.tr(...)` / `context.trParams(...)` for visible strings.
-- **Custom localization map keys** in `lib/l10n/l10n.dart` must use **`snake_case`**.
-- **Generated ARB keys** are allowed to follow the generator's naming, but do not introduce new custom `camelCase` keys in the manual map.
+Prinsip yang dipakai:
+- domain tidak melempar exception sebagai flow utama
+- gunakan `Either<Failure, T>` untuk flow bisnis yang relevan
+- message yang keluar ke UI boleh dilokalisasi di application/presentation boundary
 
-### Error Message Policy
-To keep architecture clean while still localizing legacy and backend-facing messages:
-- Use `lib/app/localization/localized_message.dart` at the application/presentation boundary.
-- Prefer mapping stable message identifiers or known strings to localization keys.
-- Unknown backend messages may fall back to the raw message.
+Untuk legacy/backend-facing message:
+- gunakan `lib/app/localization/localized_message.dart`
+- fallback ke raw message hanya jika belum ada mapping yang aman
 
----
+## 5. Localization Boundary
 
-## 4. Testing Strategy
+Localization adalah concern `application/presentation`.
 
-### Unit Tests (Domain/Data)
-Test logic in isolation. Mock dependencies using `mocktail`.
-```dart
-test('should return User when login is successful', () async {
-  // Arrange
-  when(() => mockRepo.login(any(), any()))
-    .thenAnswer((_) async => Right(tUser));
-  
-  // Act
-  final result = await useCase.execute('test@test.com', 'pass');
-  
-  // Assert
-  expect(result, Right(tUser));
-});
-```
+Aturan:
+- `domain/` dan `data/` tidak boleh bergantung pada `BuildContext`
+- `domain/` dan `data/` tidak boleh memanggil translation lookup
+- visible string di widget harus memakai `context.tr(...)` atau `context.trParams(...)`
+- custom key di `lib/l10n/l10n.dart` harus `snake_case`
 
-### Golden Tests (Presentation)
-Verify UI rendering pixel-by-pixel.
-```dart
-testGoldens('LoginScreen renders correctly', (tester) async {
-  await tester.pumpWidgetBuilder(LoginScreen());
-  await screenMatchesGolden(tester, 'login_screen');
-});
-```
+## 6. Testing Strategy
+
+### Domain / Data
+Fokus:
+- use case behavior
+- repository success/failure mapping
+- pure logic unit tests
+
+### Application / Presentation
+Fokus:
+- provider state transition
+- service orchestration
+- widget regression untuk flow penting
+
+Guardrail yang sudah ada di repo:
+- generator smoke tests
+- localization tests
+- logout redirect regression test
+
+## 7. Practical Rules
+
+- jangan taruh provider Riverpod di data layer
+- jangan pass `BuildContext` ke use case atau repository
+- jangan taruh string user-facing hardcoded di screen baru
+- kalau async flow rawan disposed, gunakan `ref.mounted`, cancellation, atau `keepAlive` dengan alasan yang jelas
+- kalau generator feature berubah, update docs dan smoke test sekaligus
