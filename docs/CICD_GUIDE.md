@@ -1,13 +1,21 @@
 # CI/CD Guide
 
-Dokumen ini menjelaskan pipeline CI yang aktif di repo saat ini.
+Dokumen ini menjelaskan pipeline CI dan tooling release yang aktif di repo saat ini.
 
-## Workflow Aktif
+## Jalur Otomasi yang Ada
 
-File workflow utama:
+Repo ini saat ini punya dua jalur berbeda:
+- GitHub Actions untuk CI utama
+- Fastlane untuk build/deploy mobile release
+
+Keduanya punya peran berbeda.
+
+## 1. GitHub Actions CI
+
+Workflow utama:
 - `.github/workflows/flutter_ci.yml`
 
-Workflow sekarang dibagi menjadi dua job:
+Job yang aktif:
 
 ### `ci-test`
 
@@ -45,18 +53,84 @@ Isi `make ci-build` saat ini:
 - `test-generators`
 - `test-localization`
 
-## Cache
+## 2. Fastlane Release Tooling
 
-Workflow memakai:
+Fastlane file:
+- `fastlane/Fastfile`
+
+Tujuannya:
+- build Android
+- deploy Android ke Google Play
+- build iOS
+- deploy iOS ke TestFlight
+
+### Environment Files
+
+Fastlane saat ini membaca environment dari:
+- `lib/config/environment/.env.dev`
+- `lib/config/environment/.env.staging`
+- `lib/config/environment/.env.prod`
+
+Key yang saat ini dipakai lane Fastlane:
+- `APP_VERSION_NAME`
+- `APP_VERSION_CODE`
+- `APPLE_APP_ID` untuk iOS deploy
+
+Catatan:
+- key-key tersebut belum terlihat di file `.env` yang ada sekarang
+- sebelum lane release dipakai penuh, environment release perlu dilengkapi
+
+### Android Lanes
+
+Tersedia:
+- `fastlane android build env:development`
+- `fastlane android build env:staging`
+- `fastlane android build env:production`
+- `fastlane android deploy env:production track:internal`
+
+Catatan:
+- lane Android tidak lagi mencoba patch `build.gradle.kts` untuk version code/version name
+- versi Android dianggap dikelola oleh konfigurasi Flutter/app yang aktif
+
+### iOS Lanes
+
+Tersedia:
+- `fastlane ios build env:development`
+- `fastlane ios build env:staging`
+- `fastlane ios build env:production`
+- `fastlane ios deploy env:production`
+
+Catatan:
+- lane iOS masih memakai increment version/build number via Fastlane
+- jalur ini tetap perlu diuji manual sebelum dianggap release source of truth penuh
+
+## 3. Ruby Setup
+
+Repo sekarang punya `Gemfile` minimal untuk Fastlane:
+- `fastlane`
+- `dotenv`
+
+Setup yang disarankan:
+
+```bash
+bundle install
+bundle exec fastlane android build env:development
+```
+
+Untuk deploy:
+
+```bash
+bundle exec fastlane android deploy env:production track:internal
+bundle exec fastlane ios deploy env:production
+```
+
+## 4. Cache dan Validasi CI
+
+Workflow GitHub Actions memakai:
 - cache Flutter SDK via `subosito/flutter-action`
 - cache dependency `pub` via `actions/cache`
 
-Cache key dependency berbasis:
-- `pubspec.lock`
-
-## Validasi Workflow
-
-Repo punya target khusus:
+Repo juga punya validasi workflow:
 
 ```bash
 make ci-validate
@@ -67,7 +141,7 @@ Target ini memastikan:
 - job `ci-build` ada
 - `ci-build` bergantung pada `ci-test`
 
-## Git Hooks Lokal
+## 5. Git Hooks Lokal
 
 Hook lokal memakai `.githooks` dan bisa diaktifkan dengan:
 
@@ -88,14 +162,18 @@ Cek status hook:
 make hooks-status
 ```
 
-## Target Berguna
+## 6. Target Berguna
 
 - `make ci-test`
 - `make ci-build`
 - `make ci-quality`
 - `make ci-validate`
+- `make generate-code`
+- `make test`
 
-## Catatan
+## 7. Status Praktis
 
-- CI lokal dan GitHub Actions sekarang sama-sama memakai `Makefile` sebagai source of truth.
-- Jika logic pipeline berubah, update `Makefile` dulu, lalu sesuaikan workflow bila perlu.
+Status saat ini:
+- GitHub Actions adalah source of truth untuk CI harian
+- Fastlane adalah tooling release/deployment, bukan jalur CI utama
+- bila flow release ingin diandalkan penuh, lane Fastlane tetap perlu diuji manual secara periodik

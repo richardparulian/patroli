@@ -1,9 +1,9 @@
 default_platform(:android)
 
 ENV_FILES = {
-  development: '.env.development',
-  staging: '.env.staging',
-  production: '.env.production',
+  development: '../lib/config/environment/.env.dev',
+  staging: '../lib/config/environment/.env.staging',
+  production: '../lib/config/environment/.env.prod',
 }
 
 platform :android do
@@ -14,12 +14,9 @@ platform :android do
     # Load environment variables
     load_env_file(ENV_FILES[env])
     
-    # Set the app version
-    increment_version_number(
-      version_name: ENV['APP_VERSION_NAME'],
-      version_code: ENV['APP_VERSION_CODE'].to_i,
-    )
-    
+    # Android version is sourced from Flutter/app config.
+    # This lane no longer patches build.gradle.kts directly.
+
     # Build the Android app
     build_command = "cd .. && flutter build appbundle --release"
     if env == :development
@@ -105,20 +102,7 @@ end
 def increment_version_number(options)
   case lane_context[SharedValues::PLATFORM_NAME]
   when :android
-    gradle_file_path = "../android/app/build.gradle.kts"
-    file_content = File.read(gradle_file_path)
-    
-    # Update version name
-    if options[:version_name]
-      file_content = file_content.gsub(/versionName\s*=\s*"[^"]*"/, "versionName = \"#{options[:version_name]}\"")
-    end
-    
-    # Update version code
-    if options[:version_code]
-      file_content = file_content.gsub(/versionCode\s*=\s*\d+/, "versionCode = #{options[:version_code]}")
-    end
-    
-    File.write(gradle_file_path, file_content)
+    UI.important('Android version is managed by Flutter configuration; skipping Fastlane file patching.')
   when :ios
     # iOS version updating handled by the fastlane increment methods
   end

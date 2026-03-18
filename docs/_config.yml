@@ -1,4 +1,4 @@
 theme: jekyll-theme-primer
-title: Flutter Riverpod Clean Architecture
-description: Documentation for the Flutter Riverpod Clean Architecture project
-baseurl: "/flutter_riverpod_clean_architecture"
+title: Patroli V2 Docs
+description: Internal project documentation for patroli_v2
+baseurl: "/patroli_v2_docs"

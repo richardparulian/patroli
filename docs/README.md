@@ -14,6 +14,14 @@ Dokumentasi di folder ini sudah dirapikan untuk fokus ke codebase `patroli_v2` y
   Konvensi coding yang dipakai di repo ini.
 - `LOCALIZATION_GUIDE.md`
   Cara kerja localization saat ini, termasuk locale aktif, boundary aplikasi, dan update translation.
+- `FEATURE_FLOWS.md`
+  Ringkasan flow fitur bisnis utama dan hubungan antar screen.
+- `ROUTING_AND_AUTH.md`
+  Penjelasan route aktif, auth guard, dan logout/session flow.
+- `TESTING_GUIDE.md`
+  Strategi test, guardrail aktif, dan cara memilih target test.
+- `GENERATOR_GUIDE.md`
+  Shape generator feature, batasan, dan cara memeliharanya.
 - `CICD_GUIDE.md`
   Pipeline CI yang aktif, target `Makefile`, dan git hooks lokal.
 - `TOOLS.md`
@@ -31,22 +39,31 @@ docs/
 ├── ARCHITECTURE_GUIDE.md
 ├── CODING_STANDARDS.md
 ├── LOCALIZATION_GUIDE.md
+├── FEATURE_FLOWS.md
+├── ROUTING_AND_AUTH.md
+├── TESTING_GUIDE.md
+├── GENERATOR_GUIDE.md
 ├── CICD_GUIDE.md
 ├── TOOLS.md
-├── CONTRIBUTING.md
-└── archive/
+└── CONTRIBUTING.md
 ```
-
-## Archive
-
-Guide lama yang masih berisi konten template, marketing site, atau fitur yang belum relevan dipindahkan ke `docs/archive/`.
-
-Tujuannya:
-- root `docs/` tetap pendek dan mudah dinavigasi
-- guide aktif tidak tercampur dengan referensi template lama
-- histori dokumentasi lama tetap ada bila masih perlu dirujuk
 
 ## Catatan
 
 - `ARCHITECTURE_GUIDE.md` tetap dipertahankan sebagai dokumen aturan yang lebih ketat daripada `ARCHITECTURE.md`.
-- Beberapa file pendukung static-site seperti `_config.yml`, `_layouts/`, `build_site.py`, dan `build_docs.sh` tetap dibiarkan karena masih bisa dipakai bila dokumentasi ingin dipublish sebagai site.
+
+## Static-Site Tooling Status
+
+Folder `docs/` masih menyimpan tooling static-site berikut:
+- `_config.yml`
+- `_layouts/default.html`
+- `build_site.py`
+- `build_docs.sh`
+- `assets/`
+
+Statusnya saat ini:
+- bukan bagian dari runtime aplikasi
+- bukan dependency CI utama
+- dipertahankan hanya jika tim masih ingin mem-publish dokumentasi sebagai static site
+
+Kalau tim memutuskan dokumentasi cukup dikelola sebagai Markdown biasa di repo, tooling ini bisa dihapus pada cleanup berikutnya.
