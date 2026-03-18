@@ -225,7 +225,7 @@ class ${pascalCase}RemoteDataSourceImpl implements ${pascalCase}RemoteDataSource
   final ApiClient _apiClient;
 
   @override
-  Future<${pascalCase}Model> submit$pascalCase(${pascalCase}Request request) async {
+  Future<${pascalCase}Model> submit${pascalCase}(${pascalCase}Request request) async {
     final result = await _apiClient.post('/$featureName', data: request.toJson());
 
     return result.fold(
@@ -253,7 +253,7 @@ class ${pascalCase}RepositoryImpl implements ${pascalCase}Repository {
   @override
   Future<Either<Failure, ${pascalCase}Entity>> submit(${pascalCase}Request request) async {
     try {
-      final model = await _remoteDataSource.submit$pascalCase(request);
+      final model = await _remoteDataSource.submit${pascalCase}(request);
       return Right(model.toEntity());
     } on ServerException {
       return Left(ServerFailure(message: 'Failed to submit $featureName'));
@@ -359,7 +359,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part '${featureName}_provider.g.dart';
 
 @riverpod
-class $pascalCase extends _\$$pascalCase {
+class ${pascalCase} extends _\$${pascalCase} {
   @override
   ResultState<${pascalCase}Entity> build() {
     return const Idle();

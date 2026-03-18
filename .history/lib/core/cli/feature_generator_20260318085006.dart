@@ -359,7 +359,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part '${featureName}_provider.g.dart';
 
 @riverpod
-class $pascalCase extends _\$$pascalCase {
+class ${pascalCase} extends _\$${pascalCase} {
   @override
   ResultState<${pascalCase}Entity> build() {
     return const Idle();
