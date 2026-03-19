@@ -52,14 +52,13 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
         ),
       ),
       body: RefreshIndicator(
-        onRefresh: () => Future.sync(() => ref.read(reportPagingProvider).refresh()),
+        onRefresh: () =>
+            Future.sync(() => ref.read(reportPagingProvider).refresh()),
         child: CustomScrollView(
           slivers: [
             PagingListener(
               controller: pagingController,
               builder: (context, state, fetchNextPage) {
-                final items = state.items ?? [];
-
                 return PagedSliverList<int, ReportsEntity>(
                   state: state,
                   fetchNextPage: fetchNextPage,
@@ -90,15 +89,21 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Iconsax.folder_open, size: ScreenUtil.icon(64), color: color.outline),
+                              Icon(
+                                Iconsax.folder_open,
+                                size: ScreenUtil.icon(64),
+                                color: color.outline,
+                              ),
                               SizedBox(height: ScreenUtil.sh(16)),
-                              Text(context.tr('no_reports'),
+                              Text(
+                                context.tr('no_reports'),
                                 style: theme.textTheme.titleMedium?.copyWith(
                                   color: color.onSurfaceVariant,
                                 ),
                               ),
                               SizedBox(height: ScreenUtil.sh(8)),
-                              Text(context.tr('start_first_report'),
+                              Text(
+                                context.tr('start_first_report'),
                                 style: theme.textTheme.bodyMedium?.copyWith(
                                   color: color.onSurfaceVariant,
                                 ),
@@ -115,16 +120,22 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Iconsax.danger, size: ScreenUtil.icon(64), color: color.error),
+                            Icon(
+                              Iconsax.danger,
+                              size: ScreenUtil.icon(64),
+                              color: color.error,
+                            ),
                             SizedBox(height: ScreenUtil.sh(16)),
-                            Text(context.tr('error_occurred'),
+                            Text(
+                              context.tr('error_occurred'),
                               style: theme.textTheme.titleMedium?.copyWith(
                                 color: color.error,
                               ),
                             ),
                             SizedBox(height: ScreenUtil.sh(8)),
                             if (reportController.errorMessage != null) ...[
-                              Text(reportController.errorMessage!,
+                              Text(
+                                reportController.errorMessage!,
                                 style: theme.textTheme.bodyMedium?.copyWith(
                                   color: color.onSurfaceVariant,
                                 ),
@@ -133,7 +144,8 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                             ],
                             SizedBox(height: ScreenUtil.sh(16)),
                             AppIconButton(
-                              onPressed: () => ref.read(reportPagingProvider).refresh(),
+                              onPressed: () =>
+                                  ref.read(reportPagingProvider).refresh(),
                               icon: const Icon(Iconsax.refresh),
                               label: context.tr('try_again'),
                             ),
@@ -142,21 +154,21 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                       ),
                     ),
                     itemBuilder: (context, report, index) {
-                      final isLast = index == items.length - 1;
-
                       return Column(
                         children: [
                           ReportCard(
                             report: report,
-                            onTap: () => context.push(AppRoutes.reportDetail, extra: report),
+                            onTap: () => context.push(
+                              AppRoutes.reportDetail,
+                              extra: report,
+                            ),
                           ),
-                          if (isLast) SizedBox(height: ScreenUtil.sh(10)),
                         ],
                       );
                     },
                   ),
                 );
-              }
+              },
             ),
           ],
         ),

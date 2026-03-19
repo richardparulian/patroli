@@ -35,7 +35,8 @@ class CheckInScreen extends ConsumerStatefulWidget {
   ConsumerState<CheckInScreen> createState() => _CheckInScreenState();
 }
 
-class _CheckInScreenState extends ConsumerState<CheckInScreen> with SingleTickerProviderStateMixin {
+class _CheckInScreenState extends ConsumerState<CheckInScreen>
+    with SingleTickerProviderStateMixin {
   XFile? _selfieImage;
   CameraController? _cameraController;
 
@@ -53,7 +54,9 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> with SingleTicker
       duration: const Duration(milliseconds: 120),
     );
 
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.85).animate(CurvedAnimation(parent: _animationController, curve: Curves.easeOut));
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.85).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
+    );
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await Future.delayed(const Duration(milliseconds: 300));
@@ -65,7 +68,7 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> with SingleTicker
   void dispose() {
     _cameraController?.dispose();
     _cameraController = null;
-  
+
     _animationController.dispose();
 
     super.dispose();
@@ -80,9 +83,10 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> with SingleTicker
 
     try {
       if (!mounted) return;
-      final hasPermission = await PermissionService.checkAndRequestCameraPermission(
-        context: context,
-      );
+      final hasPermission =
+          await PermissionService.checkAndRequestCameraPermission(
+            context: context,
+          );
 
       if (!hasPermission) return;
 
@@ -120,7 +124,9 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> with SingleTicker
   }
 
   Future<void> _onCapture() async {
-    if (_cameraController == null || !_cameraController!.value.isInitialized || _cameraController!.value.isTakingPicture) {
+    if (_cameraController == null ||
+        !_cameraController!.value.isInitialized ||
+        _cameraController!.value.isTakingPicture) {
       return;
     }
 
@@ -131,9 +137,14 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> with SingleTicker
 
     setState(() => _selfieImage = image);
 
+    await _uploadSelfie(image);
+  }
+
+  Future<void> _uploadSelfie(XFile image) async {
     final notifier = ref.read(uploadFileProvider.notifier);
 
-    notifier.setLoading(); 
+    notifier.reset();
+    notifier.setLoading();
 
     if (!mounted) return;
 
@@ -164,8 +175,12 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> with SingleTicker
     final theme = Theme.of(context);
     final color = theme.colorScheme;
 
-    final isLoadingUploadFile = ref.watch(uploadFileProvider.select((s) => s.isLoading));
-    final isLoadingCheckIn = ref.watch(checkInProvider.select((s) => s.isLoading));
+    final isLoadingUploadFile = ref.watch(
+      uploadFileProvider.select((s) => s.isLoading),
+    );
+    final isLoadingCheckIn = ref.watch(
+      checkInProvider.select((s) => s.isLoading),
+    );
 
     ref.listen(uploadFileProvider, (prev, next) {
       next.when(
@@ -201,12 +216,17 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> with SingleTicker
             buttonText: context.tr('continue'),
             barrierDismissible: false,
             onButtonPressed: () async {
-              await ref.read(reportsRefreshCoordinatorProvider).refreshReportsAndDashboard();
+              await ref
+                  .read(reportsRefreshCoordinatorProvider)
+                  .refreshReportsAndDashboard();
               if (!context.mounted) return;
-              context.pushReplacement(AppRoutes.visit, extra: VisitRouteArgs(
-                scanQr: widget.scanQrData,
-                checkIn: value,
-              ));
+              context.pushReplacement(
+                AppRoutes.visit,
+                extra: VisitRouteArgs(
+                  scanQr: widget.scanQrData,
+                  checkIn: value,
+                ),
+              );
             },
           );
         },
@@ -252,20 +272,22 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> with SingleTicker
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(context.tr('check_in_confirmation_title'),
+              Text(
+                context.tr('check_in_confirmation_title'),
                 style: theme.textTheme.headlineSmall?.copyWith(
                   fontSize: ScreenUtil.sp(18),
                   color: color.onSurface,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              Text(context.tr('check_in_confirmation_subtitle'),
+              Text(
+                context.tr('check_in_confirmation_subtitle'),
                 style: theme.textTheme.bodyMedium?.copyWith(
                   fontSize: ScreenUtil.sp(12),
                   color: color.onSurface.withValues(alpha: 0.7),
                 ),
               ),
-            ]
+            ],
           ),
           leading: IconButton(
             icon: const Icon(Iconsax.arrow_left),
@@ -316,7 +338,11 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> with SingleTicker
 
             // // Loading overlay
             if (isLoadingUploadFile || isLoadingCheckIn) ...[
-              AppLoading(message: isLoadingUploadFile ? context.tr('processing_selfie') : context.tr('processing_visit')),
+              AppLoading(
+                message: isLoadingUploadFile
+                    ? context.tr('processing_selfie')
+                    : context.tr('processing_visit'),
+              ),
             ],
           ],
         ),
@@ -327,7 +353,7 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> with SingleTicker
   Widget _buildErrorWidget() {
     final theme = Theme.of(context);
     final color = theme.colorScheme;
-    
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -338,14 +364,17 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> with SingleTicker
           decoration: BoxDecoration(
             color: color.surface,
             borderRadius: BorderRadius.circular(ScreenUtil.radius(25)),
-            border: Border.all(
-              color: color.outline.withValues(alpha: 0.2),
-            ),
+            border: Border.all(color: color.outline.withValues(alpha: 0.2)),
           ),
-          child: Icon(Iconsax.shop, size: ScreenUtil.icon(48), color: color.primary),
+          child: Icon(
+            Iconsax.shop,
+            size: ScreenUtil.icon(48),
+            color: color.primary,
+          ),
         ),
         SizedBox(height: ScreenUtil.sh(16)),
-        Text(context.tr('branch_data_not_found'),
+        Text(
+          context.tr('branch_data_not_found'),
           style: theme.textTheme.titleMedium?.copyWith(
             color: color.onSurface,
             fontWeight: FontWeight.w600,
@@ -357,13 +386,15 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> with SingleTicker
           label: context.tr('back_to_home'),
           icon: Icon(Iconsax.home),
           type: IconButtonType.primary,
-        )
+        ),
       ],
     );
   }
 
   Widget _buildSelfieSection() {
-    final isCameraReady = ref.watch(cameraProvider.select((s) => s.isInitializing));
+    final isCameraReady = ref.watch(
+      cameraProvider.select((s) => s.isInitializing),
+    );
     final isInitialized = _cameraController?.value.isInitialized ?? false;
 
     if (isCameraReady) {
@@ -385,14 +416,15 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> with SingleTicker
           width: _cameraController?.value.previewSize!.height ?? 0,
           height: _cameraController?.value.previewSize!.width ?? 0,
           child: Stack(
-          fit: StackFit.expand,
+            fit: StackFit.expand,
             children: [
               CameraPreview(_cameraController!),
 
               if (_selfieImage != null) ...[
                 Transform(
                   alignment: Alignment.center,
-                  transform: Matrix4.identity()..rotateY(_mirror == 1.0 ? math.pi : 0),
+                  transform: Matrix4.identity()
+                    ..rotateY(_mirror == 1.0 ? math.pi : 0),
                   child: Image.file(
                     File(_selfieImage!.path),
                     fit: BoxFit.cover,
@@ -411,75 +443,99 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> with SingleTicker
     final color = theme.colorScheme;
 
     final checkIn = ref.watch(checkInProvider);
+    final uploadState = ref.watch(uploadFileProvider);
 
-    final presignUrl = ref.watch(uploadFileProvider).presign?.fileUrl;
-    
-    return _selfieImage == null ? GestureDetector(
-      onTap: checkIn.isLoading ? null : () async => await _onCapture(),
-      child: AnimatedBuilder(
-        animation: _scaleAnimation, 
-        builder: (context, child) {
-          return Transform.scale(
-            scale: _scaleAnimation.value,
-            child: child,
-          );
-        },
-        child: Container(
-          width: ScreenUtil.sw(80),
-          height: ScreenUtil.sw(80),
-          margin: ScreenUtil.paddingFromDesign(all: 16),
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(
-              width: ScreenUtil.sw(4),
-              color: color.onSurface,
-            ),
-          ),
-          child: Center(
-            child: Container(
-              width: ScreenUtil.sw(60),
-              height: ScreenUtil.sw(60),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: color.onSurface,
-              ),
-            ),
-          ),
-        ),
-      ),
-    ) : Padding(
-      padding: EdgeInsets.symmetric(
-        vertical: ScreenUtil.sh(30),
-        horizontal: ScreenUtil.sw(16),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Expanded(
-            child: AppIconButton(
-              onPressed: () => setState(() => _selfieImage = null),
-              label: context.tr('retake_photo'),
-              type: IconButtonType.outlined,
-              icon: const Icon(Iconsax.camera5),
-            ),
-          ),
-          SizedBox(width: ScreenUtil.sw(16)),
-          Expanded(
-            child: AppIconButton(
-              onPressed: () {
-                ref.read(checkInProvider.notifier).callCheckIn(
-                  branchId: scanQrData.id ?? 0,
-                  imageUrl: presignUrl ?? '',
+    final presignUrl = uploadState.presign?.fileUrl;
+    final isUploadFailed = uploadState.isError;
+    final isUploadReady =
+        uploadState.isSuccess && presignUrl != null && presignUrl.isNotEmpty;
+    final primaryLabel = isUploadFailed
+        ? context.tr('try_again')
+        : context.tr('continue_action');
+
+    return _selfieImage == null
+        ? GestureDetector(
+            onTap: checkIn.isLoading ? null : () async => await _onCapture(),
+            child: AnimatedBuilder(
+              animation: _scaleAnimation,
+              builder: (context, child) {
+                return Transform.scale(
+                  scale: _scaleAnimation.value,
+                  child: child,
                 );
               },
-              label: context.tr('continue_action'),
-              icon: const Icon(Iconsax.next),
-              type: IconButtonType.primary,
+              child: Container(
+                width: ScreenUtil.sw(80),
+                height: ScreenUtil.sw(80),
+                margin: ScreenUtil.paddingFromDesign(all: 16),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    width: ScreenUtil.sw(4),
+                    color: color.onSurface,
+                  ),
+                ),
+                child: Center(
+                  child: Container(
+                    width: ScreenUtil.sw(60),
+                    height: ScreenUtil.sw(60),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: color.onSurface,
+                    ),
+                  ),
+                ),
+              ),
             ),
-          ),
-        ],
-      ),
-    );
+          )
+        : Padding(
+            padding: EdgeInsets.symmetric(
+              vertical: ScreenUtil.sh(30),
+              horizontal: ScreenUtil.sw(16),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: AppIconButton(
+                    onPressed: () {
+                      ref.read(uploadFileProvider.notifier).reset();
+                      setState(() => _selfieImage = null);
+                    },
+                    label: context.tr('retake_photo'),
+                    type: IconButtonType.outlined,
+                    icon: const Icon(Iconsax.camera5),
+                  ),
+                ),
+                SizedBox(width: ScreenUtil.sw(16)),
+                Expanded(
+                  child: AppIconButton(
+                    onPressed: isUploadFailed
+                        ? () async {
+                            final selfieImage = _selfieImage;
+                            if (selfieImage == null) return;
+                            await _uploadSelfie(selfieImage);
+                          }
+                        : !isUploadReady
+                        ? null
+                        : () {
+                            ref
+                                .read(checkInProvider.notifier)
+                                .callCheckIn(
+                                  branchId: scanQrData.id ?? 0,
+                                  imageUrl: presignUrl,
+                                );
+                          },
+                    label: primaryLabel,
+                    icon: isUploadFailed
+                        ? const Icon(Iconsax.refresh)
+                        : const Icon(Iconsax.next),
+                    type: IconButtonType.primary,
+                  ),
+                ),
+              ],
+            ),
+          );
   }
 }

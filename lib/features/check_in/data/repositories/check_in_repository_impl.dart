@@ -12,7 +12,9 @@ class CheckInRepositoryImpl implements CheckInRepository {
   CheckInRepositoryImpl(this._remoteDataSource);
 
   @override
-  Future<Either<Failure, CheckInEntity>> createCheckIn(CheckInRequest request) async {
+  Future<Either<Failure, CheckInEntity>> createCheckIn(
+    CheckInRequest request,
+  ) async {
     try {
       final model = await _remoteDataSource.createCheckIn(request);
       return Right(model.toEntity());
@@ -20,8 +22,12 @@ class CheckInRepositoryImpl implements CheckInRepository {
       return Left(ServerFailure(message: e.message));
     } on NetworkException catch (e) {
       return Left(NetworkFailure(message: e.message));
-    } on Exception catch (e) {
-      return Left(ServerFailure(message: e.toString()));
+    } on BadRequestException catch (e) {
+      return Left(ValidationFailure(message: e.message));
+    } on TimeoutException catch (e) {
+      return Left(TimeoutFailure(message: e.message));
+    } on Exception {
+      return const Left(ServerFailure());
     }
   }
 }

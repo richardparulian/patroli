@@ -18,12 +18,15 @@ class CheckInRemoteDataSourceImpl implements CheckInRemoteDataSource {
 
   @override
   Future<CheckInModel> createCheckIn(CheckInRequest request) async {
-    final result = await _apiClient.post(ApiEndpoints.visitCreate, data: request.toJson());
+    final result = await _apiClient.post(
+      ApiEndpoints.visitCreate,
+      data: request.toJson(),
+    );
 
     debugPrint('result: $result');
 
     return result.fold(
-      (failure) => throw ServerException(message: failure.message),
+      (failure) => throw exceptionFromFailure(failure),
       (response) => CheckInResponse.fromJson(response).data,
     );
   }

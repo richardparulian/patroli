@@ -15,31 +15,28 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   final ApiClient _apiClient;
   final SecureStorageService _secureStorageService;
 
-  AuthRemoteDataSourceImpl(
-    this._apiClient,
-    this._secureStorageService,
-  );
+  AuthRemoteDataSourceImpl(this._apiClient, this._secureStorageService);
 
   @override
   Future<UserModel> login(LoginRequest request) async {
-    final result = await _apiClient.post(ApiEndpoints.login,
+    final result = await _apiClient.post(
+      ApiEndpoints.login,
       data: request.toJson(),
     );
 
-    return result.fold(
-      (failure) => throw ServerException(message: failure.message),
-      (response) async {
-        // Parse response using DTO
-        final loginResponse = LoginResponse.fromJson(response);
+    return result.fold((failure) => throw exceptionFromFailure(failure), (
+      response,
+    ) async {
+      // Parse response using DTO
+      final loginResponse = LoginResponse.fromJson(response);
 
-        // Save tokens to secure storage
-        await _secureStorageService.write(
-          key: StorageKeys.token,
-          value: loginResponse.data.token,
-        );
+      // Save tokens to secure storage
+      await _secureStorageService.write(
+        key: StorageKeys.token,
+        value: loginResponse.data.token,
+      );
 
-        return loginResponse.data.user;
-      },
-    );
+      return loginResponse.data.user;
+    });
   }
 }

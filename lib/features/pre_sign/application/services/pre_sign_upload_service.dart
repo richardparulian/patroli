@@ -1,5 +1,6 @@
 import 'package:image_picker/image_picker.dart';
 import 'package:patroli/app/localization/localized_message.dart';
+import 'package:patroli/core/error/exceptions.dart';
 import 'package:patroli/core/extensions/result_state_extension.dart';
 import 'package:patroli/features/pre_sign/application/providers/pre_sign_di_provider.dart';
 import 'package:patroli/features/pre_sign/data/dtos/request/pre_sign_create_request.dart';
@@ -23,13 +24,11 @@ class PreSignUploadService {
   }) async {
     try {
       final createResult = await _createUseCase(
-        PreSignCreateParams(
-          request: PreSignCreateRequest(filename: filename),
-        ),
+        PreSignCreateParams(request: PreSignCreateRequest(filename: filename)),
       );
 
       final presign = createResult.fold<PreSignCreateEntity?>(
-        (failure) => throw Exception(localizeMessage(ref, failure.message)),
+        (failure) => throw ServerException(message: failure.message),
         (entity) => entity,
       );
 
@@ -51,7 +50,7 @@ class PreSignUploadService {
         (_) => Success(presign),
       );
     } catch (e) {
-      return Error(localizeMessage(ref, e.toString().replaceFirst('Exception: ', '')));
+      return Error(localizeException(ref, e));
     }
   }
 }

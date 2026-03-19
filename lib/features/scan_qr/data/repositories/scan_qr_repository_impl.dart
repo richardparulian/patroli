@@ -12,7 +12,9 @@ class ScanQrRepositoryImpl implements ScanQrRepository {
   ScanQrRepositoryImpl(this._remoteDataSource);
 
   @override
-  Future<Either<Failure, ScanQrEntity>> createScanQr(ScanQrRequest request) async {
+  Future<Either<Failure, ScanQrEntity>> createScanQr(
+    ScanQrRequest request,
+  ) async {
     try {
       final response = await _remoteDataSource.createScanQr(request);
       return Right(response.toEntity());
@@ -22,8 +24,12 @@ class ScanQrRepositoryImpl implements ScanQrRepository {
       return Left(NetworkFailure());
     } on UnauthorizedException catch (e) {
       return Left(UnauthorizedFailure(message: e.message));
-    } on Exception catch (e) {
-      return Left(ServerFailure(message: e.toString()));
+    } on BadRequestException catch (e) {
+      return Left(ValidationFailure(message: e.message));
+    } on TimeoutException catch (e) {
+      return Left(TimeoutFailure(message: e.message));
+    } on Exception {
+      return const Left(ServerFailure());
     }
   }
 }

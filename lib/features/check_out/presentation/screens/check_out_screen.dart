@@ -16,7 +16,9 @@ import 'package:patroli/core/ui/buttons/app_icon_button.dart';
 import 'package:patroli/core/ui/cards/app_card_alert.dart';
 import 'package:patroli/core/ui/dialogs/app_dialog.dart';
 import 'package:patroli/core/ui/widgets/app_loading.dart';
+import 'package:patroli/features/check_out/presentation/extensions/pre_sign_extension.dart';
 import 'package:patroli/features/check_out/presentation/providers/check_out_provider.dart';
+import 'package:patroli/features/check_out/presentation/providers/upload_file_provider.dart';
 import 'package:patroli/features/reports/application/coordinators/reports_refresh_coordinator_provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:patroli/l10n/l10n.dart';
@@ -27,13 +29,19 @@ class CheckOutScreen extends ConsumerStatefulWidget {
   final int? branchId;
   final String? branchName;
 
-  const CheckOutScreen({super.key, this.reportId, this.branchId, this.branchName});
+  const CheckOutScreen({
+    super.key,
+    this.reportId,
+    this.branchId,
+    this.branchName,
+  });
 
   @override
   ConsumerState<CheckOutScreen> createState() => _CheckOutScreenState();
 }
 
-class _CheckOutScreenState extends ConsumerState<CheckOutScreen> with SingleTickerProviderStateMixin {
+class _CheckOutScreenState extends ConsumerState<CheckOutScreen>
+    with SingleTickerProviderStateMixin {
   XFile? _selfieImage;
   CameraController? _cameraController;
 
@@ -51,7 +59,9 @@ class _CheckOutScreenState extends ConsumerState<CheckOutScreen> with SingleTick
       duration: const Duration(milliseconds: 120),
     );
 
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.85).animate(CurvedAnimation(parent: _animationController, curve: Curves.easeOut));
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.85).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
+    );
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await Future.delayed(const Duration(milliseconds: 300));
@@ -63,7 +73,7 @@ class _CheckOutScreenState extends ConsumerState<CheckOutScreen> with SingleTick
   void dispose() {
     _cameraController?.dispose();
     _cameraController = null;
-  
+
     _animationController.dispose();
 
     super.dispose();
@@ -77,9 +87,10 @@ class _CheckOutScreenState extends ConsumerState<CheckOutScreen> with SingleTick
 
     try {
       if (!mounted) return;
-      final hasPermission = await PermissionService.checkAndRequestCameraPermission(
-        context: context,
-      );
+      final hasPermission =
+          await PermissionService.checkAndRequestCameraPermission(
+            context: context,
+          );
 
       if (!hasPermission) return;
 
@@ -117,12 +128,11 @@ class _CheckOutScreenState extends ConsumerState<CheckOutScreen> with SingleTick
   }
 
   Future<void> _onCapture() async {
-    if (_cameraController == null || !_cameraController!.value.isInitialized || _cameraController!.value.isTakingPicture) {
+    if (_cameraController == null ||
+        !_cameraController!.value.isInitialized ||
+        _cameraController!.value.isTakingPicture) {
       return;
     }
-
-    final notifier = ref.read(checkOutProvider.notifier);
-    notifier.setLoading(); 
 
     await _animationController.forward();
     await _animationController.reverse();
@@ -131,6 +141,14 @@ class _CheckOutScreenState extends ConsumerState<CheckOutScreen> with SingleTick
     final image = await _cameraController!.takePicture();
 
     setState(() => _selfieImage = image);
+
+    await _uploadSelfie(image);
+  }
+
+  Future<void> _uploadSelfie(XFile image) async {
+    final notifier = ref.read(checkOutUploadFileProvider.notifier);
+    notifier.reset();
+    notifier.setLoading();
 
     if (!mounted) return;
 
@@ -146,12 +164,7 @@ class _CheckOutScreenState extends ConsumerState<CheckOutScreen> with SingleTick
 
     final filename = '${uuid}_${now.millisecondsSinceEpoch}.jpg';
 
-    await notifier.runCheckOut(
-      image: image,
-      filename: filename,
-      branchId: widget.branchId ?? 0,
-      reportId: widget.reportId ?? 0,
-    );
+    await notifier.uploadSelfie(image: image, filename: filename);
   }
 
   @override
@@ -159,13 +172,46 @@ class _CheckOutScreenState extends ConsumerState<CheckOutScreen> with SingleTick
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    final isLoading = ref.watch(checkOutProvider.select((s) => s.isLoading));
+    final isLoadingUploadFile = ref.watch(
+      checkOutUploadFileProvider.select((s) => s.isLoading),
+    );
+    final isLoadingCheckOut = ref.watch(
+      checkOutProvider.select((s) => s.isLoading),
+    );
+    final isLoading = isLoadingUploadFile || isLoadingCheckOut;
 
     if (widget.branchName?.isEmpty ?? true) {
-      return _buildErrorWidget(Iconsax.shop, context.tr('branch_data_not_found'), context.tr('back_to_home'), Iconsax.home, () => context.go(AppRoutes.home));
+      return _buildErrorWidget(
+        Iconsax.shop,
+        context.tr('branch_data_not_found'),
+        context.tr('back_to_home'),
+        Iconsax.home,
+        () => context.go(AppRoutes.home),
+      );
     }
 
     final isInitialized = _cameraController?.value.isInitialized ?? false;
+
+    ref.listen(checkOutUploadFileProvider, (prev, next) {
+      next.when(
+        idle: () => null,
+        loading: () {
+          _cameraController?.pausePreview();
+        },
+        success: (_) {
+          _cameraController?.resumePreview();
+        },
+        error: (msg) {
+          _cameraController?.resumePreview();
+
+          AppDialog.showError(
+            context: context,
+            title: context.tr('failed'),
+            message: msg,
+          );
+        },
+      );
+    });
 
     ref.listen(checkOutProvider, (prev, next) {
       next.when(
@@ -183,7 +229,9 @@ class _CheckOutScreenState extends ConsumerState<CheckOutScreen> with SingleTick
             buttonText: context.tr('view_reports'),
             barrierDismissible: false,
             onButtonPressed: () async {
-              await ref.read(reportsRefreshCoordinatorProvider).refreshReportsAndDashboard();
+              await ref
+                  .read(reportsRefreshCoordinatorProvider)
+                  .refreshReportsAndDashboard();
               if (!context.mounted) return;
               context.goNamed('history_report');
             },
@@ -224,32 +272,34 @@ class _CheckOutScreenState extends ConsumerState<CheckOutScreen> with SingleTick
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(context.tr('check_out_confirmation_title'),
+              Text(
+                context.tr('check_out_confirmation_title'),
                 style: theme.textTheme.headlineSmall?.copyWith(
                   fontSize: ScreenUtil.sp(18),
                   color: colorScheme.onSurface,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              Text(context.tr('check_out_confirmation_subtitle'),
+              Text(
+                context.tr('check_out_confirmation_subtitle'),
                 style: theme.textTheme.bodyMedium?.copyWith(
                   fontSize: ScreenUtil.sp(12),
                   color: colorScheme.onSurface.withValues(alpha: 0.7),
                 ),
               ),
-            ]
+            ],
           ),
           leading: IconButton(
             icon: const Icon(Iconsax.arrow_left),
             onPressed: () {
               if (isLoading) return;
 
-            AppDialog.showConfirm(
-              context: context,
-              title: context.tr('confirmation'),
-              message: context.tr('leave_page_confirmation'),
-              onConfirm: () => context.goNamed('history_report'),
-            );
+              AppDialog.showConfirm(
+                context: context,
+                title: context.tr('confirmation'),
+                message: context.tr('leave_page_confirmation'),
+                onConfirm: () => context.goNamed('history_report'),
+              );
             },
           ),
           bottom: PreferredSize(
@@ -277,17 +327,16 @@ class _CheckOutScreenState extends ConsumerState<CheckOutScreen> with SingleTick
             ),
 
             if (isInitialized) ...[
-              Positioned(
-                bottom: 0,
-                left: 0,
-                right: 0,
-                child: _buildButton(),
-              ),
+              Positioned(bottom: 0, left: 0, right: 0, child: _buildButton()),
             ],
 
             // Loading overlay
             if (isLoading) ...[
-              AppLoading(message: context.tr('processing_visit')),
+              AppLoading(
+                message: isLoadingUploadFile
+                    ? context.tr('processing_selfie')
+                    : context.tr('processing_visit'),
+              ),
             ],
           ],
         ),
@@ -295,10 +344,16 @@ class _CheckOutScreenState extends ConsumerState<CheckOutScreen> with SingleTick
     );
   }
 
-  Widget _buildErrorWidget(IconData iconMessage, String message, String buttonText, IconData iconButton, VoidCallback onButtonPressed) {
+  Widget _buildErrorWidget(
+    IconData iconMessage,
+    String message,
+    String buttonText,
+    IconData iconButton,
+    VoidCallback onButtonPressed,
+  ) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -313,10 +368,15 @@ class _CheckOutScreenState extends ConsumerState<CheckOutScreen> with SingleTick
               color: colorScheme.outline.withValues(alpha: 0.2),
             ),
           ),
-          child: Icon(iconMessage, size: ScreenUtil.icon(48), color: colorScheme.primary),
+          child: Icon(
+            iconMessage,
+            size: ScreenUtil.icon(48),
+            color: colorScheme.primary,
+          ),
         ),
         SizedBox(height: ScreenUtil.sh(16)),
-        Text(message,
+        Text(
+          message,
           style: theme.textTheme.titleMedium?.copyWith(
             color: colorScheme.onSurface,
             fontWeight: FontWeight.w600,
@@ -328,13 +388,15 @@ class _CheckOutScreenState extends ConsumerState<CheckOutScreen> with SingleTick
           label: buttonText,
           icon: Icon(iconButton),
           type: IconButtonType.primary,
-        )
+        ),
       ],
     );
   }
 
   Widget _buildSelfieSection() {
-    final isCameraReady = ref.watch(cameraProvider.select((s) => s.isInitializing));
+    final isCameraReady = ref.watch(
+      cameraProvider.select((s) => s.isInitializing),
+    );
     final isInitialized = _cameraController?.value.isInitialized ?? false;
 
     if (isCameraReady) {
@@ -356,14 +418,15 @@ class _CheckOutScreenState extends ConsumerState<CheckOutScreen> with SingleTick
           width: _cameraController?.value.previewSize!.height ?? 0,
           height: _cameraController?.value.previewSize!.width ?? 0,
           child: Stack(
-          fit: StackFit.expand,
+            fit: StackFit.expand,
             children: [
               CameraPreview(_cameraController!),
 
               if (_selfieImage != null) ...[
                 Transform(
                   alignment: Alignment.center,
-                  transform: Matrix4.identity()..rotateY(_mirror == 1.0 ? math.pi : 0),
+                  transform: Matrix4.identity()
+                    ..rotateY(_mirror == 1.0 ? math.pi : 0),
                   child: Image.file(
                     File(_selfieImage!.path),
                     fit: BoxFit.cover,
@@ -381,69 +444,100 @@ class _CheckOutScreenState extends ConsumerState<CheckOutScreen> with SingleTick
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    final isLoading = ref.watch(checkOutProvider.select((s) => s.isLoading));
-    
-    return _selfieImage == null ? GestureDetector(
-      onTap: isLoading ? null : () async => await _onCapture(),
-      child: AnimatedBuilder(
-        animation: _scaleAnimation, 
-        builder: (context, child) {
-          return Transform.scale(
-            scale: _scaleAnimation.value,
-            child: child,
-          );
-        },
-        child: Container(
-          width: ScreenUtil.sw(80),
-          height: ScreenUtil.sw(80),
-          margin: ScreenUtil.paddingFromDesign(all: 16),
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(
-              width: ScreenUtil.sw(4),
-              color: colorScheme.onSurface,
-            ),
-          ),
-          child: Center(
-            child: Container(
-              width: ScreenUtil.sw(60),
-              height: ScreenUtil.sw(60),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: colorScheme.onSurface,
+    final isLoadingCheckOut = ref.watch(
+      checkOutProvider.select((s) => s.isLoading),
+    );
+    final uploadState = ref.watch(checkOutUploadFileProvider);
+    final presignUrl = uploadState.presign?.fileUrl;
+    final isUploadReady =
+        uploadState.isSuccess && presignUrl != null && presignUrl.isNotEmpty;
+    final isUploadFailed = uploadState.isError;
+    final primaryLabel = isUploadFailed
+        ? context.tr('try_again')
+        : context.tr('continue_action');
+
+    return _selfieImage == null
+        ? GestureDetector(
+            onTap: isLoadingCheckOut ? null : () async => await _onCapture(),
+            child: AnimatedBuilder(
+              animation: _scaleAnimation,
+              builder: (context, child) {
+                return Transform.scale(
+                  scale: _scaleAnimation.value,
+                  child: child,
+                );
+              },
+              child: Container(
+                width: ScreenUtil.sw(80),
+                height: ScreenUtil.sw(80),
+                margin: ScreenUtil.paddingFromDesign(all: 16),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    width: ScreenUtil.sw(4),
+                    color: colorScheme.onSurface,
+                  ),
+                ),
+                child: Center(
+                  child: Container(
+                    width: ScreenUtil.sw(60),
+                    height: ScreenUtil.sw(60),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: colorScheme.onSurface,
+                    ),
+                  ),
+                ),
               ),
             ),
-          ),
-        ),
-      ),
-    ) : Padding(
-      padding: EdgeInsets.symmetric(
-        vertical: ScreenUtil.sh(30),
-        horizontal: ScreenUtil.sw(16),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Expanded(
-            child: AppIconButton(
-              onPressed: () => setState(() => _selfieImage = null),
-              label: context.tr('retake_photo'),
-              type: IconButtonType.outlined,
-              icon: const Icon(Iconsax.camera5),
+          )
+        : Padding(
+            padding: EdgeInsets.symmetric(
+              vertical: ScreenUtil.sh(30),
+              horizontal: ScreenUtil.sw(16),
             ),
-          ),
-          SizedBox(width: ScreenUtil.sw(16)),
-          Expanded(
-            child: AppIconButton(
-              onPressed: () => setState(() => _selfieImage = null),
-              label: context.tr('continue_action'),
-              icon: const Icon(Iconsax.next),
-              type: IconButtonType.primary,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: AppIconButton(
+                    onPressed: () {
+                      ref.read(checkOutUploadFileProvider.notifier).reset();
+                      setState(() => _selfieImage = null);
+                    },
+                    label: context.tr('retake_photo'),
+                    type: IconButtonType.outlined,
+                    icon: const Icon(Iconsax.camera5),
+                  ),
+                ),
+                SizedBox(width: ScreenUtil.sw(16)),
+                Expanded(
+                  child: AppIconButton(
+                    onPressed: isUploadFailed
+                        ? () async {
+                            final selfieImage = _selfieImage;
+                            if (selfieImage == null) return;
+                            await _uploadSelfie(selfieImage);
+                          }
+                        : !isUploadReady
+                        ? null
+                        : () {
+                            ref
+                                .read(checkOutProvider.notifier)
+                                .runCheckOut(
+                                  branchId: widget.branchId ?? 0,
+                                  reportId: widget.reportId ?? 0,
+                                  imageUrl: presignUrl,
+                                );
+                          },
+                    label: primaryLabel,
+                    icon: const Icon(Iconsax.next),
+                    type: IconButtonType.primary,
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
-      ),
-    );
+          );
   }
 }

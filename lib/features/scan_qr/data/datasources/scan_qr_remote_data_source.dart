@@ -17,10 +17,13 @@ class ScanQrRemoteDataSourceImpl implements ScanQrRemoteDataSource {
 
   @override
   Future<ScanQrModel> createScanQr(ScanQrRequest request) async {
-    final result = await _apiClient.post(ApiEndpoints.scanQr, data: request.toJson());
+    final result = await _apiClient.post(
+      ApiEndpoints.scanQr,
+      data: request.toJson(),
+    );
 
     return result.fold(
-      (failure) => throw ServerException(message: failure.message),
+      (failure) => throw exceptionFromFailure(failure),
       (response) => ScanQrResponse.fromJson(response).data,
     );
   }

@@ -15,7 +15,11 @@ class AuthRepositoryImpl implements AuthRepository {
   final LocalStorageService _localStorageService;
   final SecureStorageService _secureStorageService;
 
-  AuthRepositoryImpl(this._remoteDataSource, this._localStorageService, this._secureStorageService);
+  AuthRepositoryImpl(
+    this._remoteDataSource,
+    this._localStorageService,
+    this._secureStorageService,
+  );
 
   @override
   Future<Either<Failure, UserEntity>> login(LoginRequest request) async {
@@ -23,15 +27,22 @@ class AuthRepositoryImpl implements AuthRepository {
       final response = await _remoteDataSource.login(request);
 
       // :: Save user data locally
-      await _localStorageService.setObject(StorageKeys.userData, response.toJson());
+      await _localStorageService.setObject(
+        StorageKeys.userData,
+        response.toJson(),
+      );
 
       return Right(response.toEntity());
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message));
     } on NetworkException {
       return const Left(NetworkFailure());
+    } on TimeoutException catch (e) {
+      return Left(TimeoutFailure(message: e.message));
     } on UnauthorizedException catch (e) {
       return Left(AuthFailure(message: e.message));
+    } on BadRequestException catch (e) {
+      return Left(ValidationFailure(message: e.message));
     } on Exception {
       return const Left(ServerFailure());
     }
@@ -57,9 +68,7 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<Either<Failure, bool>> isAuthenticated() async {
     try {
-      final token = await _secureStorageService.read(
-        key: StorageKeys.token,
-      );
+      final token = await _secureStorageService.read(key: StorageKeys.token);
       return Right(token != null && token.isNotEmpty);
     } on CacheException catch (e) {
       return Left(CacheFailure(message: e.message));
@@ -78,7 +87,7 @@ class AuthRepositoryImpl implements AuthRepository {
       }
 
       final user = UserModel.fromJson(userData as Map<String, dynamic>);
-      
+
       return Right(user.toEntity());
     } on CacheException catch (e) {
       return Left(CacheFailure(message: e.message));

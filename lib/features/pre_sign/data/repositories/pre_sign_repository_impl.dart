@@ -14,36 +14,49 @@ class PreSignRepositoryImpl implements PreSignRepository {
   PreSignRepositoryImpl(this._remoteDataSource);
 
   @override
-  Future<Either<Failure, PreSignCreateEntity>> postPreSign(PreSignCreateRequest request) async {
+  Future<Either<Failure, PreSignCreateEntity>> postPreSign(
+    PreSignCreateRequest request,
+  ) async {
     try {
       final model = await _remoteDataSource.postPreSign(request);
 
       return Right(model.toEntity());
-     } on ServerException catch (e) {
+    } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message));
     } on NetworkException {
       return Left(NetworkFailure());
     } on UnauthorizedException catch (e) {
       return Left(UnauthorizedFailure(message: e.message));
-    } on Exception catch (e) {
-      return Left(ServerFailure(message: e.toString()));
+    } on BadRequestException catch (e) {
+      return Left(ValidationFailure(message: e.message));
+    } on TimeoutException catch (e) {
+      return Left(TimeoutFailure(message: e.message));
+    } on Exception {
+      return const Left(ServerFailure());
     }
   }
-  
+
   @override
-  Future<Either<Failure, PreSignUpdateEntity>> putPreSign(String url, XFile image) async {
+  Future<Either<Failure, PreSignUpdateEntity>> putPreSign(
+    String url,
+    XFile image,
+  ) async {
     try {
       final response = await _remoteDataSource.putPreSign(url, image);
 
       return Right(response.toEntity());
-     } on ServerException catch (e) {
+    } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message));
     } on NetworkException {
       return Left(NetworkFailure());
     } on UnauthorizedException catch (e) {
       return Left(UnauthorizedFailure(message: e.message));
-    } on Exception catch (e) {
-      return Left(ServerFailure(message: e.toString()));
+    } on BadRequestException catch (e) {
+      return Left(ValidationFailure(message: e.message));
+    } on TimeoutException catch (e) {
+      return Left(TimeoutFailure(message: e.message));
+    } on Exception {
+      return const Left(ServerFailure());
     }
   }
 }

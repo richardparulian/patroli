@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:fpdart/fpdart.dart';
 import 'dart:async';
 import 'package:dio/dio.dart';
@@ -6,10 +7,7 @@ import 'package:patroli/core/error/failures.dart';
 class ApiResponse {
   final int statusCode;
   final dynamic data;
-  const ApiResponse({
-    required this.statusCode,
-    this.data,
-  });
+  const ApiResponse({required this.statusCode, this.data});
 }
 
 class ApiClient {
@@ -18,9 +16,17 @@ class ApiClient {
   ApiClient(this._dio);
 
   // GET request
-  Future<Either<Failure, dynamic>> get(String path, {Map<String, dynamic>? queryParameters, Options? options}) async {
+  Future<Either<Failure, dynamic>> get(
+    String path, {
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+  }) async {
     try {
-      final response = await _dio.get(path, queryParameters: queryParameters, options: options);
+      final response = await _dio.get(
+        path,
+        queryParameters: queryParameters,
+        options: options,
+      );
       return Right(response.data);
     } on DioException catch (e) {
       return Left(_handleError(e));
@@ -28,7 +34,11 @@ class ApiClient {
   }
 
   // POST request
-  Future<Either<Failure, dynamic>> post(String path, {dynamic data, Options? options}) async {
+  Future<Either<Failure, dynamic>> post(
+    String path, {
+    dynamic data,
+    Options? options,
+  }) async {
     try {
       final response = await _dio.post(path, data: data, options: options);
       return Right(response.data);
@@ -38,20 +48,30 @@ class ApiClient {
   }
 
   // PUT request
-  Future<Either<Failure, dynamic>> put(String path, {dynamic data, Options? options}) async {
+  Future<Either<Failure, dynamic>> put(
+    String path, {
+    dynamic data,
+    Options? options,
+  }) async {
     try {
       final response = await _dio.put(path, data: data, options: options);
-      return Right(ApiResponse(
-        statusCode: response.statusCode ?? 200,
-        data: response.data,
-      ));
+      return Right(
+        ApiResponse(
+          statusCode: response.statusCode ?? 200,
+          data: response.data,
+        ),
+      );
     } on DioException catch (e) {
       return Left(_handleError(e));
     }
   }
 
   // PATCH request
-  Future<Either<Failure, dynamic>> patch(String path, {dynamic data, Options? options}) async {
+  Future<Either<Failure, dynamic>> patch(
+    String path, {
+    dynamic data,
+    Options? options,
+  }) async {
     try {
       final response = await _dio.patch(path, data: data, options: options);
       return Right(response.data);
@@ -61,7 +81,11 @@ class ApiClient {
   }
 
   // DELETE request
-  Future<Either<Failure, dynamic>> delete(String path, {dynamic data, Options? options}) async {
+  Future<Either<Failure, dynamic>> delete(
+    String path, {
+    dynamic data,
+    Options? options,
+  }) async {
     try {
       final response = await _dio.delete(path, data: data, options: options);
       return Right(response.data);
@@ -76,25 +100,17 @@ class ApiClient {
       case DioExceptionType.connectionTimeout:
       case DioExceptionType.sendTimeout:
       case DioExceptionType.receiveTimeout:
-        return const ServerFailure(
-          message: 'Waktu koneksi habis',
-        );
+        return const TimeoutFailure(message: 'Waktu koneksi habis');
       case DioExceptionType.badResponse:
         return _handleErrorResponse(e);
       case DioExceptionType.cancel:
-        return const ServerFailure(
-          message: 'Permintaan dibatalkan',
-        );
+        return const ServerFailure(message: 'Permintaan dibatalkan');
       case DioExceptionType.connectionError:
-        return const NetworkFailure(
-          message: 'Tidak ada koneksi internet',
-        );
+        return const NetworkFailure(message: 'Tidak ada koneksi internet');
       case DioExceptionType.unknown:
         return _handleUnknownError(e);
       default:
-        return const ServerFailure(
-          message: 'Terjadi error tidak diketahui',
-        );
+        return const ServerFailure(message: 'Terjadi error tidak diketahui');
     }
   }
 
@@ -106,14 +122,14 @@ class ApiClient {
     // Try to extract message from response data
     String? errorMessage;
     if (responseData is Map<String, dynamic>) {
-      errorMessage = responseData['message'] as String? ?? responseData['error'] as String?;
+      errorMessage =
+          responseData['message'] as String? ??
+          responseData['error'] as String?;
     }
 
     switch (statusCode) {
       case 400:
-        return ServerFailure(
-          message: errorMessage ?? 'Permintaan tidak valid',
-        );
+        return ServerFailure(message: errorMessage ?? 'Permintaan tidak valid');
       case 401:
         return UnauthorizedFailure(
           message: errorMessage ?? 'Unauthorized - Silakan login kembali',
@@ -127,12 +143,12 @@ class ApiClient {
           message: errorMessage ?? 'Sumber daya tidak ditemukan',
         );
       case 422:
-        return ValidationFailure(
-          message: errorMessage ?? 'Validasi gagal',
-        );
+        return ValidationFailure(message: errorMessage ?? 'Validasi gagal');
       case 429:
         return ServerFailure(
-          message: errorMessage ?? 'Terlalu banyak permintaan - Silakan coba lagi nanti',
+          message:
+              errorMessage ??
+              'Terlalu banyak permintaan - Silakan coba lagi nanti',
         );
       case 500:
       case 501:
@@ -150,22 +166,33 @@ class ApiClient {
 
   // Handle unknown errors (network issues, etc.)
   Failure _handleUnknownError(DioException e) {
-    final errorString = e.error.toString();
+    final error = e.error;
+    final errorString = error?.toString() ?? '';
 
-    if (errorString.contains('SocketException') || errorString.contains('NetworkException') || errorString.contains('Failed host lookup')) {
-      return const NetworkFailure(
-        message: 'Tidak ada koneksi internet',
-      );
+    if (error is SocketException || error is HttpException) {
+      return const NetworkFailure(message: 'Tidak ada koneksi internet');
+    }
+
+    if (errorString.contains('SocketException') ||
+        errorString.contains('NetworkException') ||
+        errorString.contains('Failed host lookup')) {
+      return const NetworkFailure(message: 'Tidak ada koneksi internet');
+    }
+
+    if (errorString.contains('HttpException') ||
+        errorString.contains('Software caused connection abort') ||
+        errorString.contains('Connection reset by peer')) {
+      return const NetworkFailure(message: 'Tidak ada koneksi internet');
     }
 
     if (errorString.contains('FormatException')) {
-      return const ServerFailure(
-        message: 'Format data tidak valid',
-      );
+      return const ServerFailure(message: 'Format data tidak valid');
     }
 
     return ServerFailure(
-      message: errorString.isNotEmpty ? errorString : 'Terjadi error tidak diketahui',
+      message: errorString.isNotEmpty
+          ? errorString
+          : 'Terjadi error tidak diketahui',
     );
   }
 

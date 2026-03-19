@@ -22,10 +22,13 @@ class PreSignRemoteDataSourceImpl implements PreSignRemoteDataSource {
 
   @override
   Future<PreSignCreateModel> postPreSign(PreSignCreateRequest request) async {
-    final result = await _apiClient.post(ApiEndpoints.preSignUrl, data: request.toJson());
+    final result = await _apiClient.post(
+      ApiEndpoints.preSignUrl,
+      data: request.toJson(),
+    );
 
     return result.fold(
-      (failure) => throw ServerException(message: failure.message),
+      (failure) => throw exceptionFromFailure(failure),
       (response) => PreSignCreateResponse.fromJson(response).data,
     );
   }
@@ -33,47 +36,40 @@ class PreSignRemoteDataSourceImpl implements PreSignRemoteDataSource {
   @override
   Future<PreSignUpdateModel> putPreSign(String url, XFile image) async {
     final file = File(image.path);
-  
+
     final originalImage = img.decodeImage(await file.readAsBytes());
-    
+
     if (originalImage == null) {
       throw ServerException(message: 'Gagal membaca gambar');
     }
 
-    // Resize if needed (optional, for optimization) 
+    // Resize if needed (optional, for optimization)
     final resizedImage = img.copyResize(
       originalImage,
       width: originalImage.width > 800 ? 800 : null,
       height: originalImage.height > 800 ? 800 : null,
     );
-    
+
     // Fix orientation based on EXIF data
     final fixedImage = img.bakeOrientation(resizedImage);
     final flippedImage = img.flipHorizontal(fixedImage);
-    
+
     // Encode back to JPEG
     final fixedImageBytes = img.encodeJpg(flippedImage, quality: 90);
 
-    
-    final result = await _apiClient.put(url, 
-      data: fixedImageBytes, 
-      options: Options(
-        contentType: 'image/jpeg',
-        extra: {
-          'skip_auth': true,
-        },
-      ),
+    final result = await _apiClient.put(
+      url,
+      data: fixedImageBytes,
+      options: Options(contentType: 'image/jpeg', extra: {'skip_auth': true}),
     );
-    
 
-    return result.fold(
-      (failure) => throw ServerException(message: failure.message),
-      (response) {
-        return PreSignUpdateModel(
-          statusCode: response.statusCode,
-          data: response.data ?? '',
-        );
-      },
-    );
+    return result.fold((failure) => throw exceptionFromFailure(failure), (
+      response,
+    ) {
+      return PreSignUpdateModel(
+        statusCode: response.statusCode,
+        data: response.data ?? '',
+      );
+    });
   }
 }

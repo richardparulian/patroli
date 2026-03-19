@@ -20,10 +20,7 @@ class VisitCreateService {
     try {
       final visitUseCase = ref.read(visitUseCaseProvider);
       final result = await visitUseCase(
-        CreateVisitParams(
-          request: request,
-          reportId: reportId,
-        ),
+        CreateVisitParams(request: request, reportId: reportId),
       );
 
       return result.fold(
@@ -31,7 +28,7 @@ class VisitCreateService {
         (value) => Success(value),
       );
     } catch (e) {
-      return Error(localizeMessage(ref, e.toString().replaceFirst('Exception: ', '')));
+      return Error(localizeException(ref, e));
     }
   }
 }

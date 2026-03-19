@@ -1,5 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:patroli/core/extensions/result_state_extension.dart';
 import 'package:patroli/features/check_out/application/services/check_out_submission_service.dart';
 
@@ -13,15 +12,18 @@ class CheckOutNotifier extends Notifier<ResultState<void>> {
     state = const Loading();
   }
 
-  Future<void> runCheckOut({required XFile image, required String filename, required int branchId, required int reportId}) async {
+  Future<void> runCheckOut({
+    required int branchId,
+    required int reportId,
+    required String imageUrl,
+  }) async {
     state = const Loading();
-    state = await ref.read(checkOutSubmissionServiceProvider).submit(
-      image: image,
-      filename: filename,
-      branchId: branchId,
-      reportId: reportId,
-    );
+    state = await ref
+        .read(checkOutSubmissionServiceProvider)
+        .submit(branchId: branchId, reportId: reportId, imageUrl: imageUrl);
   }
 }
 
-final checkOutProvider = NotifierProvider<CheckOutNotifier, ResultState<void>>(CheckOutNotifier.new);
+final checkOutProvider = NotifierProvider<CheckOutNotifier, ResultState<void>>(
+  CheckOutNotifier.new,
+);

@@ -15,6 +15,7 @@ Path yang aktif saat ini:
 - `/login` -> login
 - `/home` -> home
 - `/home/history` -> report history
+- `/home/history/report_detail` -> report detail
 - `/home/settings` -> settings
 - `/home/settings/language_switcher` -> language switcher
 - `/home/scan_qr` -> scan QR

@@ -6,7 +6,11 @@ import '../models/reports_model.dart';
 
 abstract class ReportsRemoteDataSource {
   // :: Fetch all reportss
-  Future<List<ReportsModel>> fetchReports({int? page, int? limit, int? pagination});
+  Future<List<ReportsModel>> fetchReports({
+    int? page,
+    int? limit,
+    int? pagination,
+  });
 }
 
 class ReportsRemoteDataSourceImpl implements ReportsRemoteDataSource {
@@ -15,19 +19,25 @@ class ReportsRemoteDataSourceImpl implements ReportsRemoteDataSource {
   ReportsRemoteDataSourceImpl(this._apiClient);
 
   @override
-  Future<List<ReportsModel>> fetchReports({int? page, int? limit, int? pagination}) async {
-    final result = await _apiClient.get(ApiEndpoints.visitList, queryParameters: {
-      'page': page,
-      'per_page': limit,
-      'with_pagination': pagination,
-    });
-
-    return result.fold(
-      (failure) => throw ServerException(message: failure.message),
-      (response) {
-        final reportsResponse = ReportsResponse.fromJson(response);
-        return reportsResponse.data;
+  Future<List<ReportsModel>> fetchReports({
+    int? page,
+    int? limit,
+    int? pagination,
+  }) async {
+    final result = await _apiClient.get(
+      ApiEndpoints.visitList,
+      queryParameters: {
+        'page': page,
+        'per_page': limit,
+        'with_pagination': pagination,
       },
     );
+
+    return result.fold((failure) => throw exceptionFromFailure(failure), (
+      response,
+    ) {
+      final reportsResponse = ReportsResponse.fromJson(response);
+      return reportsResponse.data;
+    });
   }
 }

@@ -21,10 +21,7 @@ class CheckInSubmissionService {
       final checkInUseCase = ref.read(checkInUseCaseProvider);
       final result = await checkInUseCase(
         CreateCheckInParams(
-          request: CheckInRequest(
-            branchId: branchId,
-            selfieCheckIn: imageUrl,
-          ),
+          request: CheckInRequest(branchId: branchId, selfieCheckIn: imageUrl),
         ),
       );
 
@@ -33,7 +30,7 @@ class CheckInSubmissionService {
         (checkInData) => Success(checkInData),
       );
     } catch (e) {
-      return Error(localizeMessage(ref, e.toString().replaceFirst('Exception: ', '')));
+      return Error(localizeException(ref, e));
     }
   }
 }

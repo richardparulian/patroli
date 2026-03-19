@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:dio/dio.dart';
@@ -70,6 +72,36 @@ void main() {
           (failure) => expect(failure, isA<ServerFailure>()),
           (_) => fail('Should have returned Left'),
         );
+      },
+    );
+
+    test(
+      'get should return Left(NetworkFailure) for HttpException unknown errors without leaking raw URI details',
+      () async {
+        when(
+          () => mockDio.get(
+            any(),
+            queryParameters: any(named: 'queryParameters'),
+          ),
+        ).thenThrow(
+          DioException(
+            requestOptions: RequestOptions(path: tPath),
+            type: DioExceptionType.unknown,
+            error: HttpException(
+              'Connection closed before full header was received',
+              uri: Uri.parse('https://example.com/secret/path'),
+            ),
+          ),
+        );
+
+        final result = await apiClient.get(tPath);
+
+        expect(result, isA<Left<Failure, dynamic>>());
+        result.fold((failure) {
+          expect(failure, isA<NetworkFailure>());
+          expect(failure.message, 'Tidak ada koneksi internet');
+          expect(failure.message.contains('example.com'), isFalse);
+        }, (_) => fail('Should have returned Left'));
       },
     );
   });

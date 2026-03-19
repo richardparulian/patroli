@@ -23,9 +23,7 @@ class ScanQrSubmissionService {
       }
 
       final result = await useCase(
-        ScanQrParams(
-          request: ScanQrRequest(qrcode: qrCode),
-        ),
+        ScanQrParams(request: ScanQrRequest(qrcode: qrCode)),
       );
 
       return result.fold(
@@ -33,7 +31,7 @@ class ScanQrSubmissionService {
         (entity) => Success(entity),
       );
     } catch (e) {
-      return Error(localizeMessage(ref, e.toString().replaceFirst('Exception: ', '')));
+      return Error(localizeException(ref, e));
     }
   }
 }

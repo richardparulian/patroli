@@ -1,3 +1,4 @@
+import 'package:patroli/core/error/exceptions.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:patroli/l10n/app_localizations_delegate.dart';
 import 'package:patroli/l10n/l10n.dart';
@@ -19,9 +20,12 @@ const Map<String, String> _messageToKey = {
   'Kondisi belakang wajib diisi!': 'visit_error_back_required_fill',
   'Kondisi sekitar wajib diisi!': 'visit_error_around_required_fill',
   'Validation error!': 'validation_error',
-  'Maaf, cabang dan foto selfie tidak ditemukan, silahkan coba lagi atau hubungi admin untuk bantuan': 'branch_and_selfie_missing',
-  'Maaf, cabang tidak ditemukan, silahkan coba lagi atau hubungi admin untuk bantuan': 'branch_missing_help',
-  'Maaf, foto selfie tidak ditemukan, silahkan coba lagi atau hubungi admin untuk bantuan': 'selfie_missing_help',
+  'Maaf, cabang dan foto selfie tidak ditemukan, silahkan coba lagi atau hubungi admin untuk bantuan':
+      'branch_and_selfie_missing',
+  'Maaf, cabang tidak ditemukan, silahkan coba lagi atau hubungi admin untuk bantuan':
+      'branch_missing_help',
+  'Maaf, foto selfie tidak ditemukan, silahkan coba lagi atau hubungi admin untuk bantuan':
+      'selfie_missing_help',
   'QR Code tidak boleh kosong': 'qr_code_required',
   'Kode QR tidak valid': 'qr_code_invalid',
   'Filename tidak boleh kosong': 'filename_required',
@@ -34,7 +38,8 @@ const Map<String, String> _messageToKey = {
   'Failed to read image': 'image_read_failed',
   'Presigned URL tidak ditemukan': 'presigned_url_not_found',
   'Presigned URL not found': 'presigned_url_not_found',
-  'Nomor Induk Karyawan (NIK) dan kata sandi tidak boleh kosong': 'login_credentials_required',
+  'Nomor Induk Karyawan (NIK) dan kata sandi tidak boleh kosong':
+      'login_credentials_required',
   'Waktu koneksi habis': 'network_timeout',
   'Permintaan dibatalkan': 'request_cancelled',
   'Tidak ada koneksi internet': 'no_internet_connection',
@@ -86,6 +91,36 @@ String localizeMessage(Ref ref, String message) {
   }
 
   return message;
+}
+
+String localizeException(Ref ref, Object error) {
+  if (error is AppException) {
+    return localizeMessage(ref, error.message);
+  }
+
+  if (error is Exception) {
+    final message = error.toString().replaceFirst('Exception: ', '').trim();
+    if (message.isEmpty) {
+      return localizeKey(ref, 'unknown_error');
+    }
+
+    final lower = message.toLowerCase();
+    final looksTechnical =
+        lower.contains('http://') ||
+        lower.contains('https://') ||
+        lower.contains('uri') ||
+        lower.contains('socketexception') ||
+        lower.contains('httpexception') ||
+        lower.contains('software caused connection abort');
+
+    if (looksTechnical) {
+      return localizeKey(ref, 'unknown_error');
+    }
+
+    return localizeMessage(ref, message);
+  }
+
+  return localizeKey(ref, 'unknown_error');
 }
 
 String localizeKey(Ref ref, String key) {

@@ -92,7 +92,8 @@ abstract class UpdateService {
 class BasicUpdateService implements UpdateService {
   final String _androidPackageName;
   final String _iOSAppId;
-  final Future<UpdateInfo?> Function(String currentVersion)? _updateInfoResolver;
+  final Future<UpdateInfo?> Function(String currentVersion)?
+  _updateInfoResolver;
 
   PackageInfo? _packageInfo;
   UpdateInfo? _updateInfo;
@@ -110,7 +111,9 @@ class BasicUpdateService implements UpdateService {
   Future<void> init() async {
     // Get the package info
     _packageInfo = await PackageInfo.fromPlatform();
-    debugPrint('⬆️ Update service initialized: v${_packageInfo?.version}+${_packageInfo?.buildNumber}');
+    debugPrint(
+      '⬆️ Update service initialized: v${_packageInfo?.version}+${_packageInfo?.buildNumber}',
+    );
   }
 
   @override
@@ -134,7 +137,10 @@ class BasicUpdateService implements UpdateService {
       }
 
       // Check if this is a critical update
-      if (isCriticalUpdate(_packageInfo!.version, _updateInfo!.minimumRequiredVersion)) {
+      if (isCriticalUpdate(
+        _packageInfo!.version,
+        _updateInfo!.minimumRequiredVersion,
+      )) {
         return UpdateCheckResult.criticalUpdateRequired;
       }
 
@@ -166,7 +172,9 @@ class BasicUpdateService implements UpdateService {
       return false;
     }
 
-    debugPrint('⬆️ Prompting for update to version ${updateInfo.latestVersion} (current: ${_packageInfo?.version})');
+    debugPrint(
+      '⬆️ Prompting for update to version ${updateInfo.latestVersion} (current: ${_packageInfo?.version})',
+    );
 
     // In a real app, this would show a dialog to the user
     // Return true if the user agrees to update
@@ -185,8 +193,11 @@ class BasicUpdateService implements UpdateService {
       // Fall back to store URL based on platform
       String url;
       if (Platform.isAndroid) {
-        url = 'https://play.google.com/store/apps/details?id=$_androidPackageName';
+        if (_androidPackageName.trim().isEmpty) return false;
+        url =
+            'https://play.google.com/store/apps/details?id=$_androidPackageName';
       } else if (Platform.isIOS) {
+        if (_iOSAppId.trim().isEmpty) return false;
         url = 'https://apps.apple.com/app/id$_iOSAppId';
       } else {
         return false;

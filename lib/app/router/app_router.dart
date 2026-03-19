@@ -75,6 +75,16 @@ final routerProvider = Provider<GoRouter>((ref) {
             path: 'history',
             name: 'history_report',
             builder: (context, state) => ReportsScreen(),
+            routes: [
+              GoRoute(
+                path: 'report_detail',
+                name: 'report_detail',
+                builder: (context, state) {
+                  final args = state.extra as ReportsEntity;
+                  return ReportsDetailScreen(reportData: args);
+                },
+              ),
+            ],
           ),
           GoRoute(
             path: 'settings',
@@ -101,9 +111,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) {
           final args = state.extra as ScanQrEntity;
           return ProviderScope(
-            overrides: [
-              checkInProvider.overrideWith(() => CheckInNotifier()),
-            ],
+            overrides: [checkInProvider.overrideWith(() => CheckInNotifier())],
             child: CheckInScreen(scanQrData: args),
           );
         },
@@ -116,7 +124,9 @@ final routerProvider = Provider<GoRouter>((ref) {
           return ProviderScope(
             overrides: [
               visitCreateProvider.overrideWith(() => VisitCreateNotifier()),
-              visitAttentionProvider.overrideWith(() => VisitAttentionNotifier()),
+              visitAttentionProvider.overrideWith(
+                () => VisitAttentionNotifier(),
+              ),
             ],
             child: VisitScreen(
               scanQrData: args.scanQr,
@@ -124,14 +134,6 @@ final routerProvider = Provider<GoRouter>((ref) {
               reportData: args.report,
             ),
           );
-        },
-      ),
-      GoRoute(
-        path: AppRoutes.reportDetail,
-        name: 'report_detail',
-        builder: (context, state) {
-          final args = state.extra as ReportsEntity;
-          return ReportsDetailScreen(reportData: args);
         },
       ),
       GoRoute(
@@ -164,22 +166,21 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
     ],
     errorBuilder: (context, state) => Scaffold(
-      appBar: AppBar(
-        title: Text(context.tr('page_not_found')),
-      ),
+      appBar: AppBar(title: Text(context.tr('page_not_found'))),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text(
               '404',
-              style: TextStyle(
-                fontSize: 48,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
-            Text(context.trParams('page_not_found_message', {'path': state.uri.path})),
+            Text(
+              context.trParams('page_not_found_message', {
+                'path': state.uri.path,
+              }),
+            ),
             const SizedBox(height: 16),
             Row(
               mainAxisSize: MainAxisSize.min,

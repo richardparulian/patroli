@@ -17,7 +17,7 @@ class ConfiguredAppUpdateInfoSource implements AppUpdateInfoSource {
     final updateUrl = _resolveUpdateUrl();
     final appcastUrl = AppMetadata.appcastUrl.trim();
 
-    final hasPlaceholderAppcast = appcastUrl.isEmpty || appcastUrl.contains('your-appcast-url.com');
+    final hasPlaceholderAppcast = !AppMetadata.hasConfiguredAppcastUrl;
     if (hasPlaceholderAppcast && updateUrl == null) {
       return null;
     }
@@ -29,16 +29,19 @@ class ConfiguredAppUpdateInfoSource implements AppUpdateInfoSource {
       latestVersion: currentVersion,
       minimumRequiredVersion: minimumRequiredVersion,
       isCritical: false,
-      releaseNotes: 'Update source configured for $environmentName environment.',
+      releaseNotes:
+          'Update source configured for $environmentName environment.',
       updateUrl: updateUrl ?? (hasPlaceholderAppcast ? null : appcastUrl),
     );
   }
 
   String? _resolveUpdateUrl() {
     if (Platform.isAndroid) {
+      if (!AppMetadata.hasPackageName) return null;
       return 'https://play.google.com/store/apps/details?id=${AppMetadata.packageName}';
     }
     if (Platform.isIOS) {
+      if (!AppMetadata.hasIOSAppId) return null;
       return 'https://apps.apple.com/app/id${AppMetadata.iOSAppId}';
     }
     return null;
