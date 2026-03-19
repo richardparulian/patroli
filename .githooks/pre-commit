@@ -31,8 +31,13 @@ fi
 
 DART_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.dart$' || true)
 if [ -n "${DART_FILES}" ]; then
-  echo "[pre-commit] Checking Dart formatting for staged files..."
-  "$DART_BIN" format --output=none --set-exit-if-changed ${DART_FILES}
+  echo "[pre-commit] Formatting staged Dart files..."
+  "$DART_BIN" format ${DART_FILES}
+  echo "[pre-commit] Restaging formatted Dart files..."
+  printf '%s\n' "${DART_FILES}" | while IFS= read -r file; do
+    [ -n "$file" ] || continue
+    git add "$file"
+  done
 fi
 
 ANALYZE_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep -E '^(lib|test)/.*\.dart$' || true)
