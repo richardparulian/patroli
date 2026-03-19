@@ -36,6 +36,10 @@ make run-mac
 make run-web
 ```
 
+Catatan:
+- `make ios-sim-open` hanya membuka dan meluncurkan iOS Simulator.
+- `make run-ios` akan membuka simulator, menunggu device boot, lalu menjalankan app ke simulator yang aktif.
+
 Atau langsung:
 
 ```bash

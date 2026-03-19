@@ -10,6 +10,7 @@ ANDROID_BUILD_DIR := android/app/build
 IOS_BUILD_DIR := ios/build
 WEB_BUILD_DIR := build/web
 IOS_SIMULATOR_APP := Simulator
+IOS_SIMULATOR_EMULATOR_ID := apple_ios_simulator
 
 # Colors for output
 BLUE := \033[0;34m
@@ -156,12 +157,25 @@ run-android: ## Run of app on Android device/emulator
 .PHONY: ios-sim-open
 ios-sim-open: ## Open iOS Simulator
 	@echo "$(BLUE)Opening iOS Simulator...$(NC)"
-	open -a $(IOS_SIMULATOR_APP)
+	$(FLUTTER) emulators --launch $(IOS_SIMULATOR_EMULATOR_ID)
 
 .PHONY: run-ios
 run-ios: ios-sim-open ## Open iOS Simulator and run app on iOS
-	@echo "$(BLUE)Running app on iOS...$(NC)"
-	$(FLUTTER) run -d ios
+	@echo "$(BLUE)Waiting for iOS Simulator to boot...$(NC)"
+	@DEVICE_ID=""; \
+	for i in 1 2 3 4 5 6 7 8 9 10; do \
+		DEVICE_ID=$$(xcrun simctl list devices booted available | awk -F '[()]' '/iPhone|iPad/ {print $$2; exit}'); \
+		if [ -n "$$DEVICE_ID" ]; then \
+			break; \
+		fi; \
+		sleep 2; \
+	done; \
+	if [ -z "$$DEVICE_ID" ]; then \
+		echo "$(RED)No booted iOS Simulator found$(NC)"; \
+		exit 1; \
+	fi; \
+	echo "$(BLUE)Running app on iOS simulator $$DEVICE_ID...$(NC)"; \
+	$(FLUTTER) run -d $$DEVICE_ID
 
 .PHONY: run-windows
 run-windows: ## Run of app on Windows

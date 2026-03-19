@@ -85,6 +85,10 @@ Catatan penting:
 - `make run-mac`
 - `make run-web`
 
+Catatan:
+- `make ios-sim-open` meluncurkan emulator `apple_ios_simulator` milik Flutter.
+- `make run-ios` akan menunggu simulator boot, lalu menjalankan app ke UUID simulator iOS yang aktif.
+
 ### Test
 
 - `make test`
