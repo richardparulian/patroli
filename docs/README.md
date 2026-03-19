@@ -12,6 +12,8 @@ Dokumentasi di folder ini sudah dirapikan untuk fokus ke codebase `patroli_v2` y
   Aturan arsitektur yang lebih ketat: dependency rule, localization boundary, dan testing strategy.
 - `RIVERPOD_GUIDE.md`
   Konvensi state management Riverpod: flow provider, ownership state, lifecycle, dan anti-pattern.
+- `DEPENDENCY_UPGRADE_GUIDE.md`
+  Aturan kapan upgrade Flutter dan dependency layak dilakukan, plus level verifikasinya.
 - `CODING_STANDARDS.md`
   Konvensi coding yang dipakai di repo ini.
 - `LOCALIZATION_GUIDE.md`
@@ -40,6 +42,7 @@ docs/
 ├── ARCHITECTURE.md
 ├── ARCHITECTURE_GUIDE.md
 ├── RIVERPOD_GUIDE.md
+├── DEPENDENCY_UPGRADE_GUIDE.md
 ├── CODING_STANDARDS.md
 ├── LOCALIZATION_GUIDE.md
 ├── FEATURE_FLOWS.md
