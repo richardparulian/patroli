@@ -72,6 +72,8 @@ Aturan:
 
 ## 3. Riverpod Organization
 
+Dokumen konvensi detailnya ada di `docs/RIVERPOD_GUIDE.md`.
+
 Pattern yang dipakai repo saat ini:
 
 ### Data DI

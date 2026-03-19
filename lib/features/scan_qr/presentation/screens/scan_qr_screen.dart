@@ -1,25 +1,22 @@
+import 'package:ai_barcode_scanner/ai_barcode_scanner.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:ai_barcode_scanner/ai_barcode_scanner.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:patroli/l10n/l10n.dart';
 import 'package:patroli/app/constants/app_routes.dart';
 import 'package:patroli/core/enums/alert_type.dart';
-import 'package:patroli/core/extensions/helper_state_extension.dart';
-import 'package:patroli/core/services/permission_service.dart';
 import 'package:patroli/core/ui/bottom_sheets/app_bottom_sheet.dart';
 import 'package:patroli/core/ui/buttons/app_icon_button.dart';
 import 'package:patroli/core/ui/cards/app_card_alert.dart';
 import 'package:patroli/core/ui/dialogs/app_dialog.dart';
 import 'package:patroli/core/ui/inputs/app_text_field.dart';
 import 'package:patroli/core/ui/widgets/app_loading.dart';
-import 'package:patroli/features/scan_qr/presentation/providers/scan_camera_provider.dart';
-import 'package:patroli/features/scan_qr/presentation/providers/scan_qr_provider.dart';
 import 'package:patroli/core/utils/screen_util.dart';
+import 'package:patroli/features/scan_qr/presentation/providers/scan_qr_flow_provider.dart';
+import 'package:patroli/l10n/l10n.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class ScanQrScreen extends ConsumerStatefulWidget {
   const ScanQrScreen({super.key});
@@ -28,7 +25,8 @@ class ScanQrScreen extends ConsumerStatefulWidget {
   ConsumerState<ScanQrScreen> createState() => _ScanQrScreenState();
 }
 
-class _ScanQrScreenState extends ConsumerState<ScanQrScreen> with WidgetsBindingObserver {
+class _ScanQrScreenState extends ConsumerState<ScanQrScreen>
+    with WidgetsBindingObserver {
   late MobileScannerController _controller;
   final TextEditingController _branchCodeController = TextEditingController();
 
@@ -37,12 +35,7 @@ class _ScanQrScreenState extends ConsumerState<ScanQrScreen> with WidgetsBinding
     super.initState();
     WidgetsBinding.instance.addObserver(this);
 
-    _controller = MobileScannerController(
-      autoStart: false,
-      formats: [BarcodeFormat.qrCode],
-    );
-
-    ref.read(scanCameraProvider.notifier).setController(_controller);
+    _controller = _buildController();
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await _checkCameraPermission();
@@ -52,17 +45,15 @@ class _ScanQrScreenState extends ConsumerState<ScanQrScreen> with WidgetsBinding
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-
     _controller.dispose();
     _branchCodeController.dispose();
-
     super.dispose();
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
-    
+
     if (state == AppLifecycleState.resumed) {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         await _checkCameraPermission();
@@ -70,32 +61,33 @@ class _ScanQrScreenState extends ConsumerState<ScanQrScreen> with WidgetsBinding
     }
   }
 
+  MobileScannerController _buildController() {
+    return MobileScannerController(
+      autoStart: false,
+      formats: [BarcodeFormat.qrCode],
+    );
+  }
+
   Future<void> _checkCameraPermission() async {
-    final hasPermission = await PermissionService.checkAndRequestCameraPermission();
+    final hasPermission = await ref
+        .read(scanQrFlowProvider.notifier)
+        .checkCameraPermission();
 
     if (hasPermission) {
-      ref.read(scanCameraProvider.notifier).setCameraPermissionGranted(true);
       await _controller.start();
-    } else {
-      ref.read(scanCameraProvider.notifier).setCameraPermissionGranted(false);
     }
   }
 
   Future<void> _rebuildScanner() async {
     final oldController = _controller;
-
-    final newController = MobileScannerController(
-      autoStart: false,
-      formats: [BarcodeFormat.qrCode],
-    );
+    final newController = _buildController();
 
     setState(() {
       _controller = newController;
     });
 
-    ref.read(scanCameraProvider.notifier).setController(newController);
-
     await oldController.dispose();
+    ref.read(scanQrFlowProvider.notifier).resetScanState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await _checkCameraPermission();
@@ -103,12 +95,8 @@ class _ScanQrScreenState extends ConsumerState<ScanQrScreen> with WidgetsBinding
   }
 
   Future<void> _pickImageFromGallery() async {
-    final image = await ImagePicker().pickImage(
-      source: ImageSource.gallery,
-    );
-
-    if (image == null) return;
-    if (!mounted) return;
+    final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (image == null || !mounted) return;
 
     final l10n = AppLocalizations.of(context);
     final result = await _controller.analyzeImage(image.path);
@@ -116,25 +104,21 @@ class _ScanQrScreenState extends ConsumerState<ScanQrScreen> with WidgetsBinding
     if (result != null && result.barcodes.isNotEmpty) {
       final barcode = result.barcodes.first;
       final qrCode = barcode.rawValue ?? barcode.displayValue ?? '';
-
-      await _onScanned(qrCode);
-    } else {
-      final notifier = ref.read(scanQrProvider.notifier);
-      notifier.setError(message: l10n.translate('qr_not_found_in_image'));
+      await _handleScannedCode(qrCode);
+      return;
     }
+
+    ref
+        .read(scanQrFlowProvider.notifier)
+        .setGalleryNotFoundError(l10n.translate('qr_not_found_in_image'));
   }
 
-  Future<void> _onScanned(String qrCode) async {
-    final scanQr = ref.read(scanQrProvider.notifier);
-
-    _controller.pause();
-
-    if (!mounted) return;
-    await scanQr.runScanQr(qrCode);
+  Future<void> _handleScannedCode(String qrCode) async {
+    await ref.read(scanQrFlowProvider.notifier).handleScannedCode(qrCode);
   }
 
   Future<void> _showBranchCodeModal() async {
-    final isLoading = ref.watch(scanQrProvider.select((s) => s.isLoading));
+    final isLoading = ref.watch(scanQrFlowProvider.select((s) => s.isLoading));
 
     await AppBottomSheet.showWithKeyboard(
       context: context,
@@ -144,62 +128,52 @@ class _ScanQrScreenState extends ConsumerState<ScanQrScreen> with WidgetsBinding
 
   @override
   Widget build(BuildContext context) {
-    final cameraState = ref.watch(scanCameraProvider);
+    final flowState = ref.watch(scanQrFlowProvider);
 
-    final isLoading = ref.watch(scanQrProvider.select((s) => s.isLoading)); 
+    ref.listen(scanQrFlowProvider, (prev, next) {
+      final previousData = prev?.scannedEntity;
+      final nextData = next.scannedEntity;
 
-    ref.listen(scanQrProvider, (prev, next) {
-      next.when(
-        idle: () => null,
-        loading: () {},
-        success: (val) {
-          final entity = val;
+      if (nextData != null && nextData != previousData) {
+        _controller.pause();
+        context.pushReplacement(AppRoutes.checkIn, extra: nextData);
+        return;
+      }
 
-          ref.read(scanCameraProvider.notifier).pauseScanner();
-          context.pushReplacement(AppRoutes.checkIn, extra: entity);
-        },
-        error: (msg) {
-          ref.read(scanCameraProvider.notifier).pauseScanner();
-          ref.read(scanCameraProvider.notifier).setProcessing(false);
+      final previousError = prev?.errorMessage;
+      final nextError = next.errorMessage;
 
-          if (!mounted) return;
-          AppDialog.showError(
-            context: context,
-            title: context.tr('failed'),
-            message: msg,
-            buttonText: context.tr('ok'),
-            onButtonPressed: () async => await _rebuildScanner(),
-          );
-        },
-      );
+      if (nextError != null && nextError != previousError) {
+        _controller.pause();
+
+        if (!mounted) return;
+
+        AppDialog.showError(
+          context: context,
+          title: context.tr('failed'),
+          message: nextError,
+          buttonText: context.tr('ok'),
+          onButtonPressed: () async => _rebuildScanner(),
+        );
+      }
     });
 
     return Scaffold(
       body: Stack(
         children: [
-          if (cameraState.isCameraPermissionGranted == null || cameraState.isCameraPermissionGranted == false) ...[
-            Positioned(
-              child: Center(
-                child: _buildPermissionDeniedWidget(),
-              )
-            )
-          ] else ...[
-            Positioned.fill(
-              child: _buildScanner(),
-            ),
-            if (isLoading) ...[
+          if (flowState.isCameraPermissionGranted != true)
+            Positioned(child: Center(child: _buildPermissionDeniedWidget()))
+          else ...[
+            Positioned.fill(child: _buildScanner()),
+            if (flowState.isLoading)
               AppLoading(message: context.tr('processing_qr')),
-            ],
             Positioned(
               bottom: 0,
               left: 0,
               right: 0,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                children: [
-                  _buildPoweredBy(),
-                  _buildBottomMenu(),
-                ],
+                children: [_buildPoweredBy(), _buildBottomMenu()],
               ),
             ),
           ],
@@ -217,12 +191,17 @@ class _ScanQrScreenState extends ConsumerState<ScanQrScreen> with WidgetsBinding
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Icon(Iconsax.camera_slash, size: ScreenUtil.icon(50), color: color.onSurface),
+        Icon(
+          Iconsax.camera_slash,
+          size: ScreenUtil.icon(50),
+          color: color.onSurface,
+        ),
         SizedBox(height: ScreenUtil.sh(10)),
-        Text(context.tr('camera_permission_not_granted'), 
+        Text(
+          context.tr('camera_permission_not_granted'),
           style: TextStyle(
-            fontSize: ScreenUtil.sp(16), 
-            fontWeight: FontWeight.w500, 
+            fontSize: ScreenUtil.sp(16),
+            fontWeight: FontWeight.w500,
             color: color.onSurface,
           ),
           textAlign: TextAlign.center,
@@ -232,7 +211,7 @@ class _ScanQrScreenState extends ConsumerState<ScanQrScreen> with WidgetsBinding
           height: ScreenUtil.sh(40),
           label: context.tr('allow'),
           icon: const Icon(Icons.settings),
-          onPressed: () async => await openAppSettings(),
+          onPressed: () async => openAppSettings(),
         ),
       ],
     );
@@ -241,39 +220,29 @@ class _ScanQrScreenState extends ConsumerState<ScanQrScreen> with WidgetsBinding
   Widget _buildScanner() {
     final theme = Theme.of(context);
     final color = theme.colorScheme;
-
-    final cameraState = ref.watch(scanCameraProvider);
-    final isError = ref.watch(scanQrProvider.select((s) => s.isError));
-    final isLoading = ref.watch(scanQrProvider.select((s) => s.isLoading));
-    final isProcessing = ref.watch(scanCameraProvider.select((s) => s.isProcessing));
+    final flowState = ref.watch(scanQrFlowProvider);
 
     return AiBarcodeScanner(
       key: ValueKey(_controller),
       controller: _controller,
       galleryButtonType: GalleryButtonType.none,
       appBarBuilder: (context, controller) {
-        return _buildAppBar(cameraState.isTorchOn);
+        return _buildAppBar(flowState.isTorchOn);
       },
       onDetect: (value) {
-        if (isLoading || isProcessing) return;
+        if (flowState.isLoading || flowState.isProcessing) return;
 
         if (value.barcodes.isNotEmpty) {
-          ref.read(scanCameraProvider.notifier).setProcessing(true);
-
           final barcode = value.barcodes.first;
           final qrCode = barcode.rawValue ?? barcode.displayValue ?? '';
-          
-          _onScanned(qrCode);
+          _handleScannedCode(qrCode);
         }
       },
-      validator: (value) {
-        return value.barcodes.isNotEmpty;
-      },
+      validator: (value) => value.barcodes.isNotEmpty,
       onDispose: () {
         debugPrint('Scanner disposed');
       },
       onDetectError: (Object error, StackTrace stackTrace) {
-        // setState(() => _isScannerRunning = false);
         debugPrint('Scanner error: $error');
       },
       overlayConfig: ScannerOverlayConfig(
@@ -281,7 +250,9 @@ class _ScanQrScreenState extends ConsumerState<ScanQrScreen> with WidgetsBinding
         borderColor: Colors.transparent,
         animationColor: color.primary,
         scannerBorder: ScannerBorder.none,
-        scannerAnimation: isError ? ScannerAnimation.none : ScannerAnimation.fullWidth,
+        scannerAnimation: flowState.isError
+            ? ScannerAnimation.none
+            : ScannerAnimation.fullWidth,
       ),
     );
   }
@@ -308,16 +279,23 @@ class _ScanQrScreenState extends ConsumerState<ScanQrScreen> with WidgetsBinding
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 GestureDetector(
-                  onTap: () => ref.read(scanCameraProvider.notifier).toggleTorch(),
+                  onTap: () async {
+                    await ref
+                        .read(scanQrFlowProvider.notifier)
+                        .toggleTorch(_controller);
+                  },
                   child: CircleAvatar(
                     radius: ScreenUtil.radius(20),
                     backgroundColor: Colors.grey.shade800,
-                    child: Icon(isTorchOn ? Iconsax.flash_slash : Iconsax.flash_1, color: Colors.grey.shade400),
+                    child: Icon(
+                      isTorchOn ? Iconsax.flash_slash : Iconsax.flash_1,
+                      color: Colors.grey.shade400,
+                    ),
                   ),
                 ),
               ],
             ),
-          )
+          ),
         ],
       ),
     );
@@ -330,7 +308,8 @@ class _ScanQrScreenState extends ConsumerState<ScanQrScreen> with WidgetsBinding
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text('Powered by',
+          Text(
+            'Powered by',
             style: TextStyle(
               fontSize: ScreenUtil.sp(12),
               color: Colors.white,
@@ -338,7 +317,11 @@ class _ScanQrScreenState extends ConsumerState<ScanQrScreen> with WidgetsBinding
             ),
           ),
           SizedBox(width: ScreenUtil.sw(8)),
-          Image.asset('assets/images/logos/pgi-horizontal-white.webp', height: ScreenUtil.sh(25), fit: BoxFit.contain),
+          Image.asset(
+            'assets/images/logos/pgi-horizontal-white.webp',
+            height: ScreenUtil.sh(25),
+            fit: BoxFit.contain,
+          ),
         ],
       ),
     );
@@ -347,7 +330,7 @@ class _ScanQrScreenState extends ConsumerState<ScanQrScreen> with WidgetsBinding
   Widget _buildBottomMenu() {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final isLoading = ref.watch(scanQrProvider.select((s) => s.isLoading));
+    final isLoading = ref.watch(scanQrFlowProvider.select((s) => s.isLoading));
 
     return Container(
       padding: EdgeInsets.symmetric(
@@ -365,7 +348,7 @@ class _ScanQrScreenState extends ConsumerState<ScanQrScreen> with WidgetsBinding
         children: [
           AppAlertCard(
             title: context.tr('scan_qr_help_title'),
-            message: context.tr('scan_qr_help_message'), 
+            message: context.tr('scan_qr_help_message'),
             type: AlertType.custom,
             customIcon: CupertinoIcons.question_circle,
           ),
@@ -375,7 +358,7 @@ class _ScanQrScreenState extends ConsumerState<ScanQrScreen> with WidgetsBinding
               Expanded(
                 child: AppIconButton(
                   fontSize: 13,
-                  onPressed: isLoading ? null : () => _pickImageFromGallery(),
+                  onPressed: isLoading ? null : _pickImageFromGallery,
                   icon: const Icon(Iconsax.gallery_add5),
                   label: context.tr('upload_from_gallery'),
                   type: IconButtonType.outlined,
@@ -385,7 +368,7 @@ class _ScanQrScreenState extends ConsumerState<ScanQrScreen> with WidgetsBinding
               Expanded(
                 child: AppIconButton(
                   fontSize: 13,
-                  onPressed: isLoading ? null : () => _showBranchCodeModal(),
+                  onPressed: isLoading ? null : _showBranchCodeModal,
                   icon: const Icon(Iconsax.keyboard5),
                   label: context.tr('enter_branch_code'),
                   type: IconButtonType.outlined,
@@ -422,16 +405,15 @@ class _ScanQrScreenState extends ConsumerState<ScanQrScreen> with WidgetsBinding
           label: context.tr('continue'),
           icon: const Icon(Iconsax.next),
           minimumSize: Size(double.infinity, ScreenUtil.sh(45)),
-          onPressed: isLoading ? null : () async {
-            final branchCode = _branchCodeController.text.trim();
+          onPressed: isLoading
+              ? null
+              : () async {
+                  final branchCode = _branchCodeController.text.trim();
+                  if (branchCode.isEmpty || !mounted) return;
 
-            if (branchCode.isEmpty) return;
-            if (!mounted) return;
-            
-            context.pop();
-
-            await _onScanned(branchCode);
-          },
+                  context.pop();
+                  await _handleScannedCode(branchCode);
+                },
         ),
       ],
     );

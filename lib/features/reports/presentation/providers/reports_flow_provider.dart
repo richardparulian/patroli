@@ -4,19 +4,30 @@ import 'package:patroli/features/reports/application/services/reports_fetch_serv
 import 'package:patroli/features/reports/domain/entities/reports_entity.dart';
 
 class ReportsFlowState {
-  const ReportsFlowState({required this.pagingController, this.errorMessage});
+  const ReportsFlowState({
+    required this.pagingController,
+    this.errorMessage,
+    this.carouselIndexes = const {},
+  });
 
   final PagingController<int, ReportsEntity> pagingController;
   final String? errorMessage;
+  final Map<int, int> carouselIndexes;
 
-  ReportsFlowState copyWith({Object? errorMessage = _unset}) {
+  ReportsFlowState copyWith({
+    Object? errorMessage = _unset,
+    Map<int, int>? carouselIndexes,
+  }) {
     return ReportsFlowState(
       pagingController: pagingController,
       errorMessage: identical(errorMessage, _unset)
           ? this.errorMessage
           : errorMessage as String?,
+      carouselIndexes: carouselIndexes ?? this.carouselIndexes,
     );
   }
+
+  int carouselIndexFor(int reportId) => carouselIndexes[reportId] ?? 0;
 }
 
 const _unset = Object();
@@ -82,7 +93,20 @@ class ReportsFlowNotifier extends Notifier<ReportsFlowState> {
   }
 
   void refresh() {
+    state = state.copyWith(errorMessage: null, carouselIndexes: const {});
     state.pagingController.refresh();
+  }
+
+  void setCarouselIndex(int reportId, int index) {
+    state = state.copyWith(
+      carouselIndexes: {...state.carouselIndexes, reportId: index},
+    );
+  }
+
+  void clearCarouselIndex(int reportId) {
+    final updated = Map<int, int>.from(state.carouselIndexes);
+    updated.remove(reportId);
+    state = state.copyWith(carouselIndexes: updated);
   }
 }
 

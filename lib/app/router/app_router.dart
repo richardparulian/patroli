@@ -23,7 +23,6 @@ import 'package:patroli/features/scan_qr/domain/entities/scan_qr_entity.dart';
 import 'package:patroli/features/scan_qr/presentation/screens/scan_qr_screen.dart';
 import 'package:patroli/features/settings/presentation/screens/settings_screen.dart';
 import 'package:patroli/features/splash_screen/presentation/screens/splash_screen.dart';
-import 'package:patroli/features/visits/presentation/providers/visit_attention_provider.dart';
 import 'package:patroli/features/visits/presentation/screens/visit_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
@@ -115,17 +114,10 @@ final routerProvider = Provider<GoRouter>((ref) {
         name: 'visit',
         builder: (context, state) {
           final args = state.extra as VisitRouteArgs;
-          return ProviderScope(
-            overrides: [
-              visitAttentionProvider.overrideWith(
-                () => VisitAttentionNotifier(),
-              ),
-            ],
-            child: VisitScreen(
-              scanQrData: args.scanQr,
-              checkInData: args.checkIn,
-              reportData: args.report,
-            ),
+          return VisitScreen(
+            scanQrData: args.scanQr,
+            checkInData: args.checkIn,
+            reportData: args.report,
           );
         },
       ),

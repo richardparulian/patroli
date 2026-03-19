@@ -169,3 +169,5 @@ Rule yang sekarang dipakai:
 - visible string di widget harus lewat `context.tr(...)` atau `context.trParams(...)`
 
 Dokumen detailnya ada di `ARCHITECTURE_GUIDE.md` dan `LOCALIZATION_GUIDE.md`.
+
+Untuk konvensi state management yang lebih spesifik, lihat `RIVERPOD_GUIDE.md`.

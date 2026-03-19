@@ -19,7 +19,7 @@ import 'package:patroli/features/check_in/domain/entities/check_in_entity.dart';
 import 'package:patroli/features/check_out/presentation/providers/check_out_flow_provider.dart';
 import 'package:patroli/features/reports/domain/entities/reports_entity.dart';
 import 'package:patroli/features/scan_qr/domain/entities/scan_qr_entity.dart';
-import 'package:patroli/features/visits/presentation/providers/visit_attention_provider.dart';
+import 'package:patroli/features/visits/presentation/providers/visit_attention_flow_provider.dart';
 import 'package:patroli/features/visits/presentation/providers/visit_flow_provider.dart';
 import 'package:patroli/features/visits/presentation/providers/visit_form_provider.dart';
 
@@ -52,8 +52,8 @@ class _VisitScreenState extends ConsumerState<VisitScreen> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await ref
-          .read(visitAttentionProvider.notifier)
-          .runVisitAttention(
+          .read(visitAttentionFlowProvider.notifier)
+          .fetchAttention(
             widget.scanQrData?.qrcode ??
                 widget.reportData?.branch?.qrcode ??
                 '',
@@ -78,7 +78,7 @@ class _VisitScreenState extends ConsumerState<VisitScreen> {
       checkOutFlowProvider.select((s) => s.isBusy),
     );
     final isLoadingVisitAttention = ref.watch(
-      visitAttentionProvider.select((s) => s.isLoading),
+      visitAttentionFlowProvider.select((s) => s.isLoading),
     );
     final isSubmittingVisit = ref.watch(
       visitFlowProvider.select((s) => s.isSubmitting),
@@ -242,7 +242,8 @@ class _VisitScreenState extends ConsumerState<VisitScreen> {
     }
 
     return ref
-        .watch(visitAttentionProvider)
+        .watch(visitAttentionFlowProvider)
+        .attentionState
         .when(
           idle: () => AppLoading(message: context.tr('waiting_data')),
           loading: () =>
@@ -251,8 +252,8 @@ class _VisitScreenState extends ConsumerState<VisitScreen> {
             return RefreshIndicator(
               onRefresh: () => Future.sync(
                 () => ref
-                    .read(visitAttentionProvider.notifier)
-                    .runVisitAttention(
+                    .read(visitAttentionFlowProvider.notifier)
+                    .fetchAttention(
                       widget.scanQrData?.qrcode ??
                           widget.reportData?.branch?.qrcode ??
                           '',

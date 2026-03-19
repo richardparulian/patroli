@@ -15,6 +15,9 @@ class FakeReportsFlowNotifier extends ReportsFlowNotifier {
 
   @override
   ReportsFlowState build() => initialState;
+
+  @override
+  void refresh() {}
 }
 
 void main() {

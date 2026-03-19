@@ -7,7 +7,7 @@ import 'package:patroli/core/storage/cache/cache_manager.dart';
 import 'package:patroli/core/utils/extensions/date_time_extensions.dart';
 import 'package:patroli/features/reports/domain/entities/reports_entity.dart';
 import 'package:patroli/core/ui/animation/animated_card.dart';
-import 'package:patroli/features/reports/presentation/providers/reports_carousel_provider.dart';
+import 'package:patroli/features/reports/presentation/providers/reports_flow_provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:patroli/l10n/l10n.dart';
 import 'package:patroli/core/utils/screen_util.dart';
@@ -23,11 +23,10 @@ class ReportCard extends ConsumerStatefulWidget {
 }
 
 class _ReportCardState extends ConsumerState<ReportCard> {
-
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    
+
     final theme = Theme.of(context);
     final color = theme.colorScheme;
 
@@ -40,10 +39,10 @@ class _ReportCardState extends ConsumerState<ReportCard> {
       imageCheckIn,
       imageCheckOut,
     ].where((url) => url.isNotEmpty).toList();
-    
+
     final reportId = widget.report.id ?? 0;
     final currentIndex = ref.watch(
-      reportsCarouselProvider.select((state) => state[reportId] ?? 0),
+      reportsFlowProvider.select((state) => state.carouselIndexFor(reportId)),
     );
 
     return AnimatedMenuCard(
@@ -74,23 +73,31 @@ class _ReportCardState extends ConsumerState<ReportCard> {
                           padding: ScreenUtil.paddingFromDesign(all: 8),
                           decoration: BoxDecoration(
                             color: color.primary.withValues(alpha: 0.2),
-                            borderRadius: BorderRadius.circular(ScreenUtil.radius(10)),
+                            borderRadius: BorderRadius.circular(
+                              ScreenUtil.radius(10),
+                            ),
                           ),
-                          child: Icon(Iconsax.shop, size: ScreenUtil.icon(20), color: color.primary),
+                          child: Icon(
+                            Iconsax.shop,
+                            size: ScreenUtil.icon(20),
+                            color: color.primary,
+                          ),
                         ),
                         SizedBox(width: ScreenUtil.sw(12)),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(widget.report.branch?.name ?? '---',
+                              Text(
+                                widget.report.branch?.name ?? '---',
                                 style: theme.textTheme.titleSmall?.copyWith(
                                   fontWeight: FontWeight.bold,
                                 ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),
-                              Text(widget.report.date?.toFullDate() ?? '---',
+                              Text(
+                                widget.report.date?.toFullDate() ?? '---',
                                 style: theme.textTheme.bodySmall?.copyWith(
                                   color: color.onSurfaceVariant,
                                 ),
@@ -121,20 +128,27 @@ class _ReportCardState extends ConsumerState<ReportCard> {
                         children: [
                           Row(
                             children: [
-                              Icon(Iconsax.login, size: ScreenUtil.icon(20), color: color.onSurfaceVariant),
+                              Icon(
+                                Iconsax.login,
+                                size: ScreenUtil.icon(20),
+                                color: color.onSurfaceVariant,
+                              ),
                               SizedBox(width: ScreenUtil.sw(12)),
                               Column(
                                 mainAxisSize: MainAxisSize.min,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(context.tr('check_in_label'),
+                                  Text(
+                                    context.tr('check_in_label'),
                                     style: theme.textTheme.bodySmall?.copyWith(
                                       color: color.onSurfaceVariant,
                                       fontWeight: FontWeight.w500,
                                     ),
                                   ),
                                   SizedBox(height: ScreenUtil.sh(4)),
-                                  Text(widget.report.checkIn?.toTimeWithZone() ?? '---',
+                                  Text(
+                                    widget.report.checkIn?.toTimeWithZone() ??
+                                        '---',
                                     style: theme.textTheme.bodySmall?.copyWith(
                                       color: color.onSurfaceVariant,
                                       fontWeight: FontWeight.w300,
@@ -147,27 +161,34 @@ class _ReportCardState extends ConsumerState<ReportCard> {
                           SizedBox(height: ScreenUtil.sh(10)),
                           Row(
                             children: [
-                              Icon(Iconsax.logout, size: ScreenUtil.icon(20), color: color.onSurfaceVariant),
+                              Icon(
+                                Iconsax.logout,
+                                size: ScreenUtil.icon(20),
+                                color: color.onSurfaceVariant,
+                              ),
                               SizedBox(width: ScreenUtil.sw(10)),
                               Column(
                                 mainAxisSize: MainAxisSize.min,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(context.tr('check_out_label'),
+                                  Text(
+                                    context.tr('check_out_label'),
                                     style: theme.textTheme.bodySmall?.copyWith(
                                       color: color.onSurfaceVariant,
                                       fontWeight: FontWeight.w500,
                                     ),
                                   ),
                                   SizedBox(height: ScreenUtil.sh(4)),
-                                  Text(widget.report.checkOut?.toTimeWithZone() ?? '---',
+                                  Text(
+                                    widget.report.checkOut?.toTimeWithZone() ??
+                                        '---',
                                     style: theme.textTheme.bodySmall?.copyWith(
                                       color: color.onSurfaceVariant,
                                       fontWeight: FontWeight.w500,
                                     ),
                                   ),
                                 ],
-                              )
+                              ),
                             ],
                           ),
                         ],
@@ -175,10 +196,14 @@ class _ReportCardState extends ConsumerState<ReportCard> {
                     ),
                     Container(
                       width: 0.2,
-                      height: size.width > 600 ? size.width * 0.1 : size.width * 0.2,
+                      height: size.width > 600
+                          ? size.width * 0.1
+                          : size.width * 0.2,
                       decoration: BoxDecoration(
                         color: color.onSurface,
-                        borderRadius: BorderRadius.circular(ScreenUtil.radius(10)),
+                        borderRadius: BorderRadius.circular(
+                          ScreenUtil.radius(10),
+                        ),
                       ),
                     ),
                     SizedBox(width: ScreenUtil.sw(12)),
@@ -186,47 +211,73 @@ class _ReportCardState extends ConsumerState<ReportCard> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         SizedBox(
-                          width: size.width > 600 ? size.width * 0.1 : size.width * 0.15,
-                          height: size.width > 600 ? size.width * 0.1 : size.width * 0.15,
-                          child: CarouselSlider(  
+                          width: size.width > 600
+                              ? size.width * 0.1
+                              : size.width * 0.15,
+                          height: size.width > 600
+                              ? size.width * 0.1
+                              : size.width * 0.15,
+                          child: CarouselSlider(
                             options: CarouselOptions(
-                              height: size.width > 600 ? size.width * 0.1 : size.width * 0.15,
+                              height: size.width > 600
+                                  ? size.width * 0.1
+                                  : size.width * 0.15,
                               enableInfiniteScroll: false,
                               enlargeCenterPage: true,
                               viewportFraction: 1.0,
                               onPageChanged: (carouselIndex, reason) {
-                                ref.read(reportsCarouselProvider.notifier).setIndex(reportId, carouselIndex);
+                                ref
+                                    .read(reportsFlowProvider.notifier)
+                                    .setCarouselIndex(reportId, carouselIndex);
                               },
                             ),
-                            items: imageUrls.isNotEmpty ? imageUrls.map((url) {
-                              return Builder(
-                                builder: (BuildContext context) {
-                                  return ClipRRect(
-                                    borderRadius: BorderRadius.circular(ScreenUtil.radius(10)),
-                                    child: GestureDetector(
-                                      onTap: null,
-                                      child: CachedNetworkImage(
-                                        cacheManager: AppCacheManager.instance,
-                                        imageUrl: url,
+                            items: imageUrls.isNotEmpty
+                                ? imageUrls.map((url) {
+                                    return Builder(
+                                      builder: (BuildContext context) {
+                                        return ClipRRect(
+                                          borderRadius: BorderRadius.circular(
+                                            ScreenUtil.radius(10),
+                                          ),
+                                          child: GestureDetector(
+                                            onTap: null,
+                                            child: CachedNetworkImage(
+                                              cacheManager:
+                                                  AppCacheManager.instance,
+                                              imageUrl: url,
+                                              fit: BoxFit.cover,
+                                              width: size.width > 600
+                                                  ? size.width * 0.1
+                                                  : size.width * 0.2,
+                                              height: size.width > 600
+                                                  ? size.width * 0.1
+                                                  : size.width * 0.2,
+                                              placeholder: (_, _) => Image.asset(
+                                                'assets/images/placeholder/placeholder.webp',
+                                                fit: BoxFit.cover,
+                                              ),
+                                              errorWidget: (_, _, _) => Image.asset(
+                                                'assets/images/placeholder/error_image.webp',
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  }).toList()
+                                : [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(8.0),
+                                      child: Image.asset(
+                                        'assets/images/error_image.png',
                                         fit: BoxFit.cover,
-                                        width: size.width > 600 ? size.width * 0.1 : size.width * 0.2,
-                                        height: size.width > 600 ? size.width * 0.1 : size.width * 0.2,
-                                        placeholder: (_, _) => Image.asset('assets/images/placeholder/placeholder.webp', fit: BoxFit.cover),
-                                        errorWidget: (_, _, _) => Image.asset('assets/images/placeholder/error_image.webp', fit: BoxFit.cover),
+                                        width: size.width > 600
+                                            ? size.width * 0.1
+                                            : size.width * 0.2,
                                       ),
                                     ),
-                                  );
-                                },
-                              );
-                            }).toList() : [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(8.0),
-                                child: Image.asset('assets/images/error_image.png',
-                                  fit: BoxFit.cover,
-                                  width: size.width > 600 ? size.width * 0.1 : size.width * 0.2,
-                                ),
-                              )
-                            ],
+                                  ],
                           ),
                         ),
                         SizedBox(height: ScreenUtil.sh(6)),
@@ -243,9 +294,9 @@ class _ReportCardState extends ConsumerState<ReportCard> {
                           ),
                         ],
                       ],
-                    ),    
-                  ]
-                )
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -256,25 +307,31 @@ class _ReportCardState extends ConsumerState<ReportCard> {
 
   Widget _buildStatusBadge(ThemeData theme, bool isCompleted) {
     final color = isCompleted ? Colors.green : Colors.orange;
-    
+
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: ScreenUtil.sw(10), vertical: ScreenUtil.sh(5)),
+      padding: EdgeInsets.symmetric(
+        horizontal: ScreenUtil.sw(10),
+        vertical: ScreenUtil.sh(5),
+      ),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(ScreenUtil.radius(20)),
-        border: Border.all(
-          width: 1,
-          color: color, 
-        ),
+        border: Border.all(width: 1, color: color),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(isCompleted ? Iconsax.tick_circle : Iconsax.clock, size: ScreenUtil.icon(14), color: color),
+          Icon(
+            isCompleted ? Iconsax.tick_circle : Iconsax.clock,
+            size: ScreenUtil.icon(14),
+            color: color,
+          ),
           const SizedBox(width: 4),
-          Text(isCompleted ? context.tr('completed') : context.tr('pending'), 
+          Text(
+            isCompleted ? context.tr('completed') : context.tr('pending'),
             style: theme.textTheme.labelSmall?.copyWith(
-              color: color, fontWeight: FontWeight.bold,
+              color: color,
+              fontWeight: FontWeight.bold,
             ),
           ),
         ],

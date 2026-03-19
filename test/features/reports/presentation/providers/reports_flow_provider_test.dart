@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:patroli/features/reports/application/services/reports_fetch_service.dart';
 import 'package:patroli/features/reports/domain/entities/reports_entity.dart';
@@ -71,5 +72,40 @@ void main() {
       isA<ReportsPagingException>(),
     );
     subscription.close();
+  });
+
+  test('setCarouselIndex stores per-report carousel state', () {
+    final notifier = container.read(reportsFlowProvider.notifier);
+
+    notifier.setCarouselIndex(10, 2);
+
+    final state = container.read(reportsFlowProvider);
+    expect(state.carouselIndexFor(10), 2);
+    expect(state.carouselIndexes, {10: 2});
+  });
+
+  test('refresh clears carousel indexes and error message', () {
+    final notifier = container.read(reportsFlowProvider.notifier);
+
+    notifier.setCarouselIndex(10, 2);
+    container
+        .read(reportsFlowProvider)
+        .pagingController
+        .value = PagingState<int, ReportsEntity>(
+      pages: const [],
+      keys: const [],
+      error: Exception('Fetch failed'),
+      hasNextPage: false,
+      isLoading: false,
+    );
+
+    final beforeRefresh = container.read(reportsFlowProvider);
+    expect(beforeRefresh.carouselIndexes, {10: 2});
+
+    notifier.refresh();
+
+    final state = container.read(reportsFlowProvider);
+    expect(state.carouselIndexes, isEmpty);
+    expect(state.errorMessage, isNull);
   });
 }
