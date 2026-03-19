@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:patroli/app/theme/theme_providers.dart';
+import 'package:patroli/app/version/app_version_providers.dart';
 import 'package:patroli/core/ui/bottom_sheets/app_bottom_sheet.dart';
 import 'package:patroli/core/utils/screen_util.dart';
 import 'package:patroli/l10n/l10n.dart';
@@ -12,6 +13,8 @@ class SettingsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final appVersionInfo = ref.watch(appVersionInfoProvider);
+
     return Scaffold(
       appBar: AppBar(title: Text(context.tr('settings'))),
       body: ListView(
@@ -37,6 +40,19 @@ class SettingsScreen extends ConsumerWidget {
               _themeModeLabel(context, ref.watch(themeModeProvider)),
             ),
             onTap: () => _showThemeModeSheet(context, ref),
+          ),
+          Divider(height: ScreenUtil.sh(1)),
+          ListTile(
+            leading: Icon(
+              Icons.info_outline_rounded,
+              size: ScreenUtil.icon(22),
+            ),
+            title: Text(context.tr('version')),
+            subtitle: appVersionInfo.when(
+              data: (info) => Text(info.version),
+              loading: () => Text(context.tr('loading')),
+              error: (_, _) => Text(AppVersionInfo.fallback.version),
+            ),
           ),
         ],
       ),

@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:patroli/app/version/app_version_providers.dart';
 import 'package:patroli/core/enums/alert_type.dart';
 import 'package:patroli/core/ui/buttons/app_button.dart';
 import 'package:patroli/core/ui/cards/app_card_alert.dart';
@@ -79,6 +80,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     final errorMessage = ref.watch(
       loginFlowProvider.select((s) => s.errorMessage),
     );
+    final appVersionInfo = ref.watch(appVersionInfoProvider);
 
     return Scaffold(
       body: GestureDetector(
@@ -212,21 +214,49 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               right: 0,
               child: Padding(
                 padding: ScreenUtil.paddingFromDesign(horizontal: 15),
-                child: AppButton(
-                  onPressed: isLoading ? null : login,
-                  label: isLoading ? null : context.tr('login'),
-                  indicator: isLoading
-                      ? SizedBox(
-                          height: ScreenUtil.sw(14),
-                          width: ScreenUtil.sw(14),
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            strokeCap: StrokeCap.round,
-                            color: Colors.white,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Opacity(
+                      opacity: 0.7,
+                      child: appVersionInfo.when(
+                        data: (info) => Text(
+                          'v${info.version}',
+                          textAlign: TextAlign.center,
+                          style: textTheme.bodySmall?.copyWith(
+                            color: color.onSurface,
+                            fontSize: ScreenUtil.sp(11),
                           ),
-                        )
-                      : null,
-                  borderRadius: ScreenUtil.radius(50),
+                        ),
+                        loading: () => const SizedBox.shrink(),
+                        error: (_, _) => Text(
+                          'v${AppVersionInfo.fallback.version}',
+                          textAlign: TextAlign.center,
+                          style: textTheme.bodySmall?.copyWith(
+                            color: color.onSurface,
+                            fontSize: ScreenUtil.sp(11),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: ScreenUtil.sh(10)),
+                    AppButton(
+                      onPressed: isLoading ? null : login,
+                      label: isLoading ? null : context.tr('login'),
+                      indicator: isLoading
+                          ? SizedBox(
+                              height: ScreenUtil.sw(14),
+                              width: ScreenUtil.sw(14),
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                strokeCap: StrokeCap.round,
+                                color: Colors.white,
+                              ),
+                            )
+                          : null,
+                      borderRadius: ScreenUtil.radius(50),
+                    ),
+                  ],
                 ),
               ),
             ),
