@@ -30,6 +30,7 @@ Target yang paling umum:
 
 ```bash
 make run-android
+make ios-sim-open
 make run-ios
 make run-mac
 make run-web

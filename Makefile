@@ -9,6 +9,7 @@ BUILD_DIR := build
 ANDROID_BUILD_DIR := android/app/build
 IOS_BUILD_DIR := ios/build
 WEB_BUILD_DIR := build/web
+IOS_SIMULATOR_APP := Simulator
 
 # Colors for output
 BLUE := \033[0;34m
@@ -152,8 +153,13 @@ run-android: ## Run of app on Android device/emulator
 	@echo "$(BLUE)Running app on Android...$(NC)"
 	$(FLUTTER) run -d android
 
+.PHONY: ios-sim-open
+ios-sim-open: ## Open iOS Simulator
+	@echo "$(BLUE)Opening iOS Simulator...$(NC)"
+	open -a $(IOS_SIMULATOR_APP)
+
 .PHONY: run-ios
-run-ios: ## Run of app on iOS device/simulator
+run-ios: ios-sim-open ## Open iOS Simulator and run app on iOS
 	@echo "$(BLUE)Running app on iOS...$(NC)"
 	$(FLUTTER) run -d ios
 

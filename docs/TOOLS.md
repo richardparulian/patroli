@@ -80,6 +80,7 @@ Catatan penting:
 ### Run
 
 - `make run-android`
+- `make ios-sim-open`
 - `make run-ios`
 - `make run-mac`
 - `make run-web`
