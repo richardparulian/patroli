@@ -49,7 +49,7 @@ Tanggung jawab:
 - entry point ke settings
 - logout
 
-Dashboard count memakai provider reports count.
+Dashboard summary memakai provider reports dashboard flow.
 
 ## 3. Scan QR -> Check-In -> Visit -> Check-Out
 
@@ -122,7 +122,7 @@ Tanggung jawab:
 - melihat detail kondisi report
 - menjadi titik review setelah visit/check-out
 
-Home dashboard juga bergantung pada count report dari domain reports.
+Home dashboard juga bergantung pada summary report dari domain reports.
 
 ## 5. Settings Flow
 

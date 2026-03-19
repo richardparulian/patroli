@@ -54,18 +54,27 @@ class BiometricsDemo extends ConsumerWidget {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Authentication Status: ${biometricState.isAuthenticated ? "Authenticated" : "Not Authenticated"}',
+                    Text(
+                      'Authentication Status: ${biometricState.isAuthenticated ? "Authenticated" : "Not Authenticated"}',
                       style: TextStyle(
-                        color: biometricState.isAuthenticated ? Colors.green : Colors.red,
+                        color: biometricState.isAuthenticated
+                            ? Colors.green
+                            : Colors.red,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     if (biometricState.lastAuthTime != null)
                       Padding(
                         padding: const EdgeInsets.only(top: 4.0),
-                        child: Text('Last authenticated: ${biometricState.lastAuthTime!.toLocal()}',
+                        child: Text(
+                          'Last authenticated: ${biometricState.lastAuthTime!.toLocal()}',
                           style: const TextStyle(fontSize: 12),
                         ),
+                      ),
+                    if (biometricState.isAuthenticating)
+                      const Padding(
+                        padding: EdgeInsets.only(top: 8.0),
+                        child: LinearProgressIndicator(),
                       ),
                     const SizedBox(height: 16),
                     FutureBuilder<List<BiometricType>>(
@@ -121,36 +130,42 @@ class BiometricsDemo extends ConsumerWidget {
                           child: ElevatedButton.icon(
                             icon: const Icon(Icons.lock_open),
                             label: const Text('App Access'),
-                            onPressed: () async {
-                              analytics.logUserAction(
-                                action: 'biometric_authentication_attempted',
-                                category: 'security',
-                              );
+                            onPressed: biometricState.isAuthenticating
+                                ? null
+                                : () async {
+                                    analytics.logUserAction(
+                                      action:
+                                          'biometric_authentication_attempted',
+                                      category: 'security',
+                                    );
 
-                              final result = await ref
-                                  .read(
-                                    biometricAuthControllerProvider.notifier,
-                                  )
-                                  .authenticate(
-                                    reason:
-                                        'Authenticate to access secure features',
-                                    authReason: AuthReason.appAccess,
-                                  );
+                                    final result = await ref
+                                        .read(
+                                          biometricAuthControllerProvider
+                                              .notifier,
+                                        )
+                                        .authenticate(
+                                          reason:
+                                              'Authenticate to access secure features',
+                                          authReason: AuthReason.appAccess,
+                                        );
 
-                              if (context.mounted) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(
-                                      'Authentication result: $result',
-                                    ),
-                                    backgroundColor:
-                                        result == BiometricResult.success
-                                        ? Colors.green
-                                        : Colors.red,
-                                  ),
-                                );
-                              }
-                            },
+                                    if (context.mounted) {
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            'Authentication result: $result',
+                                          ),
+                                          backgroundColor:
+                                              result == BiometricResult.success
+                                              ? Colors.green
+                                              : Colors.red,
+                                        ),
+                                      );
+                                    }
+                                  },
                           ),
                         ),
                         const SizedBox(width: 8),
@@ -161,37 +176,42 @@ class BiometricsDemo extends ConsumerWidget {
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.deepOrange,
                             ),
-                            onPressed: () async {
-                              analytics.logUserAction(
-                                action: 'biometric_transaction_attempted',
-                                category: 'payment',
-                              );
+                            onPressed: biometricState.isAuthenticating
+                                ? null
+                                : () async {
+                                    analytics.logUserAction(
+                                      action: 'biometric_transaction_attempted',
+                                      category: 'payment',
+                                    );
 
-                              final result = await ref
-                                  .read(
-                                    biometricAuthControllerProvider.notifier,
-                                  )
-                                  .authenticate(
-                                    reason:
-                                        'Authenticate to complete your payment',
-                                    authReason: AuthReason.transaction,
-                                    sensitiveTransaction: true,
-                                  );
+                                    final result = await ref
+                                        .read(
+                                          biometricAuthControllerProvider
+                                              .notifier,
+                                        )
+                                        .authenticate(
+                                          reason:
+                                              'Authenticate to complete your payment',
+                                          authReason: AuthReason.transaction,
+                                          sensitiveTransaction: true,
+                                        );
 
-                              if (context.mounted) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(
-                                      'Transaction result: $result',
-                                    ),
-                                    backgroundColor:
-                                        result == BiometricResult.success
-                                        ? Colors.green
-                                        : Colors.red,
-                                  ),
-                                );
-                              }
-                            },
+                                    if (context.mounted) {
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            'Transaction result: $result',
+                                          ),
+                                          backgroundColor:
+                                              result == BiometricResult.success
+                                              ? Colors.green
+                                              : Colors.red,
+                                        ),
+                                      );
+                                    }
+                                  },
                           ),
                         ),
                       ],

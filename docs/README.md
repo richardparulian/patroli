@@ -10,6 +10,8 @@ Dokumentasi di folder ini sudah dirapikan untuk fokus ke codebase `patroli_v2` y
   Gambaran arsitektur aktual: `app`, `core`, feature-first modules, dan boundary Riverpod.
 - `ARCHITECTURE_GUIDE.md`
   Aturan arsitektur yang lebih ketat: dependency rule, localization boundary, dan testing strategy.
+- `RIVERPOD_GUIDE.md`
+  Konvensi state management Riverpod: flow provider, ownership state, lifecycle, dan anti-pattern.
 - `CODING_STANDARDS.md`
   Konvensi coding yang dipakai di repo ini.
 - `LOCALIZATION_GUIDE.md`
@@ -37,6 +39,7 @@ docs/
 ├── GETTING_STARTED.md
 ├── ARCHITECTURE.md
 ├── ARCHITECTURE_GUIDE.md
+├── RIVERPOD_GUIDE.md
 ├── CODING_STANDARDS.md
 ├── LOCALIZATION_GUIDE.md
 ├── FEATURE_FLOWS.md

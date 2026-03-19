@@ -7,8 +7,14 @@ import 'package:patroli/core/auth/debug_biometric_service.dart';
 import 'package:patroli/core/auth/local_biometric_service.dart';
 
 final biometricServiceProvider = Provider<BiometricService>((ref) {
-  final useDebugService = kDebugMode && ref.watch(featureFlagProvider('use_debug_biometrics', defaultValue: false));
-  final service = useDebugService ? DebugBiometricService() : LocalBiometricService();
+  final useDebugService =
+      kDebugMode &&
+      ref.watch(
+        featureFlagProvider('use_debug_biometrics', defaultValue: false),
+      );
+  final service = useDebugService
+      ? DebugBiometricService()
+      : LocalBiometricService();
   final analytics = ref.watch(analyticsProvider);
 
   return _AnalyticsBiometricServiceProxy(service, analytics);
@@ -72,28 +78,34 @@ final biometricsAvailableProvider = FutureProvider<bool>((ref) async {
   return await service.isAvailable();
 });
 
-final availableBiometricsProvider = FutureProvider<List<BiometricType>>((ref) async {
+final availableBiometricsProvider = FutureProvider<List<BiometricType>>((
+  ref,
+) async {
   final service = ref.watch(biometricServiceProvider);
   return await service.getAvailableBiometrics();
 });
 
 class BiometricAuthState {
+  final bool isAuthenticating;
   final bool isAuthenticated;
   final BiometricResult? lastResult;
   final DateTime? lastAuthTime;
 
   const BiometricAuthState({
+    this.isAuthenticating = false,
     this.isAuthenticated = false,
     this.lastResult,
     this.lastAuthTime,
   });
 
   BiometricAuthState copyWith({
+    bool? isAuthenticating,
     bool? isAuthenticated,
     BiometricResult? lastResult,
     DateTime? lastAuthTime,
   }) {
     return BiometricAuthState(
+      isAuthenticating: isAuthenticating ?? this.isAuthenticating,
       isAuthenticated: isAuthenticated ?? this.isAuthenticated,
       lastResult: lastResult ?? this.lastResult,
       lastAuthTime: lastAuthTime ?? this.lastAuthTime,
@@ -123,6 +135,8 @@ class BiometricAuthController extends Notifier<BiometricAuthState> {
     final service = ref.read(biometricServiceProvider);
     final analytics = ref.read(analyticsProvider);
 
+    state = state.copyWith(isAuthenticating: true);
+
     final result = await service.authenticate(
       localizedReason: reason,
       reason: authReason,
@@ -131,7 +145,10 @@ class BiometricAuthController extends Notifier<BiometricAuthState> {
       cancelButtonText: cancelButtonText,
     );
 
-    BiometricAuthState newState = state.copyWith(lastResult: result);
+    BiometricAuthState newState = state.copyWith(
+      isAuthenticating: false,
+      lastResult: result,
+    );
 
     if (result == BiometricResult.success) {
       newState = newState.copyWith(
@@ -177,4 +194,7 @@ class BiometricAuthController extends Notifier<BiometricAuthState> {
   }
 }
 
-final biometricAuthControllerProvider = NotifierProvider<BiometricAuthController, BiometricAuthState>(BiometricAuthController.new);
+final biometricAuthControllerProvider =
+    NotifierProvider<BiometricAuthController, BiometricAuthState>(
+      BiometricAuthController.new,
+    );

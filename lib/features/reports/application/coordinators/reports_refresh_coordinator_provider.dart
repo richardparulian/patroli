@@ -1,4 +1,4 @@
-import 'package:patroli/features/reports/presentation/providers/reports_count_provider.dart';
+import 'package:patroli/features/reports/presentation/providers/reports_dashboard_flow_provider.dart';
 import 'package:patroli/features/reports/presentation/providers/reports_flow_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -11,11 +11,11 @@ class ReportsRefreshCoordinator {
 
   Future<void> refreshReportsAndDashboard() async {
     ref.read(reportsFlowProvider.notifier).refresh();
-    await ref.read(countReportsProvider.notifier).fetchCount();
+    await ref.read(reportsDashboardFlowProvider.notifier).refresh();
   }
 
   Future<void> refreshDashboardOnly() async {
-    await ref.read(countReportsProvider.notifier).fetchCount();
+    await ref.read(reportsDashboardFlowProvider.notifier).refresh();
   }
 
   void refreshReportsOnly() {

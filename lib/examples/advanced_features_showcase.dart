@@ -23,10 +23,13 @@ class AdvancedFeaturesShowcase extends ConsumerStatefulWidget {
   const AdvancedFeaturesShowcase({super.key});
 
   @override
-  ConsumerState<AdvancedFeaturesShowcase> createState() => _AdvancedFeaturesShowcaseState();
+  ConsumerState<AdvancedFeaturesShowcase> createState() =>
+      _AdvancedFeaturesShowcaseState();
 }
 
-class _AdvancedFeaturesShowcaseState extends ConsumerState<AdvancedFeaturesShowcase> with LoggerStateMixin {
+class _AdvancedFeaturesShowcaseState
+    extends ConsumerState<AdvancedFeaturesShowcase>
+    with LoggerStateMixin {
   // Image effect controls state
   final Map<ImageEffectType, double> _effectsIntensity = {
     ImageEffectType.none: 1.0,
@@ -627,7 +630,7 @@ class _AdvancedFeaturesShowcaseState extends ConsumerState<AdvancedFeaturesShowc
             const SizedBox(height: 16),
             Consumer(
               builder: (context, ref, _) {
-                final updateCheck = ref.watch(updateCheckProvider);
+                final updateCheck = ref.watch(updateControllerProvider);
 
                 return ListTile(
                   title: const Text('Update Status'),
@@ -675,76 +678,83 @@ class _AdvancedFeaturesShowcaseState extends ConsumerState<AdvancedFeaturesShowc
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    final updateService = ref.read(updateServiceProvider);
-                    updateService.checkForUpdates().then((_) {
-                      if (!context.mounted) return;
-                      // ignore: use_build_context_synchronously
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Checking for updates...'),
-                        ),
-                      );
-                      ref.invalidate(updateCheckProvider);
-                    });
+                    ref
+                        .read(updateControllerProvider.notifier)
+                        .checkForUpdates()
+                        .then((_) {
+                          if (!context.mounted) return;
+                          // ignore: use_build_context_synchronously
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Checking for updates...'),
+                            ),
+                          );
+                        });
                   },
                   child: const Text('Check for Updates'),
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    final updateService = ref.read(updateServiceProvider);
-                    updateService.getUpdateInfo().then((updateInfo) {
-                      if (!context.mounted) return;
-                      if (updateInfo != null) {
-                        showDialog(
-                          // ignore: use_build_context_synchronously
-                          context: context,
-                          builder: (context) => AlertDialog(
-                            title: Text(
-                              updateInfo.isCritical
-                                  ? 'Critical Update Available'
-                                  : 'Update Available',
-                            ),
-                            content: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'New version: ${updateInfo.latestVersion}',
+                    ref
+                        .read(updateControllerProvider.notifier)
+                        .getUpdateInfo()
+                        .then((updateInfo) {
+                          if (!context.mounted) return;
+                          if (updateInfo != null) {
+                            showDialog(
+                              // ignore: use_build_context_synchronously
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: Text(
+                                  updateInfo.isCritical
+                                      ? 'Critical Update Available'
+                                      : 'Update Available',
                                 ),
-                                if (updateInfo.releaseNotes != null) ...[
-                                  const SizedBox(height: 8),
-                                  Text(updateInfo.releaseNotes!),
+                                content: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'New version: ${updateInfo.latestVersion}',
+                                    ),
+                                    if (updateInfo.releaseNotes != null) ...[
+                                      const SizedBox(height: 8),
+                                      Text(updateInfo.releaseNotes!),
+                                    ],
+                                  ],
+                                ),
+                                actions: [
+                                  if (!updateInfo.isCritical)
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: const Text('Later'),
+                                    ),
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                      // Open the app store
+                                      ref
+                                          .read(
+                                            updateControllerProvider.notifier,
+                                          )
+                                          .openUpdateUrl();
+                                    },
+                                    child: const Text('Update Now'),
+                                  ),
                                 ],
-                              ],
-                            ),
-                            actions: [
-                              if (!updateInfo.isCritical)
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: const Text('Later'),
-                                ),
-                              ElevatedButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                  // Open the app store
-                                  updateService.openUpdateUrl();
-                                },
-                                child: const Text('Update Now'),
                               ),
-                            ],
-                          ),
-                        );
-                      } else {
-                        // ignore: use_build_context_synchronously
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('No update info available'),
-                          ),
-                        );
-                      }
-                    });
+                            );
+                          } else {
+                            // ignore: use_build_context_synchronously
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('No update info available'),
+                              ),
+                            );
+                          }
+                        });
                   },
                   child: const Text('Show Update Dialog'),
                 ),

@@ -4,8 +4,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:patroli/core/extensions/result_state_extension.dart';
 import 'package:patroli/features/auth/presentation/providers/auth_logout_provider.dart';
 import 'package:patroli/features/home/presentation/providers/home_flow_provider.dart';
-import 'package:patroli/features/reports/domain/entities/reports_count.dart';
-import 'package:patroli/features/reports/presentation/providers/reports_count_provider.dart';
+import 'package:patroli/features/reports/domain/entities/reports_dashboard_summary.dart';
+import 'package:patroli/features/reports/presentation/providers/reports_dashboard_flow_provider.dart';
 
 class TestAuthLogout extends AuthLogout {
   TestAuthLogout({this.onRunLogout});
@@ -23,32 +23,33 @@ class TestAuthLogout extends AuthLogout {
   }
 }
 
-class TestCountReports extends CountReports {
-  TestCountReports({
-    this.initialState = const Idle<ReportsCount>(),
-    this.onFetch,
+class TestReportsDashboardFlow extends ReportsDashboardFlowNotifier {
+  TestReportsDashboardFlow({
+    this.initialState = const Idle<ReportsDashboardSummary>(),
+    this.onRefresh,
   });
 
-  final ResultState<ReportsCount> initialState;
-  final VoidCallback? onFetch;
+  final ResultState<ReportsDashboardSummary> initialState;
+  final VoidCallback? onRefresh;
 
   @override
-  ResultState<ReportsCount> build() => initialState;
+  ReportsDashboardFlowState build() =>
+      ReportsDashboardFlowState(summaryState: initialState);
 
   @override
-  Future<void> fetchCount() async {
-    onFetch?.call();
+  Future<void> refresh() async {
+    onRefresh?.call();
   }
 }
 
 void main() {
-  test('refreshDashboard delegates to countReportsProvider', () async {
+  test('refreshDashboard delegates to reportsDashboardFlowProvider', () async {
     var fetchCalls = 0;
 
     final container = ProviderContainer(
       overrides: [
-        countReportsProvider.overrideWith(
-          () => TestCountReports(onFetch: () => fetchCalls++),
+        reportsDashboardFlowProvider.overrideWith(
+          () => TestReportsDashboardFlow(onRefresh: () => fetchCalls++),
         ),
       ],
     );

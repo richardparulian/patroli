@@ -180,7 +180,34 @@ Default praktis:
 - presentation flow provider: `autoDispose`
 - application service global: `keepAlive` bila punya alasan jelas
 
-## 9. Localization Rules
+## 9. App-Wide Provider Rules
+
+Provider di `lib/app/` tidak harus semuanya berbentuk flow provider.
+
+Gunakan provider sederhana untuk:
+- theme mode
+- locale persistence
+- accessibility settings
+- feature flags
+
+Gunakan controller atau flow provider app-wide bila:
+- ada runtime side effect saat init
+- ada stream subscription
+- ada navigation intent atau prompt flow
+- ada state async yang perlu jadi source of truth tunggal
+
+Contoh:
+- notifications runtime bootstrap
+- notification navigation state
+- update controller
+- biometric auth controller
+
+Rule penting:
+- provider factory sebaiknya tidak diam-diam memegang side effect runtime besar
+- kalau ada init/subscription global, buat bootstrap/controller yang eksplisit
+- widget root boleh me-watch bootstrap provider agar lifecycle-nya jelas
+
+## 10. Localization Rules
 
 Provider presentasi sebaiknya tidak menyimpan string final yang sudah diterjemahkan jika state itu adalah validation atau machine state.
 
@@ -198,7 +225,7 @@ Contoh:
 Pengecualian:
 - service boundary yang memang mengubah failure backend menjadi message aman untuk UI
 
-## 10. Testing Rules
+## 11. Testing Rules
 
 ### Wajib ditest untuk flow provider
 - state transition sukses
@@ -221,7 +248,7 @@ Gunakan provider test untuk:
 Rule praktis:
 - logic state jangan hanya diuji lewat widget test bila bisa diuji langsung di provider
 
-## 11. Anti-Patterns
+## 12. Anti-Patterns
 
 Hindari pola berikut:
 - screen membaca 3 provider untuk menyelesaikan satu flow
@@ -230,7 +257,7 @@ Hindari pola berikut:
 - override route-scoped provider jika screen sudah punya flow provider yang cukup
 - menyebar state satu layar ke provider berbeda tanpa alasan yang kuat
 
-## 12. Current North Star
+## 13. Current North Star
 
 Target arsitektur Riverpod proyek ini:
 - satu flow penting = satu owner state utama
@@ -240,7 +267,7 @@ Target arsitektur Riverpod proyek ini:
 - lifecycle dapat diprediksi
 - test provider sebagai guardrail utama
 
-## 13. Checklist Saat Menambah Fitur Baru
+## 14. Checklist Saat Menambah Fitur Baru
 
 Sebelum membuat provider baru, cek:
 - apakah ini state layar atau state global

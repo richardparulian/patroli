@@ -34,6 +34,7 @@ make test-localization
 Sebelum menambah feature atau refactor besar, baca:
 - `docs/ARCHITECTURE.md`
 - `docs/ARCHITECTURE_GUIDE.md`
+- `docs/RIVERPOD_GUIDE.md`
 - `docs/CODING_STANDARDS.md`
 
 Rule penting:

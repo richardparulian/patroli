@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:patroli/app/bootstrap/app_runtime_bootstrap.dart';
 import 'package:patroli/app/constants/app_metadata.dart';
 import 'package:patroli/app/theme/app_theme.dart';
 import 'package:patroli/app/theme/theme_providers.dart';
@@ -12,7 +13,6 @@ import 'package:patroli/app/router/app_router.dart';
 import 'package:patroli/app/accessibility/accessibility_providers.dart';
 import 'package:patroli/core/providers/storage_providers.dart';
 import 'package:patroli/core/utils/screen_util.dart';
-import 'package:patroli/app/updates/update_providers.dart';
 import 'package:patroli/config/app_config.dart';
 import 'package:patroli/features/auth/presentation/widgets/session_expiry_listener.dart';
 import 'package:patroli/l10n/app_localizations_delegate.dart';
@@ -117,8 +117,8 @@ class MyApp extends ConsumerWidget {
             return MediaQuery(
               data: lockedMediaQuery,
               child: SessionExpiryListener(
-                child: UpdateChecker(
-                  autoPrompt: true,
+                child: AppRuntimeBootstrap(
+                  autoPromptUpdates: true,
                   enforceCriticalUpdates: true,
                   child: Padding(
                     padding: EdgeInsets.only(bottom: bottomPadding),

@@ -11,8 +11,8 @@ import 'package:patroli/features/auth/presentation/providers/auth_logout_provide
 import 'package:patroli/features/home/presentation/screens/home_screen.dart';
 import 'package:patroli/features/home/widgets/error_dashboard.dart';
 import 'package:patroli/features/home/widgets/summary_dashboard.dart';
-import 'package:patroli/features/reports/domain/entities/reports_count.dart';
-import 'package:patroli/features/reports/presentation/providers/reports_count_provider.dart';
+import 'package:patroli/features/reports/domain/entities/reports_dashboard_summary.dart';
+import 'package:patroli/features/reports/presentation/providers/reports_dashboard_flow_provider.dart';
 import 'package:patroli/l10n/l10n.dart';
 
 class TestAuthLogout extends AuthLogout {
@@ -27,21 +27,22 @@ class TestAuthLogout extends AuthLogout {
   }
 }
 
-class TestCountReports extends CountReports {
-  TestCountReports({
-    this.initialState = const Idle<ReportsCount>(),
-    this.onFetch,
+class TestReportsDashboardFlow extends ReportsDashboardFlowNotifier {
+  TestReportsDashboardFlow({
+    this.initialState = const Idle<ReportsDashboardSummary>(),
+    this.onRefresh,
   });
 
-  final ResultState<ReportsCount> initialState;
-  final VoidCallback? onFetch;
+  final ResultState<ReportsDashboardSummary> initialState;
+  final VoidCallback? onRefresh;
 
   @override
-  ResultState<ReportsCount> build() => initialState;
+  ReportsDashboardFlowState build() =>
+      ReportsDashboardFlowState(summaryState: initialState);
 
   @override
-  Future<void> fetchCount() async {
-    onFetch?.call();
+  Future<void> refresh() async {
+    onRefresh?.call();
   }
 }
 
@@ -103,7 +104,7 @@ void main() {
       overrides: [
         authSessionProvider.overrideWithValue(_testUser),
         authLogoutProvider.overrideWith(TestAuthLogout.new),
-        countReportsProvider.overrideWith(TestCountReports.new),
+        reportsDashboardFlowProvider.overrideWith(TestReportsDashboardFlow.new),
       ],
     );
     addTearDown(container.dispose);
@@ -124,19 +125,21 @@ void main() {
     expect(find.byType(HomeScreen), findsNothing);
   });
 
-  testWidgets('renders updated home content and requests reports count', (
+  testWidgets('renders updated home content and refreshes dashboard summary', (
     tester,
   ) async {
-    var fetchCountCalls = 0;
+    var refreshDashboardCalls = 0;
 
     final container = ProviderContainer(
       overrides: [
         authSessionProvider.overrideWithValue(_testUser),
         authLogoutProvider.overrideWith(TestAuthLogout.new),
-        countReportsProvider.overrideWith(
-          () => TestCountReports(
-            initialState: Success(ReportsCount(total: 12, byStatus: 3)),
-            onFetch: () => fetchCountCalls++,
+        reportsDashboardFlowProvider.overrideWith(
+          () => TestReportsDashboardFlow(
+            initialState: Success(
+              const ReportsDashboardSummary(total: 12, byStatus: 3),
+            ),
+            onRefresh: () => refreshDashboardCalls++,
           ),
         ),
       ],
@@ -146,7 +149,7 @@ void main() {
     await _pumpHomeScreen(tester, container: container);
     await tester.pump();
 
-    expect(fetchCountCalls, 1);
+    expect(refreshDashboardCalls, 1);
     expect(find.text('Security Patrol System'), findsOneWidget);
     expect(find.text('Hello, John Doe'), findsOneWidget);
     expect(find.text('Add Report'), findsOneWidget);
@@ -156,19 +159,21 @@ void main() {
     expect(find.text('12'), findsOneWidget);
   });
 
-  testWidgets('shows error dashboard and retries reports count fetch', (
+  testWidgets('shows error dashboard and retries dashboard summary refresh', (
     tester,
   ) async {
-    var fetchCountCalls = 0;
+    var refreshDashboardCalls = 0;
 
     final container = ProviderContainer(
       overrides: [
         authSessionProvider.overrideWithValue(_testUser),
         authLogoutProvider.overrideWith(TestAuthLogout.new),
-        countReportsProvider.overrideWith(
-          () => TestCountReports(
-            initialState: const Error<ReportsCount>('Unable to load dashboard'),
-            onFetch: () => fetchCountCalls++,
+        reportsDashboardFlowProvider.overrideWith(
+          () => TestReportsDashboardFlow(
+            initialState: const Error<ReportsDashboardSummary>(
+              'Unable to load dashboard',
+            ),
+            onRefresh: () => refreshDashboardCalls++,
           ),
         ),
       ],
@@ -180,11 +185,11 @@ void main() {
 
     expect(find.byType(ErrorDashboard), findsOneWidget);
     expect(find.text('Unable to load dashboard'), findsOneWidget);
-    expect(fetchCountCalls, 1);
+    expect(refreshDashboardCalls, 1);
 
     await tester.tap(find.text('Try Again'));
     await tester.pump();
 
-    expect(fetchCountCalls, 2);
+    expect(refreshDashboardCalls, 2);
   });
 }
