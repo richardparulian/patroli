@@ -128,7 +128,6 @@ class MyApp extends ConsumerWidget {
               ),
             );
           },
-
           // Localization settings
           locale: locale,
           localizationsDelegates: [
