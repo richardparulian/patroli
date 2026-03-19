@@ -16,11 +16,6 @@ final savedLocaleProvider = Provider<Locale>((ref) {
     return Locale(savedLanguageCode);
   }
 
-  final systemLocale = WidgetsBinding.instance.platformDispatcher.locale;
-  if (AppLocalizations.isSupported(systemLocale)) {
-    return systemLocale;
-  }
-
   return const Locale('id');
 });
 
@@ -48,12 +43,6 @@ class PersistentLocaleNotifier extends Notifier<Locale> {
   Future<void> resetToSystemLocale() async {
     final prefs = ref.read(sharedPreferencesProvider);
     await prefs.remove(_languageCodeKey);
-    final systemLocale = WidgetsBinding.instance.platformDispatcher.locale;
-
-    if (AppLocalizations.isSupported(systemLocale)) {
-      state = systemLocale;
-    } else {
-      state = const Locale('id');
-    }
+    state = const Locale('id');
   }
 }
