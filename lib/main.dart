@@ -14,6 +14,7 @@ import 'package:patroli/core/providers/storage_providers.dart';
 import 'package:patroli/core/utils/screen_util.dart';
 import 'package:patroli/app/updates/update_providers.dart';
 import 'package:patroli/config/app_config.dart';
+import 'package:patroli/features/auth/presentation/widgets/session_expiry_listener.dart';
 import 'package:patroli/l10n/app_localizations_delegate.dart';
 import 'package:patroli/l10n/l10n.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -50,7 +51,10 @@ void main() async {
   final sharedPreferences = await SharedPreferences.getInstance();
 
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
 
   // Run app with ProviderScope to enable Riverpod
   runApp(
@@ -60,7 +64,9 @@ void main() async {
         sharedPreferencesProvider.overrideWithValue(sharedPreferences),
 
         // Override default locale provider to use our persistent locale
-        defaultLocaleProvider.overrideWith((ref) => ref.watch(persistentLocaleProvider)),
+        defaultLocaleProvider.overrideWith(
+          (ref) => ref.watch(persistentLocaleProvider),
+        ),
       ],
       child: const MyApp(),
     ),
@@ -93,27 +99,31 @@ class MyApp extends ConsumerWidget {
           builder: (context, child) {
             // Lock text scale factor to 1.0 (prevents system font scale)
             final mediaQuery = MediaQuery.of(context);
-            
+
             // Initialize ScreenUtil once
             ScreenUtil.init(context);
-            
+
             final viewInsets = mediaQuery.viewInsets;
             final viewPadding = mediaQuery.viewPadding;
-            final bottomPadding = Platform.isAndroid ? (viewInsets.bottom > 0 ? 0.0 : viewPadding.bottom) : 0.0;
-            
+            final bottomPadding = Platform.isAndroid
+                ? (viewInsets.bottom > 0 ? 0.0 : viewPadding.bottom)
+                : 0.0;
+
             // Lock font size by overriding textScaler
             final lockedMediaQuery = mediaQuery.copyWith(
               textScaler: TextScaler.linear(1.0),
             );
-            
+
             return MediaQuery(
               data: lockedMediaQuery,
-              child: UpdateChecker(
-                autoPrompt: true,
-                enforceCriticalUpdates: true,
-                child: Padding(
-                  padding: EdgeInsets.only(bottom: bottomPadding),
-                  child: child ?? const SizedBox.shrink(),
+              child: SessionExpiryListener(
+                child: UpdateChecker(
+                  autoPrompt: true,
+                  enforceCriticalUpdates: true,
+                  child: Padding(
+                    padding: EdgeInsets.only(bottom: bottomPadding),
+                    child: child ?? const SizedBox.shrink(),
+                  ),
                 ),
               ),
             );

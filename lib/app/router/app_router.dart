@@ -12,9 +12,7 @@ import 'package:patroli/core/ui/images/preview_image.dart';
 import 'package:patroli/l10n/l10n.dart';
 import 'package:patroli/features/auth/application/providers/auth_session_provider.dart';
 import 'package:patroli/features/auth/presentation/screens/login_screen.dart';
-import 'package:patroli/features/check_in/presentation/providers/check_in_provider.dart';
 import 'package:patroli/features/check_in/presentation/screens/check_in_screen.dart';
-import 'package:patroli/features/check_out/presentation/providers/check_out_provider.dart';
 import 'package:patroli/features/check_out/presentation/screens/check_out_screen.dart';
 import 'package:patroli/features/home/presentation/screens/home_screen.dart';
 import 'package:patroli/features/language_switcher/presentation/screens/language_switcher_screen.dart';
@@ -26,7 +24,6 @@ import 'package:patroli/features/scan_qr/presentation/screens/scan_qr_screen.dar
 import 'package:patroli/features/settings/presentation/screens/settings_screen.dart';
 import 'package:patroli/features/splash_screen/presentation/screens/splash_screen.dart';
 import 'package:patroli/features/visits/presentation/providers/visit_attention_provider.dart';
-import 'package:patroli/features/visits/presentation/providers/visit_create_provider.dart';
 import 'package:patroli/features/visits/presentation/screens/visit_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
@@ -110,10 +107,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         name: 'check_in',
         builder: (context, state) {
           final args = state.extra as ScanQrEntity;
-          return ProviderScope(
-            overrides: [checkInProvider.overrideWith(() => CheckInNotifier())],
-            child: CheckInScreen(scanQrData: args),
-          );
+          return CheckInScreen(scanQrData: args);
         },
       ),
       GoRoute(
@@ -123,7 +117,6 @@ final routerProvider = Provider<GoRouter>((ref) {
           final args = state.extra as VisitRouteArgs;
           return ProviderScope(
             overrides: [
-              visitCreateProvider.overrideWith(() => VisitCreateNotifier()),
               visitAttentionProvider.overrideWith(
                 () => VisitAttentionNotifier(),
               ),
@@ -141,15 +134,10 @@ final routerProvider = Provider<GoRouter>((ref) {
         name: 'check_out',
         builder: (context, state) {
           final args = state.extra as CheckOutRouteArgs;
-          return ProviderScope(
-            overrides: [
-              checkOutProvider.overrideWith(() => CheckOutNotifier()),
-            ],
-            child: CheckOutScreen(
-              reportId: args.reportId,
-              branchId: args.branchId,
-              branchName: args.branchName,
-            ),
+          return CheckOutScreen(
+            reportId: args.reportId,
+            branchId: args.branchId,
+            branchName: args.branchName,
           );
         },
       ),

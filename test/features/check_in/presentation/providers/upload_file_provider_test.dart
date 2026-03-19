@@ -36,23 +36,26 @@ void main() {
     container.dispose();
   });
 
-  test('runCheckIn stores upload success state with presign fileUrl', () async {
-    when(
-      () => mockPreSignUploadService.createAndUpload(
-        filename: 'file.jpg',
-        image: image,
-      ),
-    ).thenAnswer((_) async => const Success(presign));
+  test(
+    'uploadSelfie stores upload success state with presign fileUrl',
+    () async {
+      when(
+        () => mockPreSignUploadService.createAndUpload(
+          filename: 'file.jpg',
+          image: image,
+        ),
+      ).thenAnswer((_) async => const Success(presign));
 
-    await container
-        .read(uploadFileProvider.notifier)
-        .runCheckIn(image: image, filename: 'file.jpg', branchId: 10);
+      await container
+          .read(checkInSelfieUploadProvider.notifier)
+          .uploadSelfie(image: image, filename: 'file.jpg');
 
-    final state = container.read(uploadFileProvider);
-    expect(state, isA<Success<PreSignCreateEntity?>>());
-    expect(state.isSuccess, isTrue);
-    expect(state.presign?.fileUrl, presign.fileUrl);
-  });
+      final state = container.read(checkInSelfieUploadProvider);
+      expect(state, isA<Success<PreSignCreateEntity?>>());
+      expect(state.isSuccess, isTrue);
+      expect(state.presign?.fileUrl, presign.fileUrl);
+    },
+  );
 
   test('reset clears previous upload state back to idle', () async {
     when(
@@ -63,18 +66,18 @@ void main() {
     ).thenAnswer((_) async => const Success(presign));
 
     await container
-        .read(uploadFileProvider.notifier)
-        .runCheckIn(image: image, filename: 'file.jpg', branchId: 10);
+        .read(checkInSelfieUploadProvider.notifier)
+        .uploadSelfie(image: image, filename: 'file.jpg');
 
-    container.read(uploadFileProvider.notifier).reset();
+    container.read(checkInSelfieUploadProvider.notifier).reset();
 
-    final state = container.read(uploadFileProvider);
+    final state = container.read(checkInSelfieUploadProvider);
     expect(state, isA<Idle<PreSignCreateEntity?>>());
     expect(state.presign, isNull);
   });
 
   test(
-    'runCheckIn can retry after an upload failure and then succeed',
+    'uploadSelfie can retry after an upload failure and then succeed',
     () async {
       var callCount = 0;
       when(
@@ -92,19 +95,19 @@ void main() {
       });
 
       await container
-          .read(uploadFileProvider.notifier)
-          .runCheckIn(image: image, filename: 'file.jpg', branchId: 10);
+          .read(checkInSelfieUploadProvider.notifier)
+          .uploadSelfie(image: image, filename: 'file.jpg');
 
-      final failedState = container.read(uploadFileProvider);
+      final failedState = container.read(checkInSelfieUploadProvider);
       expect(failedState, isA<Error<PreSignCreateEntity?>>());
       expect(failedState.isError, isTrue);
       expect(failedState.errorMessage, 'Upload gagal');
 
       await container
-          .read(uploadFileProvider.notifier)
-          .runCheckIn(image: image, filename: 'file.jpg', branchId: 10);
+          .read(checkInSelfieUploadProvider.notifier)
+          .uploadSelfie(image: image, filename: 'file.jpg');
 
-      final retriedState = container.read(uploadFileProvider);
+      final retriedState = container.read(checkInSelfieUploadProvider);
       expect(retriedState, isA<Success<PreSignCreateEntity?>>());
       expect(retriedState.isSuccess, isTrue);
       expect(retriedState.presign?.fileUrl, presign.fileUrl);

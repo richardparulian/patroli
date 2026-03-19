@@ -14,7 +14,9 @@ final dioWithAuthProvider = Provider.autoDispose<Dio>((ref) {
     AuthInterceptor(
       secureStorageService: secureStorageService,
       onUnauthorized: () async {
-        await ref.read(authSessionSyncServiceProvider).forceLogout();
+        await ref
+            .read(authSessionSyncServiceProvider)
+            .forceLogout(notice: AuthLogoutNotice.sessionExpired);
       },
     ),
   );

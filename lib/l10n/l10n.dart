@@ -1,4 +1,3 @@
-
 import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart';
@@ -161,12 +160,14 @@ final Map<String, Map<String, String>> localizedValues = {
     'branch_data_not_found': 'Branch data not found',
     'back_to_home': 'Back to Home',
     'success': 'Success',
-    'check_out_success_message': 'Check-out successful, please review it again on the report list page',
+    'check_out_success_message':
+        'Check-out successful, please review it again on the report list page',
     'view_reports': 'View Reports',
     'confirmation': 'Confirmation',
     'leave_page_confirmation': 'Are you sure you want to leave this page?',
     'check_out_confirmation_title': 'Check-Out Confirmation',
-    'check_out_confirmation_subtitle': 'Please take a selfie photo to confirm check-out',
+    'check_out_confirmation_subtitle':
+        'Please take a selfie photo to confirm check-out',
     'branch': 'Branch',
     'processing_visit': 'Processing visit...',
     'check_in_photo': 'Check-In Photo',
@@ -174,14 +175,17 @@ final Map<String, Map<String, String>> localizedValues = {
     'camera_preparing': 'Preparing camera...',
     'retake_photo': 'Retake Photo',
     'continue_action': 'Continue',
-    'check_in_success_message': 'Check-in confirmation successful, please continue to the next step',
+    'check_in_success_message':
+        'Check-in confirmation successful, please continue to the next step',
     'check_in_confirmation_title': 'Check-In Confirmation',
-    'check_in_confirmation_subtitle': 'Please take a selfie photo to confirm the visit',
+    'check_in_confirmation_subtitle':
+        'Please take a selfie photo to confirm the visit',
     'processing_selfie': 'Processing selfie photo...',
     'camera_permission_not_granted': 'Camera permission has not been granted.',
     'allow': 'Allow',
     'scan_qr_help_title': 'Having trouble scanning the QR code?',
-    'scan_qr_help_message': 'Please upload the QR code from the gallery or enter the branch code in the menu below.',
+    'scan_qr_help_message':
+        'Please upload the QR code from the gallery or enter the branch code in the menu below.',
     'upload_from_gallery': 'Upload from gallery',
     'enter_branch_code': 'Enter branch code',
     'branch_code': 'Branch Code',
@@ -190,7 +194,8 @@ final Map<String, Map<String, String>> localizedValues = {
     'qr_not_found_in_image': 'QR code not found in image!',
     'processing_qr': 'Processing QR code...',
     'create_report': 'Create Report',
-    'create_report_subtitle': 'Please fill out the form below to create a report',
+    'create_report_subtitle':
+        'Please fill out the form below to create a report',
     'processing_fetch_data': 'Processing data retrieval...',
     'waiting_data': 'Waiting for data...',
     'attention': 'Attention!',
@@ -198,7 +203,8 @@ final Map<String, Map<String, String>> localizedValues = {
     'main_banner': 'Main Banner',
     'closed_tightly': 'Closed Tightly',
     'open_loose': 'Open/Loose',
-    'flashlight_checked': 'I have illuminated the rolling door using a flashlight',
+    'flashlight_checked':
+        'I have illuminated the rolling door using a flashlight',
     'knock_checked': 'I have performed the rolling door knocking step',
     'branch_condition_right': 'Branch Condition (Right)',
     'branch_condition_left': 'Branch Condition (Left)',
@@ -211,15 +217,21 @@ final Map<String, Map<String, String>> localizedValues = {
     'crowded': 'Crowded',
     'optional_notes': 'Notes (Optional)',
     'send': 'Send',
-    'visit_success_message': 'Report submitted successfully, please continue to the next step',
-    'submit_report_confirmation': 'Are you sure you want to submit this report?',
+    'visit_success_message':
+        'Report submitted successfully, please continue to the next step',
+    'submit_report_confirmation':
+        'Are you sure you want to submit this report?',
     'data_load_failed': 'Failed to load data',
     'image_detail': 'Image Detail',
     'yes': 'Yes',
     'delete_item_title': 'Delete {itemName}?',
-    'delete_item_message': 'Are you sure you want to delete this {itemName}? This action cannot be undone.',
+    'delete_item_message':
+        'Are you sure you want to delete this {itemName}? This action cannot be undone.',
     'logout_confirmation_title': 'Log out?',
-    'logout_confirmation_message': 'Are you sure you want to exit the application?',
+    'logout_confirmation_message':
+        'Are you sure you want to exit the application?',
+    'session_expired_title': 'Session Expired',
+    'session_expired_message': 'Your session has ended. Please sign in again.',
     'visit_error_lights_required': 'Banner lights must be selected',
     'visit_error_banner_required': 'Main banner must be selected',
     'visit_error_rolling_door_required': 'Rolling door must be selected',
@@ -230,15 +242,19 @@ final Map<String, Map<String, String>> localizedValues = {
     'visit_error_around_required': 'Surrounding condition must be selected',
     'visit_error_lights_required_fill': 'Lights status is required!',
     'visit_error_banner_required_fill': 'Banner status is required!',
-    'visit_error_rolling_door_required_fill': 'Rolling door status is required!',
+    'visit_error_rolling_door_required_fill':
+        'Rolling door status is required!',
     'visit_error_right_required_fill': 'Right condition is required!',
     'visit_error_left_required_fill': 'Left condition is required!',
     'visit_error_back_required_fill': 'Back condition is required!',
     'visit_error_around_required_fill': 'Surrounding condition is required!',
     'validation_error': 'Validation error!',
-    'branch_and_selfie_missing': 'Branch and selfie photo were not found. Please try again or contact admin for help.',
-    'branch_missing_help': 'Branch was not found. Please try again or contact admin for help.',
-    'selfie_missing_help': 'Selfie photo was not found. Please try again or contact admin for help.',
+    'branch_and_selfie_missing':
+        'Branch and selfie photo were not found. Please try again or contact admin for help.',
+    'branch_missing_help':
+        'Branch was not found. Please try again or contact admin for help.',
+    'selfie_missing_help':
+        'Selfie photo was not found. Please try again or contact admin for help.',
     'qr_code_required': 'QR code is required',
     'qr_code_invalid': 'Invalid QR code',
     'filename_required': 'Filename is required',
@@ -247,7 +263,8 @@ final Map<String, Map<String, String>> localizedValues = {
     'response_not_found': 'Response not found',
     'image_read_failed': 'Failed to read image',
     'presigned_url_not_found': 'Presigned URL not found',
-    'login_credentials_required': 'Employee Number (NIK) and password cannot be empty',
+    'login_credentials_required':
+        'Employee Number (NIK) and password cannot be empty',
     'page_not_found': 'Page Not Found',
     'page_not_found_message': 'Page {path} was not found',
     'enjoying_app': 'Enjoying the app?',
@@ -255,7 +272,8 @@ final Map<String, Map<String, String>> localizedValues = {
     'no_thanks': 'No thanks',
     'sure': 'Sure!',
     'feedback_matters': 'Your Feedback Matters',
-    'feedback_request_message': 'Please share your thoughts about the app. If you are enjoying it, a review on the app store would be greatly appreciated!',
+    'feedback_request_message':
+        'Please share your thoughts about the app. If you are enjoying it, a review on the app store would be greatly appreciated!',
     'enter_feedback_here': 'Enter your feedback here',
     'submit': 'Submit',
     'information': 'Information',
@@ -295,7 +313,8 @@ final Map<String, Map<String, String>> localizedValues = {
     'language_code': 'Language Code',
     'language_name': 'Language Name',
     'localization_demo': 'Localization Demo',
-    'localization_demo_description': 'See language and region formatting examples',
+    'localization_demo_description':
+        'See language and region formatting examples',
     'localization_assets_demo': 'Localization Assets Demo',
     'localized_assets': 'Localized Assets',
     'localized_assets_explanation': 'Assets adapt to the selected language',
@@ -358,7 +377,8 @@ final Map<String, Map<String, String>> localizedValues = {
     'localization_demo_description': 'Lihat contoh format bahasa dan wilayah',
     'localization_assets_demo': 'Demo Aset Lokalisasi',
     'localized_assets': 'Aset Terlokalisasi',
-    'localized_assets_explanation': 'Aset akan menyesuaikan dengan bahasa yang dipilih',
+    'localized_assets_explanation':
+        'Aset akan menyesuaikan dengan bahasa yang dipilih',
     'formatting_examples': 'Contoh Format',
     'date_short': 'Tanggal Pendek',
     'date_full': 'Tanggal Lengkap',
@@ -411,12 +431,15 @@ final Map<String, Map<String, String>> localizedValues = {
     'branch_data_not_found': 'Data cabang tidak ditemukan',
     'back_to_home': 'Kembali ke Beranda',
     'success': 'Berhasil',
-    'check_out_success_message': 'Checkout berhasil, silahkan cek kembali di halaman daftar laporan',
+    'check_out_success_message':
+        'Checkout berhasil, silahkan cek kembali di halaman daftar laporan',
     'view_reports': 'Lihat Laporan',
     'confirmation': 'Konfirmasi',
-    'leave_page_confirmation': 'Apakah Anda yakin ingin keluar dari halaman ini?',
+    'leave_page_confirmation':
+        'Apakah Anda yakin ingin keluar dari halaman ini?',
     'check_out_confirmation_title': 'Konfirmasi Keluar',
-    'check_out_confirmation_subtitle': 'Silakan melakukan foto selfie untuk konfirmasi keluar',
+    'check_out_confirmation_subtitle':
+        'Silakan melakukan foto selfie untuk konfirmasi keluar',
     'branch': 'Cabang',
     'processing_visit': 'Memproses kunjungan...',
     'check_in_photo': 'Foto Masuk',
@@ -424,14 +447,17 @@ final Map<String, Map<String, String>> localizedValues = {
     'camera_preparing': 'Mempersiapkan kamera...',
     'retake_photo': 'Foto Ulang',
     'continue_action': 'Lanjutkan',
-    'check_in_success_message': 'Konfirmasi kunjungan berhasil, silahkan lanjut ke proses berikutnya',
+    'check_in_success_message':
+        'Konfirmasi kunjungan berhasil, silahkan lanjut ke proses berikutnya',
     'check_in_confirmation_title': 'Konfirmasi Masuk',
-    'check_in_confirmation_subtitle': 'Silakan melakukan foto selfie untuk konfirmasi kunjungan',
+    'check_in_confirmation_subtitle':
+        'Silakan melakukan foto selfie untuk konfirmasi kunjungan',
     'processing_selfie': 'Memproses foto selfie...',
     'camera_permission_not_granted': 'Izin kamera belum diberikan.',
     'allow': 'Izinkan',
     'scan_qr_help_title': 'Kendala Scan Kode QR?',
-    'scan_qr_help_message': 'Silakan unggah kode QR dari galeri atau masukan kode cabang pada menu dibawah ini.',
+    'scan_qr_help_message':
+        'Silakan unggah kode QR dari galeri atau masukan kode cabang pada menu dibawah ini.',
     'upload_from_gallery': 'Unggah dari galeri',
     'enter_branch_code': 'Input kode cabang',
     'branch_code': 'Kode Cabang',
@@ -440,7 +466,8 @@ final Map<String, Map<String, String>> localizedValues = {
     'qr_not_found_in_image': 'Kode QR tidak ditemukan pada gambar!',
     'processing_qr': 'Memproses kode QR...',
     'create_report': 'Buat Laporan',
-    'create_report_subtitle': 'Silakan isi form dibawah ini untuk membuat laporan',
+    'create_report_subtitle':
+        'Silakan isi form dibawah ini untuk membuat laporan',
     'processing_fetch_data': 'Memproses pengambilan data...',
     'waiting_data': 'Menunggu data...',
     'attention': 'Perhatian!',
@@ -448,7 +475,8 @@ final Map<String, Map<String, String>> localizedValues = {
     'main_banner': 'Banner Utama',
     'closed_tightly': 'Tertutup Rapat',
     'open_loose': 'Terbuka/Renggang',
-    'flashlight_checked': 'Saya sudah menyinari rolling door menggunakan senter',
+    'flashlight_checked':
+        'Saya sudah menyinari rolling door menggunakan senter',
     'knock_checked': 'Saya sudah melakukan tahap gedor rolling door',
     'branch_condition_right': 'Kondisi Cabang (Kanan)',
     'branch_condition_left': 'Kondisi Cabang (Kiri)',
@@ -461,15 +489,22 @@ final Map<String, Map<String, String>> localizedValues = {
     'crowded': 'Ramai',
     'optional_notes': 'Catatan (Opsional)',
     'send': 'Kirim',
-    'visit_success_message': 'Laporan berhasil dikirim, silahkan lanjut ke proses berikutnya',
-    'submit_report_confirmation': 'Apakah Anda yakin ingin mengirim laporan ini?',
+    'visit_success_message':
+        'Laporan berhasil dikirim, silahkan lanjut ke proses berikutnya',
+    'submit_report_confirmation':
+        'Apakah Anda yakin ingin mengirim laporan ini?',
     'data_load_failed': 'Gagal Memuat Data',
     'image_detail': 'Foto Detail',
     'yes': 'Ya',
     'delete_item_title': 'Hapus {itemName}?',
-    'delete_item_message': 'Apakah Anda yakin ingin menghapus {itemName} ini? Tindakan ini tidak dapat dibatalkan.',
+    'delete_item_message':
+        'Apakah Anda yakin ingin menghapus {itemName} ini? Tindakan ini tidak dapat dibatalkan.',
     'logout_confirmation_title': 'Keluar?',
-    'logout_confirmation_message': 'Apakah Anda yakin ingin keluar dari aplikasi?',
+    'logout_confirmation_message':
+        'Apakah Anda yakin ingin keluar dari aplikasi?',
+    'session_expired_title': 'Sesi Berakhir',
+    'session_expired_message':
+        'Sesi Anda telah berakhir. Silakan login kembali.',
     'visit_error_lights_required': 'Lampu banner wajib dipilih',
     'visit_error_banner_required': 'Banner utama wajib dipilih',
     'visit_error_rolling_door_required': 'Rolling door wajib dipilih',
@@ -480,15 +515,19 @@ final Map<String, Map<String, String>> localizedValues = {
     'visit_error_around_required': 'Kondisi sekitar wajib dipilih',
     'visit_error_lights_required_fill': 'Status lampu wajib diisi!',
     'visit_error_banner_required_fill': 'Status banner wajib diisi!',
-    'visit_error_rolling_door_required_fill': 'Status rolling door wajib diisi!',
+    'visit_error_rolling_door_required_fill':
+        'Status rolling door wajib diisi!',
     'visit_error_right_required_fill': 'Kondisi kanan wajib diisi!',
     'visit_error_left_required_fill': 'Kondisi kiri wajib diisi!',
     'visit_error_back_required_fill': 'Kondisi belakang wajib diisi!',
     'visit_error_around_required_fill': 'Kondisi sekitar wajib diisi!',
     'validation_error': 'Validation error!',
-    'branch_and_selfie_missing': 'Maaf, cabang dan foto selfie tidak ditemukan, silahkan coba lagi atau hubungi admin untuk bantuan',
-    'branch_missing_help': 'Maaf, cabang tidak ditemukan, silahkan coba lagi atau hubungi admin untuk bantuan',
-    'selfie_missing_help': 'Maaf, foto selfie tidak ditemukan, silahkan coba lagi atau hubungi admin untuk bantuan',
+    'branch_and_selfie_missing':
+        'Maaf, cabang dan foto selfie tidak ditemukan, silahkan coba lagi atau hubungi admin untuk bantuan',
+    'branch_missing_help':
+        'Maaf, cabang tidak ditemukan, silahkan coba lagi atau hubungi admin untuk bantuan',
+    'selfie_missing_help':
+        'Maaf, foto selfie tidak ditemukan, silahkan coba lagi atau hubungi admin untuk bantuan',
     'qr_code_required': 'QR Code tidak boleh kosong',
     'qr_code_invalid': 'Kode QR tidak valid',
     'filename_required': 'Filename tidak boleh kosong',
@@ -497,15 +536,18 @@ final Map<String, Map<String, String>> localizedValues = {
     'response_not_found': 'Respon tidak ditemukan',
     'image_read_failed': 'Gagal membaca gambar',
     'presigned_url_not_found': 'Presigned URL tidak ditemukan',
-    'login_credentials_required': 'Nomor Induk Karyawan (NIK) dan kata sandi tidak boleh kosong',
+    'login_credentials_required':
+        'Nomor Induk Karyawan (NIK) dan kata sandi tidak boleh kosong',
     'page_not_found': 'Halaman Tidak Ditemukan',
     'page_not_found_message': 'Halaman {path} tidak ditemukan',
     'enjoying_app': 'Menikmati aplikasi ini?',
-    'share_feedback_prompt': 'Apakah Anda ingin membagikan masukan kepada kami?',
+    'share_feedback_prompt':
+        'Apakah Anda ingin membagikan masukan kepada kami?',
     'no_thanks': 'Tidak, terima kasih',
     'sure': 'Tentu!',
     'feedback_matters': 'Masukan Anda Berarti',
-    'feedback_request_message': 'Silakan bagikan pendapat Anda tentang aplikasi ini. Jika Anda menikmatinya, ulasan di app store akan sangat membantu.',
+    'feedback_request_message':
+        'Silakan bagikan pendapat Anda tentang aplikasi ini. Jika Anda menikmatinya, ulasan di app store akan sangat membantu.',
     'enter_feedback_here': 'Tulis masukan Anda di sini',
     'submit': 'Kirim',
     'information': 'Informasi',
@@ -516,7 +558,8 @@ final Map<String, Map<String, String>> localizedValues = {
     'unknown_error': 'Terjadi error tidak diketahui',
     'invalid_request': 'Permintaan tidak valid',
     'unauthorized_relogin': 'Tidak diizinkan. Silakan login kembali',
-    'forbidden_access': 'Anda tidak memiliki izin untuk mengakses sumber daya ini',
+    'forbidden_access':
+        'Anda tidak memiliki izin untuk mengakses sumber daya ini',
     'resource_not_found': 'Sumber daya yang diminta tidak ditemukan',
     'validation_failed': 'Validasi gagal',
     'too_many_requests': 'Terlalu banyak permintaan. Silakan coba lagi nanti',

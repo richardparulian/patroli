@@ -5,12 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:ntp/ntp.dart';
 import 'package:patroli/app/constants/app_routes.dart';
 import 'package:patroli/app/router/route_args/visit_route_args.dart';
 import 'package:patroli/core/enums/alert_type.dart';
 import 'package:patroli/core/extensions/helper_state_extension.dart';
-import 'package:patroli/features/check_in/presentation/extensions/pre_sign_extension.dart';
 import 'package:patroli/app/camera/camera_provider.dart';
 import 'package:patroli/core/services/camera_service.dart';
 import 'package:patroli/core/services/permission_service.dart';
@@ -18,11 +16,9 @@ import 'package:patroli/core/ui/buttons/app_icon_button.dart';
 import 'package:patroli/core/ui/cards/app_card_alert.dart';
 import 'package:patroli/core/ui/dialogs/app_dialog.dart';
 import 'package:patroli/core/ui/widgets/app_loading.dart';
-import 'package:patroli/features/check_in/presentation/providers/check_in_provider.dart';
-import 'package:patroli/features/check_in/presentation/providers/upload_file_provider.dart';
+import 'package:patroli/features/check_in/presentation/providers/check_in_flow_provider.dart';
 import 'package:patroli/features/reports/application/coordinators/reports_refresh_coordinator_provider.dart';
 import 'package:patroli/features/scan_qr/domain/entities/scan_qr_entity.dart';
-import 'package:uuid/uuid.dart';
 import 'package:patroli/l10n/l10n.dart';
 import 'package:patroli/core/utils/screen_util.dart';
 
@@ -37,7 +33,6 @@ class CheckInScreen extends ConsumerStatefulWidget {
 
 class _CheckInScreenState extends ConsumerState<CheckInScreen>
     with SingleTickerProviderStateMixin {
-  XFile? _selfieImage;
   CameraController? _cameraController;
 
   final double _mirror = 1.0;
@@ -134,40 +129,7 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen>
     await _animationController.reverse();
 
     final image = await _cameraController!.takePicture();
-
-    setState(() => _selfieImage = image);
-
-    await _uploadSelfie(image);
-  }
-
-  Future<void> _uploadSelfie(XFile image) async {
-    final notifier = ref.read(uploadFileProvider.notifier);
-
-    notifier.reset();
-    notifier.setLoading();
-
-    if (!mounted) return;
-
-    final uuid = const Uuid().v4();
-
-    DateTime now;
-
-    try {
-      now = await NTP.now();
-    } catch (_) {
-      now = DateTime.now();
-    }
-
-    final filename = '${uuid}_${now.millisecondsSinceEpoch}.jpg';
-
-    if (!mounted) return;
-    final scanQrData = GoRouterState.of(context).extra as ScanQrEntity?;
-
-    await notifier.runCheckIn(
-      image: image,
-      filename: filename,
-      branchId: scanQrData?.id ?? 0,
-    );
+    await ref.read(checkInFlowProvider.notifier).captureSelfie(image);
   }
 
   @override
@@ -175,14 +137,9 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen>
     final theme = Theme.of(context);
     final color = theme.colorScheme;
 
-    final isLoadingUploadFile = ref.watch(
-      uploadFileProvider.select((s) => s.isLoading),
-    );
-    final isLoadingCheckIn = ref.watch(
-      checkInProvider.select((s) => s.isLoading),
-    );
+    final flowState = ref.watch(checkInFlowProvider);
 
-    ref.listen(uploadFileProvider, (prev, next) {
+    ref.listen(checkInFlowProvider.select((s) => s.uploadState), (prev, next) {
       next.when(
         idle: () => null,
         loading: () {
@@ -203,7 +160,10 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen>
       );
     });
 
-    ref.listen(checkInProvider, (prev, next) {
+    ref.listen(checkInFlowProvider.select((s) => s.submissionState), (
+      prev,
+      next,
+    ) {
       next.when(
         idle: () => null,
         loading: () => null,
@@ -254,7 +214,7 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen>
       onPopInvokedWithResult: (didPop, result) {
         if (!didPop) {
           // Prevent back if loading
-          if (isLoadingUploadFile || isLoadingCheckIn) return;
+          if (flowState.isBusy) return;
 
           AppDialog.showConfirm(
             context: context,
@@ -293,7 +253,7 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen>
             icon: const Icon(Iconsax.arrow_left),
             onPressed: () {
               // Prevent back if loading
-              if (isLoadingUploadFile || isLoadingCheckIn) return;
+              if (flowState.isBusy) return;
 
               AppDialog.showConfirm(
                 context: context,
@@ -337,9 +297,9 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen>
             ],
 
             // // Loading overlay
-            if (isLoadingUploadFile || isLoadingCheckIn) ...[
+            if (flowState.isBusy) ...[
               AppLoading(
-                message: isLoadingUploadFile
+                message: flowState.isUploading
                     ? context.tr('processing_selfie')
                     : context.tr('processing_visit'),
               ),
@@ -395,6 +355,7 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen>
     final isCameraReady = ref.watch(
       cameraProvider.select((s) => s.isInitializing),
     );
+    final flowState = ref.watch(checkInFlowProvider);
     final isInitialized = _cameraController?.value.isInitialized ?? false;
 
     if (isCameraReady) {
@@ -420,13 +381,13 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen>
             children: [
               CameraPreview(_cameraController!),
 
-              if (_selfieImage != null) ...[
+              if (flowState.selfieImage != null) ...[
                 Transform(
                   alignment: Alignment.center,
                   transform: Matrix4.identity()
                     ..rotateY(_mirror == 1.0 ? math.pi : 0),
                   child: Image.file(
-                    File(_selfieImage!.path),
+                    File(flowState.selfieImage!.path),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -439,23 +400,16 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen>
   }
 
   Widget _buildButtonBottom(ScanQrEntity scanQrData) {
-    final theme = Theme.of(context);
-    final color = theme.colorScheme;
+    final color = Theme.of(context).colorScheme;
 
-    final checkIn = ref.watch(checkInProvider);
-    final uploadState = ref.watch(uploadFileProvider);
-
-    final presignUrl = uploadState.presign?.fileUrl;
-    final isUploadFailed = uploadState.isError;
-    final isUploadReady =
-        uploadState.isSuccess && presignUrl != null && presignUrl.isNotEmpty;
-    final primaryLabel = isUploadFailed
+    final flowState = ref.watch(checkInFlowProvider);
+    final primaryLabel = flowState.isUploadFailed
         ? context.tr('try_again')
         : context.tr('continue_action');
 
-    return _selfieImage == null
+    return !flowState.hasSelfie
         ? GestureDetector(
-            onTap: checkIn.isLoading ? null : () async => await _onCapture(),
+            onTap: flowState.isBusy ? null : () async => await _onCapture(),
             child: AnimatedBuilder(
               animation: _scaleAnimation,
               builder: (context, child) {
@@ -499,10 +453,8 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen>
               children: [
                 Expanded(
                   child: AppIconButton(
-                    onPressed: () {
-                      ref.read(uploadFileProvider.notifier).reset();
-                      setState(() => _selfieImage = null);
-                    },
+                    onPressed: () =>
+                        ref.read(checkInFlowProvider.notifier).retake(),
                     label: context.tr('retake_photo'),
                     type: IconButtonType.outlined,
                     icon: const Icon(Iconsax.camera5),
@@ -511,24 +463,17 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen>
                 SizedBox(width: ScreenUtil.sw(16)),
                 Expanded(
                   child: AppIconButton(
-                    onPressed: isUploadFailed
-                        ? () async {
-                            final selfieImage = _selfieImage;
-                            if (selfieImage == null) return;
-                            await _uploadSelfie(selfieImage);
-                          }
-                        : !isUploadReady
+                    onPressed: flowState.isUploadFailed
+                        ? () async => ref
+                              .read(checkInFlowProvider.notifier)
+                              .retryUpload()
+                        : !flowState.isReadyToSubmit
                         ? null
-                        : () {
-                            ref
-                                .read(checkInProvider.notifier)
-                                .callCheckIn(
-                                  branchId: scanQrData.id ?? 0,
-                                  imageUrl: presignUrl,
-                                );
-                          },
+                        : () => ref
+                              .read(checkInFlowProvider.notifier)
+                              .submit(branchId: scanQrData.id ?? 0),
                     label: primaryLabel,
-                    icon: isUploadFailed
+                    icon: flowState.isUploadFailed
                         ? const Icon(Iconsax.refresh)
                         : const Icon(Iconsax.next),
                     type: IconButtonType.primary,

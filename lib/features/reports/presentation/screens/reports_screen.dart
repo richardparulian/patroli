@@ -6,8 +6,7 @@ import 'package:iconsax/iconsax.dart';
 import 'package:patroli/app/constants/app_routes.dart';
 import 'package:patroli/core/ui/buttons/app_icon_button.dart';
 import 'package:patroli/features/reports/domain/entities/reports_entity.dart';
-import 'package:patroli/features/reports/presentation/providers/reports_fetch_provider.dart';
-import 'package:patroli/features/reports/presentation/providers/reports_paging_provider.dart';
+import 'package:patroli/features/reports/presentation/providers/reports_flow_provider.dart';
 import 'package:patroli/features/reports/widgets/reports_card.dart';
 import 'package:patroli/features/reports/widgets/reports_shimmer.dart';
 import 'package:patroli/l10n/l10n.dart';
@@ -27,7 +26,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      ref.read(reportPagingProvider).refresh();
+      ref.read(reportsFlowProvider.notifier).refresh();
     });
   }
 
@@ -36,8 +35,8 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
     final theme = Theme.of(context);
     final color = theme.colorScheme;
 
-    final reportController = ref.watch(reportsFetchProvider);
-    final pagingController = ref.watch(reportPagingProvider);
+    final reportsFlow = ref.watch(reportsFlowProvider);
+    final pagingController = reportsFlow.pagingController;
 
     return Scaffold(
       appBar: AppBar(
@@ -53,7 +52,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
       ),
       body: RefreshIndicator(
         onRefresh: () =>
-            Future.sync(() => ref.read(reportPagingProvider).refresh()),
+            Future.sync(() => ref.read(reportsFlowProvider.notifier).refresh()),
         child: CustomScrollView(
           slivers: [
             PagingListener(
@@ -133,9 +132,9 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                               ),
                             ),
                             SizedBox(height: ScreenUtil.sh(8)),
-                            if (reportController.errorMessage != null) ...[
+                            if (reportsFlow.errorMessage != null) ...[
                               Text(
-                                reportController.errorMessage!,
+                                reportsFlow.errorMessage!,
                                 style: theme.textTheme.bodyMedium?.copyWith(
                                   color: color.onSurfaceVariant,
                                 ),
@@ -144,8 +143,9 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                             ],
                             SizedBox(height: ScreenUtil.sh(16)),
                             AppIconButton(
-                              onPressed: () =>
-                                  ref.read(reportPagingProvider).refresh(),
+                              onPressed: () => ref
+                                  .read(reportsFlowProvider.notifier)
+                                  .refresh(),
                               icon: const Icon(Iconsax.refresh),
                               label: context.tr('try_again'),
                             ),

@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:ntp/ntp.dart';
 import 'package:patroli/app/constants/app_routes.dart';
 import 'package:patroli/core/enums/alert_type.dart';
 import 'package:patroli/core/extensions/helper_state_extension.dart';
@@ -16,11 +15,8 @@ import 'package:patroli/core/ui/buttons/app_icon_button.dart';
 import 'package:patroli/core/ui/cards/app_card_alert.dart';
 import 'package:patroli/core/ui/dialogs/app_dialog.dart';
 import 'package:patroli/core/ui/widgets/app_loading.dart';
-import 'package:patroli/features/check_out/presentation/extensions/pre_sign_extension.dart';
-import 'package:patroli/features/check_out/presentation/providers/check_out_provider.dart';
-import 'package:patroli/features/check_out/presentation/providers/upload_file_provider.dart';
+import 'package:patroli/features/check_out/presentation/providers/check_out_flow_provider.dart';
 import 'package:patroli/features/reports/application/coordinators/reports_refresh_coordinator_provider.dart';
-import 'package:uuid/uuid.dart';
 import 'package:patroli/l10n/l10n.dart';
 import 'package:patroli/core/utils/screen_util.dart';
 
@@ -42,7 +38,6 @@ class CheckOutScreen extends ConsumerStatefulWidget {
 
 class _CheckOutScreenState extends ConsumerState<CheckOutScreen>
     with SingleTickerProviderStateMixin {
-  XFile? _selfieImage;
   CameraController? _cameraController;
 
   late final AnimationController _animationController;
@@ -139,32 +134,7 @@ class _CheckOutScreenState extends ConsumerState<CheckOutScreen>
 
     await Future.microtask(() {});
     final image = await _cameraController!.takePicture();
-
-    setState(() => _selfieImage = image);
-
-    await _uploadSelfie(image);
-  }
-
-  Future<void> _uploadSelfie(XFile image) async {
-    final notifier = ref.read(checkOutUploadFileProvider.notifier);
-    notifier.reset();
-    notifier.setLoading();
-
-    if (!mounted) return;
-
-    final uuid = const Uuid().v4();
-
-    DateTime now;
-
-    try {
-      now = await NTP.now();
-    } catch (_) {
-      now = DateTime.now();
-    }
-
-    final filename = '${uuid}_${now.millisecondsSinceEpoch}.jpg';
-
-    await notifier.uploadSelfie(image: image, filename: filename);
+    await ref.read(checkOutFlowProvider.notifier).captureSelfie(image);
   }
 
   @override
@@ -172,13 +142,7 @@ class _CheckOutScreenState extends ConsumerState<CheckOutScreen>
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    final isLoadingUploadFile = ref.watch(
-      checkOutUploadFileProvider.select((s) => s.isLoading),
-    );
-    final isLoadingCheckOut = ref.watch(
-      checkOutProvider.select((s) => s.isLoading),
-    );
-    final isLoading = isLoadingUploadFile || isLoadingCheckOut;
+    final flowState = ref.watch(checkOutFlowProvider);
 
     if (widget.branchName?.isEmpty ?? true) {
       return _buildErrorWidget(
@@ -192,7 +156,7 @@ class _CheckOutScreenState extends ConsumerState<CheckOutScreen>
 
     final isInitialized = _cameraController?.value.isInitialized ?? false;
 
-    ref.listen(checkOutUploadFileProvider, (prev, next) {
+    ref.listen(checkOutFlowProvider.select((s) => s.uploadState), (prev, next) {
       next.when(
         idle: () => null,
         loading: () {
@@ -213,7 +177,10 @@ class _CheckOutScreenState extends ConsumerState<CheckOutScreen>
       );
     });
 
-    ref.listen(checkOutProvider, (prev, next) {
+    ref.listen(checkOutFlowProvider.select((s) => s.submissionState), (
+      prev,
+      next,
+    ) {
       next.when(
         idle: () => null,
         loading: () {
@@ -254,7 +221,7 @@ class _CheckOutScreenState extends ConsumerState<CheckOutScreen>
       onPopInvokedWithResult: (didPop, result) {
         if (!didPop) {
           // Prevent back if loading
-          if (isLoading) return;
+          if (flowState.isBusy) return;
 
           AppDialog.showConfirm(
             context: context,
@@ -292,7 +259,7 @@ class _CheckOutScreenState extends ConsumerState<CheckOutScreen>
           leading: IconButton(
             icon: const Icon(Iconsax.arrow_left),
             onPressed: () {
-              if (isLoading) return;
+              if (flowState.isBusy) return;
 
               AppDialog.showConfirm(
                 context: context,
@@ -331,9 +298,9 @@ class _CheckOutScreenState extends ConsumerState<CheckOutScreen>
             ],
 
             // Loading overlay
-            if (isLoading) ...[
+            if (flowState.isBusy) ...[
               AppLoading(
-                message: isLoadingUploadFile
+                message: flowState.isUploading
                     ? context.tr('processing_selfie')
                     : context.tr('processing_visit'),
               ),
@@ -397,6 +364,7 @@ class _CheckOutScreenState extends ConsumerState<CheckOutScreen>
     final isCameraReady = ref.watch(
       cameraProvider.select((s) => s.isInitializing),
     );
+    final flowState = ref.watch(checkOutFlowProvider);
     final isInitialized = _cameraController?.value.isInitialized ?? false;
 
     if (isCameraReady) {
@@ -422,13 +390,13 @@ class _CheckOutScreenState extends ConsumerState<CheckOutScreen>
             children: [
               CameraPreview(_cameraController!),
 
-              if (_selfieImage != null) ...[
+              if (flowState.selfieImage != null) ...[
                 Transform(
                   alignment: Alignment.center,
                   transform: Matrix4.identity()
                     ..rotateY(_mirror == 1.0 ? math.pi : 0),
                   child: Image.file(
-                    File(_selfieImage!.path),
+                    File(flowState.selfieImage!.path),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -441,24 +409,16 @@ class _CheckOutScreenState extends ConsumerState<CheckOutScreen>
   }
 
   Widget _buildButton() {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
+    final colorScheme = Theme.of(context).colorScheme;
 
-    final isLoadingCheckOut = ref.watch(
-      checkOutProvider.select((s) => s.isLoading),
-    );
-    final uploadState = ref.watch(checkOutUploadFileProvider);
-    final presignUrl = uploadState.presign?.fileUrl;
-    final isUploadReady =
-        uploadState.isSuccess && presignUrl != null && presignUrl.isNotEmpty;
-    final isUploadFailed = uploadState.isError;
-    final primaryLabel = isUploadFailed
+    final flowState = ref.watch(checkOutFlowProvider);
+    final primaryLabel = flowState.isUploadFailed
         ? context.tr('try_again')
         : context.tr('continue_action');
 
-    return _selfieImage == null
+    return !flowState.hasSelfie
         ? GestureDetector(
-            onTap: isLoadingCheckOut ? null : () async => await _onCapture(),
+            onTap: flowState.isBusy ? null : () async => await _onCapture(),
             child: AnimatedBuilder(
               animation: _scaleAnimation,
               builder: (context, child) {
@@ -502,10 +462,8 @@ class _CheckOutScreenState extends ConsumerState<CheckOutScreen>
               children: [
                 Expanded(
                   child: AppIconButton(
-                    onPressed: () {
-                      ref.read(checkOutUploadFileProvider.notifier).reset();
-                      setState(() => _selfieImage = null);
-                    },
+                    onPressed: () =>
+                        ref.read(checkOutFlowProvider.notifier).retake(),
                     label: context.tr('retake_photo'),
                     type: IconButtonType.outlined,
                     icon: const Icon(Iconsax.camera5),
@@ -514,23 +472,18 @@ class _CheckOutScreenState extends ConsumerState<CheckOutScreen>
                 SizedBox(width: ScreenUtil.sw(16)),
                 Expanded(
                   child: AppIconButton(
-                    onPressed: isUploadFailed
-                        ? () async {
-                            final selfieImage = _selfieImage;
-                            if (selfieImage == null) return;
-                            await _uploadSelfie(selfieImage);
-                          }
-                        : !isUploadReady
+                    onPressed: flowState.isUploadFailed
+                        ? () async => ref
+                              .read(checkOutFlowProvider.notifier)
+                              .retryUpload()
+                        : !flowState.isReadyToSubmit
                         ? null
-                        : () {
-                            ref
-                                .read(checkOutProvider.notifier)
-                                .runCheckOut(
-                                  branchId: widget.branchId ?? 0,
-                                  reportId: widget.reportId ?? 0,
-                                  imageUrl: presignUrl,
-                                );
-                          },
+                        : () => ref
+                              .read(checkOutFlowProvider.notifier)
+                              .submit(
+                                branchId: widget.branchId ?? 0,
+                                reportId: widget.reportId ?? 0,
+                              ),
                     label: primaryLabel,
                     icon: const Icon(Iconsax.next),
                     type: IconButtonType.primary,

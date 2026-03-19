@@ -1,6 +1,15 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:patroli/app/localization/localization_providers.dart';
-import 'package:patroli/l10n/l10n.dart';
+
+class VisitFormFields {
+  static const lightsStatus = 'lightsStatus';
+  static const bannerStatus = 'bannerStatus';
+  static const rollingDoorStatus = 'rollingDoorStatus';
+  static const rollingDoorChecklist = 'rollingDoorChecklist';
+  static const conditionRight = 'conditionRight';
+  static const conditionLeft = 'conditionLeft';
+  static const conditionBack = 'conditionBack';
+  static const conditionAround = 'conditionAround';
+}
 
 class VisitFormState {
   final String? lampuBanner;
@@ -11,7 +20,7 @@ class VisitFormState {
   final String? conditionLeft;
   final String? conditionBack;
   final String? conditionAround;
-  final Map<String, String> errors;
+  final Map<String, String> errorKeys;
 
   const VisitFormState({
     this.lampuBanner,
@@ -22,10 +31,20 @@ class VisitFormState {
     this.conditionLeft,
     this.conditionBack,
     this.conditionAround,
-    this.errors = const {},
+    this.errorKeys = const {},
   });
 
-  VisitFormState copyWith({String? lampuBanner, String? bannerUtama, String? rollingDoor, Set<String>? rollingDoorChecklist, String? conditionRight, String? conditionLeft, String? conditionBack, String? conditionAround, Map<String, String>? errors}) {
+  VisitFormState copyWith({
+    String? lampuBanner,
+    String? bannerUtama,
+    String? rollingDoor,
+    Set<String>? rollingDoorChecklist,
+    String? conditionRight,
+    String? conditionLeft,
+    String? conditionBack,
+    String? conditionAround,
+    Map<String, String>? errorKeys,
+  }) {
     return VisitFormState(
       lampuBanner: lampuBanner ?? this.lampuBanner,
       bannerUtama: bannerUtama ?? this.bannerUtama,
@@ -35,9 +54,11 @@ class VisitFormState {
       conditionLeft: conditionLeft ?? this.conditionLeft,
       conditionBack: conditionBack ?? this.conditionBack,
       conditionAround: conditionAround ?? this.conditionAround,
-      errors: errors ?? this.errors,
+      errorKeys: errorKeys ?? this.errorKeys,
     );
   }
+
+  String? errorKeyFor(String field) => errorKeys[field];
 }
 
 class VisitFormNotifier extends Notifier<VisitFormState> {
@@ -47,108 +68,114 @@ class VisitFormNotifier extends Notifier<VisitFormState> {
   }
 
   bool validate() {
-    final locale = ref.read(persistentLocaleProvider);
-    final translations = localizedValues[locale.languageCode] ?? localizedValues['en'] ?? {};
-    String tr(String key) => translations[key] ?? localizedValues['en']?[key] ?? key;
-
-    final errors = <String, String>{};
+    final errorKeys = <String, String>{};
 
     if (state.lampuBanner == null || state.lampuBanner!.isEmpty) {
-      errors['lightsStatus'] = tr('visit_error_lights_required');
+      errorKeys[VisitFormFields.lightsStatus] = 'visit_error_lights_required';
     }
 
     if (state.bannerUtama == null || state.bannerUtama!.isEmpty) {
-      errors['bannerStatus'] = tr('visit_error_banner_required');
+      errorKeys[VisitFormFields.bannerStatus] = 'visit_error_banner_required';
     }
 
     if (state.rollingDoor == null || state.rollingDoor!.isEmpty) {
-      errors['rollingDoorStatus'] = tr('visit_error_rolling_door_required');
+      errorKeys[VisitFormFields.rollingDoorStatus] =
+          'visit_error_rolling_door_required';
     }
 
     if (state.rollingDoorChecklist.length != 2) {
-      errors['rollingDoorChecklist'] = tr('visit_error_checklist_required');
+      errorKeys[VisitFormFields.rollingDoorChecklist] =
+          'visit_error_checklist_required';
     }
 
     if (state.conditionRight == null || state.conditionRight!.isEmpty) {
-      errors['conditionRight'] = tr('visit_error_right_required');
+      errorKeys[VisitFormFields.conditionRight] = 'visit_error_right_required';
     }
 
     if (state.conditionLeft == null || state.conditionLeft!.isEmpty) {
-      errors['conditionLeft'] = tr('visit_error_left_required');
+      errorKeys[VisitFormFields.conditionLeft] = 'visit_error_left_required';
     }
 
     if (state.conditionBack == null || state.conditionBack!.isEmpty) {
-      errors['conditionBack'] = tr('visit_error_back_required');
+      errorKeys[VisitFormFields.conditionBack] = 'visit_error_back_required';
     }
 
     if (state.conditionAround == null || state.conditionAround!.isEmpty) {
-      errors['conditionAround'] = tr('visit_error_around_required');
+      errorKeys[VisitFormFields.conditionAround] =
+          'visit_error_around_required';
     }
 
-    state = state.copyWith(errors: errors);
+    state = state.copyWith(errorKeys: errorKeys);
 
-    return errors.isEmpty;
+    return errorKeys.isEmpty;
   }
 
   void setLampuBanner(String value) {
     state = state.copyWith(
       lampuBanner: value,
-      errors: {...state.errors}..remove('lightsStatus'),
+      errorKeys: {...state.errorKeys}..remove(VisitFormFields.lightsStatus),
     );
   }
 
   void setBannerUtama(String value) {
     state = state.copyWith(
       bannerUtama: value,
-      errors: {...state.errors}..remove('bannerStatus'),
+      errorKeys: {...state.errorKeys}..remove(VisitFormFields.bannerStatus),
     );
   }
 
   void setRollingDoor(String value) {
     state = state.copyWith(
       rollingDoor: value,
-      errors: {...state.errors}..remove('rollingDoorStatus'),
+      errorKeys: {...state.errorKeys}
+        ..remove(VisitFormFields.rollingDoorStatus),
     );
   }
 
   void setConditionRight(String value) {
-    state = state.copyWith(conditionRight: value, errors: {...state.errors}..remove('conditionRight'));
+    state = state.copyWith(
+      conditionRight: value,
+      errorKeys: {...state.errorKeys}..remove(VisitFormFields.conditionRight),
+    );
   }
 
   void setConditionLeft(String value) {
-    state = state.copyWith(conditionLeft: value, errors: {...state.errors}..remove('conditionLeft'));
+    state = state.copyWith(
+      conditionLeft: value,
+      errorKeys: {...state.errorKeys}..remove(VisitFormFields.conditionLeft),
+    );
   }
 
   void setConditionBack(String value) {
-    state = state.copyWith(conditionBack: value, errors: {...state.errors}..remove('conditionBack'));
+    state = state.copyWith(
+      conditionBack: value,
+      errorKeys: {...state.errorKeys}..remove(VisitFormFields.conditionBack),
+    );
   }
 
   void setConditionAround(String value) {
-    state = state.copyWith(conditionAround: value, errors: {...state.errors}..remove('conditionAround'));
+    state = state.copyWith(
+      conditionAround: value,
+      errorKeys: {...state.errorKeys}..remove(VisitFormFields.conditionAround),
+    );
   }
 
   void setRollingDoorChecklist(Set<String> values) {
     state = state.copyWith(
       rollingDoorChecklist: values,
-      errors: {...state.errors}..remove('rollingDoorChecklist'),
+      errorKeys: {...state.errorKeys}
+        ..remove(VisitFormFields.rollingDoorChecklist),
     );
   }
 
-  // dipanggil dari API validation
-  void setErrors(Map<String, String> errors) {
+  void setErrorKeys(Map<String, String> errorKeys) {
     if (!ref.mounted) return;
 
-    state = state.copyWith(
-      errors: {
-        ...state.errors,
-        ...errors,
-      },
-    );
+    state = state.copyWith(errorKeys: {...state.errorKeys, ...errorKeys});
   }
 
-  // clear semua error
   void clearErrors() {
-    state = state.copyWith(errors: {});
+    state = state.copyWith(errorKeys: {});
   }
 
   void reset() {
@@ -156,4 +183,7 @@ class VisitFormNotifier extends Notifier<VisitFormState> {
   }
 }
 
-final visitFormProvider = NotifierProvider.autoDispose<VisitFormNotifier, VisitFormState>(VisitFormNotifier.new);
+final visitFormProvider =
+    NotifierProvider.autoDispose<VisitFormNotifier, VisitFormState>(
+      VisitFormNotifier.new,
+    );

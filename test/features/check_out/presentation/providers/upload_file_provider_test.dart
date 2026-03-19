@@ -47,10 +47,10 @@ void main() {
       ).thenAnswer((_) async => const Success(presign));
 
       await container
-          .read(checkOutUploadFileProvider.notifier)
+          .read(checkOutSelfieUploadProvider.notifier)
           .uploadSelfie(image: image, filename: 'file.jpg');
 
-      final state = container.read(checkOutUploadFileProvider);
+      final state = container.read(checkOutSelfieUploadProvider);
       expect(state, isA<Success<PreSignCreateEntity?>>());
       expect(state.isSuccess, isTrue);
       expect(state.presign?.fileUrl, presign.fileUrl);
@@ -66,12 +66,12 @@ void main() {
     ).thenAnswer((_) async => const Success(presign));
 
     await container
-        .read(checkOutUploadFileProvider.notifier)
+        .read(checkOutSelfieUploadProvider.notifier)
         .uploadSelfie(image: image, filename: 'file.jpg');
 
-    container.read(checkOutUploadFileProvider.notifier).reset();
+    container.read(checkOutSelfieUploadProvider.notifier).reset();
 
-    final state = container.read(checkOutUploadFileProvider);
+    final state = container.read(checkOutSelfieUploadProvider);
     expect(state, isA<Idle<PreSignCreateEntity?>>());
     expect(state.presign, isNull);
   });
@@ -95,19 +95,19 @@ void main() {
       });
 
       await container
-          .read(checkOutUploadFileProvider.notifier)
+          .read(checkOutSelfieUploadProvider.notifier)
           .uploadSelfie(image: image, filename: 'file.jpg');
 
-      final failedState = container.read(checkOutUploadFileProvider);
+      final failedState = container.read(checkOutSelfieUploadProvider);
       expect(failedState, isA<Error<PreSignCreateEntity?>>());
       expect(failedState.isError, isTrue);
       expect(failedState.errorMessage, 'Upload gagal');
 
       await container
-          .read(checkOutUploadFileProvider.notifier)
+          .read(checkOutSelfieUploadProvider.notifier)
           .uploadSelfie(image: image, filename: 'file.jpg');
 
-      final retriedState = container.read(checkOutUploadFileProvider);
+      final retriedState = container.read(checkOutSelfieUploadProvider);
       expect(retriedState, isA<Success<PreSignCreateEntity?>>());
       expect(retriedState.isSuccess, isTrue);
       expect(retriedState.presign?.fileUrl, presign.fileUrl);

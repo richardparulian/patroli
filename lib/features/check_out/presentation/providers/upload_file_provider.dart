@@ -6,7 +6,7 @@ import 'package:patroli/core/extensions/result_state_extension.dart';
 import 'package:patroli/features/pre_sign/application/services/pre_sign_upload_service.dart';
 import 'package:patroli/features/pre_sign/domain/entities/pre_sign_create_entity.dart';
 
-class CheckOutUploadFileNotifier
+class CheckOutSelfieUploadNotifier
     extends Notifier<ResultState<PreSignCreateEntity?>> {
   @override
   ResultState<PreSignCreateEntity?> build() {
@@ -37,8 +37,8 @@ class CheckOutUploadFileNotifier
   }
 }
 
-final checkOutUploadFileProvider =
+final checkOutSelfieUploadProvider =
     NotifierProvider.autoDispose<
-      CheckOutUploadFileNotifier,
+      CheckOutSelfieUploadNotifier,
       ResultState<PreSignCreateEntity?>
-    >(CheckOutUploadFileNotifier.new);
+    >(CheckOutSelfieUploadNotifier.new);

@@ -6,13 +6,8 @@ import 'package:patroli/core/extensions/result_state_extension.dart';
 import 'package:patroli/features/pre_sign/application/services/pre_sign_upload_service.dart';
 import 'package:patroli/features/pre_sign/domain/entities/pre_sign_create_entity.dart';
 
-class UploadFileState {
-  final PreSignCreateEntity? presign;
-
-  const UploadFileState({this.presign});
-}
-
-class UploadFileNotifier extends Notifier<ResultState<PreSignCreateEntity?>> {
+class CheckInSelfieUploadNotifier
+    extends Notifier<ResultState<PreSignCreateEntity?>> {
   @override
   ResultState<PreSignCreateEntity?> build() {
     return const Idle();
@@ -26,10 +21,9 @@ class UploadFileNotifier extends Notifier<ResultState<PreSignCreateEntity?>> {
     state = const Loading();
   }
 
-  Future<void> runCheckIn({
+  Future<void> uploadSelfie({
     required XFile image,
     required String filename,
-    required int branchId,
   }) async {
     try {
       final result = await ref
@@ -44,8 +38,8 @@ class UploadFileNotifier extends Notifier<ResultState<PreSignCreateEntity?>> {
   }
 }
 
-final uploadFileProvider =
+final checkInSelfieUploadProvider =
     NotifierProvider.autoDispose<
-      UploadFileNotifier,
+      CheckInSelfieUploadNotifier,
       ResultState<PreSignCreateEntity?>
-    >(UploadFileNotifier.new);
+    >(CheckInSelfieUploadNotifier.new);
