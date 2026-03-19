@@ -32,8 +32,9 @@ class CheckInScreen extends ConsumerStatefulWidget {
 }
 
 class _CheckInScreenState extends ConsumerState<CheckInScreen>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   CameraController? _cameraController;
+  bool _isCameraPermissionDenied = false;
 
   final double _mirror = 1.0;
 
@@ -43,6 +44,7 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen>
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
 
     _animationController = AnimationController(
       vsync: this,
@@ -60,7 +62,21 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen>
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+
+    if (state == AppLifecycleState.resumed &&
+        _isCameraPermissionDenied &&
+        mounted) {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        await _initCamera();
+      });
+    }
+  }
+
+  @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _cameraController?.dispose();
     _cameraController = null;
 
@@ -83,7 +99,13 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen>
             context: context,
           );
 
-      if (!hasPermission) return;
+      if (!hasPermission) {
+        notifier.setInitializing(false);
+        if (mounted) {
+          setState(() => _isCameraPermissionDenied = true);
+        }
+        return;
+      }
 
       final frontCamera = await CameraService.getFrontCamera();
 
@@ -101,7 +123,10 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen>
         return;
       }
 
-      setState(() => _cameraController = controller);
+      setState(() {
+        _cameraController = controller;
+        _isCameraPermissionDenied = false;
+      });
 
       ref.read(cameraProvider.notifier).setInitializing(false);
     } catch (e) {
@@ -362,6 +387,10 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen>
       return AppLoading(message: context.tr('camera_preparing'));
     }
 
+    if (_isCameraPermissionDenied) {
+      return _buildPermissionDeniedWidget();
+    }
+
     if (!isInitialized) return const SizedBox.shrink();
 
     final previewSize = _cameraController?.value.previewSize;
@@ -395,6 +424,40 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen>
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildPermissionDeniedWidget() {
+    final theme = Theme.of(context);
+    final color = theme.colorScheme;
+
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Iconsax.camera_slash,
+            size: ScreenUtil.icon(50),
+            color: color.onSurface,
+          ),
+          SizedBox(height: ScreenUtil.sh(10)),
+          Text(
+            context.tr('camera_permission_not_granted'),
+            style: theme.textTheme.titleMedium?.copyWith(
+              color: color.onSurface,
+              fontWeight: FontWeight.w500,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: ScreenUtil.sh(10)),
+          AppIconButton(
+            height: ScreenUtil.sh(40),
+            label: context.tr('allow'),
+            icon: const Icon(Icons.settings),
+            onPressed: () async => PermissionService.openSettings(),
+          ),
+        ],
       ),
     );
   }
