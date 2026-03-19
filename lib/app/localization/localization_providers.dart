@@ -9,7 +9,10 @@ final savedLocaleProvider = Provider<Locale>((ref) {
   final prefs = ref.watch(sharedPreferencesProvider);
   final savedLanguageCode = prefs.getString(_languageCodeKey);
 
-  if (savedLanguageCode != null && AppLocalizations.supportedLocales.any((l) => l.languageCode == savedLanguageCode)) {
+  if (savedLanguageCode != null &&
+      AppLocalizations.supportedLocales.any(
+        (l) => l.languageCode == savedLanguageCode,
+      )) {
     return Locale(savedLanguageCode);
   }
 
@@ -18,10 +21,13 @@ final savedLocaleProvider = Provider<Locale>((ref) {
     return systemLocale;
   }
 
-  return const Locale('en');
+  return const Locale('id');
 });
 
-final persistentLocaleProvider = NotifierProvider<PersistentLocaleNotifier, Locale>(PersistentLocaleNotifier.new);
+final persistentLocaleProvider =
+    NotifierProvider<PersistentLocaleNotifier, Locale>(
+      PersistentLocaleNotifier.new,
+    );
 
 class PersistentLocaleNotifier extends Notifier<Locale> {
   static const _languageCodeKey = 'selected_language_code';
@@ -47,7 +53,7 @@ class PersistentLocaleNotifier extends Notifier<Locale> {
     if (AppLocalizations.isSupported(systemLocale)) {
       state = systemLocale;
     } else {
-      state = const Locale('en');
+      state = const Locale('id');
     }
   }
 }
